@@ -1,0 +1,7 @@
+anthropic
+modal
+pandas
+pyarrow
+python-dotenv
+fastapi
+uvicorn

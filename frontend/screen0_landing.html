@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioHarmonize — Clinical Data Marketplace</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0A1E38;
+      overflow: hidden;
+    }
+    #root { height: 100vh; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes helixFloat {
+      0%   { transform: translateY(0px); }
+      50%  { transform: translateY(-18px); }
+      100% { transform: translateY(0px); }
+    }
+    @keyframes molFloat {
+      0%   { transform: translateY(0px) rotate(0deg); }
+      50%  { transform: translateY(-12px) rotate(1.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1; }
+    }
+    @keyframes scanLine {
+      0%   { transform: translateY(-100%); opacity: 0; }
+      10%  { opacity: 0.4; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(400%); opacity: 0; }
+    }
+
+    .anim-1 { animation: fadeUp 0.7s ease forwards; animation-delay: 0.05s; opacity: 0; }
+    .anim-2 { animation: fadeUp 0.7s ease forwards; animation-delay: 0.2s;  opacity: 0; }
+    .anim-3 { animation: fadeUp 0.7s ease forwards; animation-delay: 0.35s; opacity: 0; }
+    .anim-4 { animation: fadeIn 1.2s ease forwards; animation-delay: 0.5s;  opacity: 0; }
+
+    .panel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+      background: rgba(255,255,255,0.025);
+    }
+    .panel:hover {
+      transform: translateY(-2px);
+    }
+    .panel-hospital:hover {
+      border-color: rgba(13,148,136,0.5);
+      box-shadow: 0 0 60px rgba(13,148,136,0.12), 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .panel-pharma:hover {
+      border-color: rgba(5,150,105,0.5);
+      box-shadow: 0 0 60px rgba(5,150,105,0.12), 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .helix-svg { animation: helixFloat 9s ease-in-out infinite; }
+    .mol-svg   { animation: molFloat 11s ease-in-out infinite; }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 9px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: filter 0.2s ease, gap 0.2s ease;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.1px;
+    }
+    .cta-btn:hover {
+      filter: brightness(1.1);
+      gap: 12px;
+    }
+    .cta-hospital { background: #0D9488; color: #fff; }
+    .cta-pharma   { background: #059669; color: #fff; }
+
+    .stat-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .scan-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 30%;
+      background: linear-gradient(to bottom, transparent, rgba(13,148,136,0.04), transparent);
+      animation: scanLine 5s linear infinite;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 20px;
+      padding: 3px 11px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+    .badge-teal {
+      background: rgba(13,148,136,0.18);
+      border: 1px solid rgba(13,148,136,0.35);
+      color: #2DD4BF;
+    }
+    .badge-emerald {
+      background: rgba(5,150,105,0.18);
+      border: 1px solid rgba(5,150,105,0.35);
+      color: #34D399;
+    }
+
+    .footer-trust {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.22);
+      letter-spacing: 0.3px;
+    }
+    .footer-sep {
+      width: 1px;
+      height: 12px;
+      background: rgba(255,255,255,0.12);
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+/* ─── Pre-computed genome track data (no Math.random in render) ─── */
+const GENOME_TRACKS = [
+  [
+    {x:22,  w:38, c:"#0D9488"}, {x:76,  w:18, c:"#059669"},
+    {x:108, w:52, c:"#0D9488"}, {x:178, w:14, c:"#D97706"},
+    {x:208, w:44, c:"#0D9488"}, {x:268, w:22, c:"#059669"},
+    {x:308, w:55, c:"#0D9488"}, {x:375, w:14, c:"#D97706"},
+  ],
+  [
+    {x:30,  w:20, c:"#059669"}, {x:66,  w:60, c:"#0D9488"},
+    {x:140, w:24, c:"#D97706"}, {x:180, w:48, c:"#0D9488"},
+    {x:244, w:16, c:"#059669"}, {x:276, w:42, c:"#0D9488"},
+    {x:334, w:28, c:"#D97706"}, {x:372, w:18, c:"#059669"},
+  ],
+  [
+    {x:18,  w:55, c:"#0D9488"}, {x:86,  w:20, c:"#059669"},
+    {x:122, w:36, c:"#D97706"}, {x:174, w:58, c:"#0D9488"},
+    {x:248, w:18, c:"#059669"}, {x:282, w:50, c:"#0D9488"},
+    {x:348, w:22, c:"#D97706"}, {x:382, w:12, c:"#0D9488"},
+  ],
+  [
+    {x:26,  w:30, c:"#059669"}, {x:72,  w:44, c:"#0D9488"},
+    {x:132, w:16, c:"#D97706"}, {x:164, w:62, c:"#0D9488"},
+    {x:242, w:24, c:"#059669"}, {x:282, w:38, c:"#0D9488"},
+    {x:336, w:45, c:"#D97706"}, {x:390, w:8,  c:"#059669"},
+  ],
+];
+
+/* ─── Helix data ─── */
+const HELIX_PAIRS = Array.from({length: 24}, (_, i) => {
+  const y     = 30 + i * 36;
+  const phase = i * 0.52;
+  const x1    = 200 + Math.sin(phase)         * 80;
+  const x2    = 200 + Math.sin(phase + Math.PI) * 80;
+  const colors = ["#0D9488","#059669","#D97706","#DC2626"];
+  return { y, x1, x2, c1: colors[i % 4], c2: colors[(i+2) % 4], opacity: 0.35 + Math.abs(Math.sin(phase)) * 0.55 };
+});
+const HELIX_PATH1 = HELIX_PAIRS.map(p => `${p.x1},${p.y}`).join(" ");
+const HELIX_PATH2 = HELIX_PAIRS.map(p => `${p.x2},${p.y}`).join(" ");
+
+/* ─── Molecular node data ─── */
+const MOL_NODES = [
+  // Main ring
+  {x:200, y:180, r:11, c:"#0D9488"},
+  {x:270, y:140, r:8,  c:"#059669"},
+  {x:318, y:196, r:9,  c:"#0D9488"},
+  {x:298, y:268, r:8,  c:"#D97706"},
+  {x:220, y:300, r:10, c:"#0D9488"},
+  {x:148, y:268, r:8,  c:"#059669"},
+  {x:102, y:196, r:9,  c:"#0D9488"},
+  {x:130, y:140, r:8,  c:"#D97706"},
+  // Peripheral
+  {x:200,  y:80,  r:6, c:"#059669"},
+  {x:390,  y:150, r:5, c:"#0D9488"},
+  {x:370,  y:300, r:6, c:"#D97706"},
+  {x:220,  y:400, r:7, c:"#0D9488"},
+  {x:46,   y:158, r:5, c:"#059669"},
+  {x:62,   y:320, r:6, c:"#D97706"},
+  // Lower cluster
+  {x:200,  y:530, r:10, c:"#0D9488"},
+  {x:260,  y:492, r:7,  c:"#059669"},
+  {x:304,  y:548, r:8,  c:"#D97706"},
+  {x:264,  y:608, r:7,  c:"#0D9488"},
+  {x:136,  y:608, r:7,  c:"#059669"},
+  {x:96,   y:548, r:8,  c:"#0D9488"},
+  {x:140,  y:492, r:7,  c:"#D97706"},
+];
+const MOL_BONDS = [
+  [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],
+  [0,4],[2,9],[3,10],[4,11],[5,13],[6,12],[1,8],[7,8],
+  [14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,14],[14,17],[4,14],
+];
+
+/* ─── SVG: Genomic Pattern ─── */
+const GenomicPattern = () => (
+  <svg
+    className="helix-svg"
+    viewBox="0 0 400 880"
+    style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}
+    preserveAspectRatio="xMidYMid slice"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id="hg1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stopColor="#0D9488" stopOpacity="0"/>
+        <stop offset="25%"  stopColor="#0D9488" stopOpacity="0.55"/>
+        <stop offset="75%"  stopColor="#059669" stopOpacity="0.55"/>
+        <stop offset="100%" stopColor="#059669" stopOpacity="0"/>
+      </linearGradient>
+    </defs>
+
+    {/* Base pair rungs */}
+    {HELIX_PAIRS.map((p, i) => (
+      <g key={i} opacity={p.opacity}>
+        <line x1={p.x1} y1={p.y} x2={p.x2} y2={p.y}
+              stroke="#0D9488" strokeWidth="1.5"/>
+        <circle cx={p.x1} cy={p.y} r="4" fill={p.c1} opacity="0.75"/>
+        <circle cx={p.x2} cy={p.y} r="4" fill={p.c2} opacity="0.75"/>
+      </g>
+    ))}
+
+    {/* Backbone strands */}
+    <polyline points={HELIX_PATH1} fill="none"
+              stroke="url(#hg1)" strokeWidth="2.5" strokeLinejoin="round"/>
+    <polyline points={HELIX_PATH2} fill="none"
+              stroke="url(#hg1)" strokeWidth="2.5" strokeLinejoin="round"/>
+
+    {/* Genome browser tracks */}
+    {GENOME_TRACKS.map((track, ti) => (
+      <g key={`t${ti}`} opacity={0.18 + ti * 0.07}>
+        <line x1="12" y1={720 + ti * 22} x2="388" y2={720 + ti * 22}
+              stroke="#0D9488" strokeWidth="0.8"/>
+        {track.map((seg, si) => (
+          <rect key={si} x={seg.x} y={714 + ti * 22}
+                width={seg.w} height={10}
+                fill={seg.c} opacity="0.65" rx="1.5"/>
+        ))}
+      </g>
+    ))}
+  </svg>
+);
+
+/* ─── SVG: Molecular Pattern ─── */
+const MolecularPattern = () => (
+  <svg
+    className="mol-svg"
+    viewBox="0 0 400 750"
+    style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}
+    preserveAspectRatio="xMidYMid slice"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <radialGradient id="ng" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stopColor="#0D9488" stopOpacity="0.35"/>
+        <stop offset="100%" stopColor="#0D9488" stopOpacity="0"/>
+      </radialGradient>
+    </defs>
+
+    {/* Bonds */}
+    {MOL_BONDS.map(([a,b], i) => (
+      <line key={i}
+            x1={MOL_NODES[a].x} y1={MOL_NODES[a].y}
+            x2={MOL_NODES[b].x} y2={MOL_NODES[b].y}
+            stroke="#0D9488" strokeWidth="1.5" opacity="0.22"/>
+    ))}
+
+    {/* Glow halos on large nodes */}
+    {MOL_NODES.filter(n => n.r >= 10).map((n, i) => (
+      <circle key={`g${i}`} cx={n.x} cy={n.y} r={n.r * 3.2}
+              fill="url(#ng)" opacity="0.6"/>
+    ))}
+
+    {/* Nodes */}
+    {MOL_NODES.map((n, i) => (
+      <g key={i}>
+        <circle cx={n.x} cy={n.y} r={n.r}     fill={n.c} opacity="0.55"/>
+        <circle cx={n.x} cy={n.y} r={n.r*0.45} fill={n.c} opacity="0.9"/>
+      </g>
+    ))}
+
+    {/* Hexagonal highlight rings */}
+    <polygon points="200,62 256,94 256,158 200,190 144,158 144,94"
+             fill="none" stroke="#0D9488" strokeWidth="0.8" opacity="0.12"/>
+    <polygon points="200,492 242,516 242,562 200,586 158,562 158,516"
+             fill="none" stroke="#0D9488" strokeWidth="0.8" opacity="0.12"/>
+  </svg>
+);
+
+/* ─── Main Landing Screen ─── */
+const Screen0 = ({ onNavigate }) => {
+  const [hovered, setHovered] = useState(null);
+
+  const panelContent = {
+    hospital: {
+      badge: "Hospital / Clinic",
+      badgeCls: "badge-teal",
+      dotColor: "#2DD4BF",
+      title: ["I have data to", "contribute"],
+      desc: "Package your clinical datasets, set data usage terms, and earn recurring royalties from pharma and biotech research.",
+      stats: [
+        { val: "$2.4M",  label: "Avg. annual earnings" },
+        { val: "48h",    label: "Time to first listing" },
+      ],
+      statColor: "#2DD4BF",
+      cta: "Get started",
+      ctaCls: "cta-hospital",
+      pattern: <GenomicPattern />,
+      glowColor: "rgba(13,148,136,0.13)",
+      panelCls: "panel-hospital",
+    },
+    pharma: {
+      badge: "Pharma / Biotech",
+      badgeCls: "badge-emerald",
+      dotColor: "#34D399",
+      title: ["I need data for", "research"],
+      desc: "Access OMOP-standardized South Asian clinical datasets, precisely matched to your research protocol and IRB requirements.",
+      stats: [
+        { val: "127K+",  label: "Patients available" },
+        { val: "94%",    label: "OMOP compliance" },
+      ],
+      statColor: "#34D399",
+      cta: "Browse datasets",
+      ctaCls: "cta-pharma",
+      pattern: <MolecularPattern />,
+      glowColor: "rgba(5,150,105,0.13)",
+      panelCls: "panel-pharma",
+    },
+  };
+
+  return (
+    <div style={{
+      height: "100vh",
+      background: "linear-gradient(160deg, #0A1E38 0%, #0D2440 50%, #091A30 100%)",
+      display: "flex",
+      flexDirection: "column",
+      padding: "32px 32px 24px",
+      gap: "0",
+    }}>
+
+      {/* ── Header ── */}
+      <div className="anim-1" style={{
+        display: "flex", flexDirection: "column",
+        alignItems: "center", paddingBottom: "28px",
+      }}>
+        {/* Logo */}
+        <div style={{ display:"flex", alignItems:"center", gap:"11px", marginBottom:"14px" }}>
+          <div style={{
+            width:"38px", height:"38px",
+            background:"linear-gradient(135deg, #0D9488 0%, #059669 100%)",
+            borderRadius:"9px",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            boxShadow:"0 4px 16px rgba(13,148,136,0.35)",
+          }}>
+            {/* Simple helix icon */}
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 4 Q10 2 16 4 Q10 7 4 9 Q10 11 16 13 Q10 15 4 17"
+                    stroke="white" strokeWidth="1.8" fill="none"
+                    strokeLinecap="round"/>
+            </svg>
+          </div>
+          <span style={{
+            fontSize:"21px", fontWeight:"700", color:"#FFFFFF",
+            letterSpacing:"-0.4px", lineHeight:1,
+          }}>BioHarmonize</span>
+        </div>
+
+        {/* Tagline */}
+        <p style={{
+          fontSize:"13.5px", color:"rgba(255,255,255,0.45)",
+          fontWeight:"400", letterSpacing:"0.15px", textAlign:"center",
+          maxWidth:"420px", lineHeight:"1.5",
+        }}>
+          Making underrepresented clinical data usable for healthcare AI
+        </p>
+      </div>
+
+      {/* ── Split Panels ── */}
+      <div className="anim-4" style={{
+        display:"flex", flex:1, gap:"14px", minHeight:"0",
+      }}>
+        {["hospital","pharma"].map((side) => {
+          const c = panelContent[side];
+          const isHovered = hovered === side;
+          return (
+            <div
+              key={side}
+              className={`panel ${c.panelCls}`}
+              style={{ flex:1 }}
+              onMouseEnter={() => setHovered(side)}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => onNavigate(side)}
+            >
+              {/* Background pattern */}
+              {c.pattern}
+
+              {/* Scan-line shimmer */}
+              <div className="scan-overlay"/>
+
+              {/* Dark gradient overlay */}
+              <div style={{
+                position:"absolute", inset:0,
+                background:"linear-gradient(to top, rgba(9,26,48,0.92) 0%, rgba(9,26,48,0.55) 55%, rgba(9,26,48,0.15) 100%)",
+                zIndex:1,
+              }}/>
+
+              {/* Hover glow */}
+              <div style={{
+                position:"absolute", inset:0,
+                background: isHovered
+                  ? `radial-gradient(ellipse at 35% 80%, ${c.glowColor} 0%, transparent 65%)`
+                  : "transparent",
+                transition:"background 0.45s ease",
+                zIndex:2,
+                pointerEvents:"none",
+              }}/>
+
+              {/* Content */}
+              <div style={{
+                position:"relative", zIndex:3,
+                height:"100%", display:"flex",
+                flexDirection:"column", justifyContent:"flex-end",
+                padding:"36px 40px",
+              }}>
+                {/* Role badge */}
+                <div className={`badge ${c.badgeCls}`} style={{ marginBottom:"18px", alignSelf:"flex-start" }}>
+                  <div style={{ width:"5px", height:"5px", borderRadius:"50%", background:c.dotColor, animation:"pulseGlow 2s ease-in-out infinite" }}/>
+                  {c.badge}
+                </div>
+
+                {/* Title */}
+                <h2 style={{
+                  fontSize:"clamp(26px,2.8vw,34px)",
+                  fontWeight:"700", color:"#FFFFFF",
+                  lineHeight:"1.18", letterSpacing:"-0.5px",
+                  marginBottom:"12px",
+                }}>
+                  {c.title[0]}<br/>{c.title[1]}
+                </h2>
+
+                {/* Description */}
+                <p style={{
+                  fontSize:"14px", color:"rgba(255,255,255,0.52)",
+                  lineHeight:"1.65", marginBottom:"28px",
+                  maxWidth:"340px",
+                }}>
+                  {c.desc}
+                </p>
+
+                {/* Stats */}
+                <div style={{ display:"flex", gap:"28px", marginBottom:"28px" }}>
+                  {c.stats.map((s, i) => (
+                    <div key={i}>
+                      <div className="stat-val" style={{ color: c.statColor }}>
+                        {s.val}
+                      </div>
+                      <div style={{ fontSize:"11px", color:"rgba(255,255,255,0.35)", marginTop:"3px" }}>
+                        {s.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <button className={`cta-btn ${c.ctaCls}`} style={{ alignSelf:"flex-start" }}>
+                  {c.cta}
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Footer ── */}
+      <div className="anim-2" style={{
+        display:"flex", justifyContent:"center", paddingTop:"20px",
+      }}>
+        <div className="footer-trust">
+          <span>GA4GH DUO Compliant</span>
+          <div className="footer-sep"/>
+          <span>HIPAA Ready</span>
+          <div className="footer-sep"/>
+          <span>ISO 27001</span>
+          <div className="footer-sep"/>
+          <span>OMOP CDM v5.4</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Placeholder for next screens ─── */
+const Placeholder = ({ title, onBack }) => (
+  <div style={{
+    height:"100vh",
+    background:"linear-gradient(160deg, #0A1E38 0%, #0D2440 100%)",
+    display:"flex", alignItems:"center", justifyContent:"center",
+    flexDirection:"column", gap:"16px", fontFamily:"'DM Sans',sans-serif",
+  }}>
+    <div style={{
+      background:"rgba(13,148,136,0.12)", border:"1px solid rgba(13,148,136,0.3)",
+      borderRadius:"12px", padding:"40px 56px", textAlign:"center",
+    }}>
+      <div style={{ fontSize:"28px", fontWeight:"700", color:"#fff", marginBottom:"8px" }}>{title}</div>
+      <div style={{ fontSize:"14px", color:"rgba(255,255,255,0.4)", marginBottom:"28px" }}>Coming up next</div>
+      <button
+        onClick={onBack}
+        style={{
+          background:"transparent", border:"1px solid rgba(13,148,136,0.4)",
+          borderRadius:"8px", padding:"9px 20px",
+          color:"#2DD4BF", fontSize:"13px", fontWeight:"600",
+          cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
+        }}
+      >← Back to landing</button>
+    </div>
+  </div>
+);
+
+/* ─── App Router ─── */
+const App = () => {
+  const navigate = (side) => {
+    if (side === "hospital") window.location.href = "screen1a_hospital.html";
+    if (side === "pharma")   window.location.href = "screen1b_pharma.html";
+  };
+  return <Screen0 onNavigate={navigate}/>;
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

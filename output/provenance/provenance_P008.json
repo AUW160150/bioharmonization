@@ -1,0 +1,332 @@
+{
+  "patient_id": "P008",
+  "language_detected": "hindi",
+  "entities": {
+    "demographics": {
+      "name": {
+        "original_text": "सुनीता देवी",
+        "language": "hindi",
+        "standardized_english_term": "Sunita Devi",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.98,
+        "reasoning": "Hindi name transliterated to English. No clinical coding required for patient name.",
+        "flag": null
+      },
+      "age": {
+        "original_text": "63 वर्ष",
+        "language": "hindi",
+        "standardized_english_term": "63 years",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'वर्ष' is Hindi for 'years'. Age is 63 years.",
+        "flag": null
+      },
+      "sex": {
+        "original_text": "महिला",
+        "language": "hindi",
+        "standardized_english_term": "Female",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'महिला' is Hindi for 'female'.",
+        "flag": null
+      }
+    },
+    "diagnoses": [
+      {
+        "original_text": "टाइप 2 मधुमेह (8 वर्ष)",
+        "language": "hindi",
+        "standardized_english_term": "Type 2 Diabetes Mellitus (8 years duration)",
+        "icd10_code": "E11.9",
+        "omop_concept_id": "201826",
+        "confidence": 0.98,
+        "reasoning": "'टाइप 2 मधुमेह' is a direct Hindi transliteration/translation of 'Type 2 Diabetes Mellitus'. Duration of 8 years noted. Maps clearly to ICD-10 E11.9.",
+        "flag": null
+      },
+      {
+        "original_text": "उच्च रक्तचाप (नियंत्रित)",
+        "language": "hindi",
+        "standardized_english_term": "Hypertension (controlled)",
+        "icd10_code": "I10",
+        "omop_concept_id": "320128",
+        "confidence": 0.98,
+        "reasoning": "'उच्च रक्तचाप' literally means 'high blood pressure' in Hindi, mapping to essential hypertension. Noted as controlled.",
+        "flag": null
+      },
+      {
+        "original_text": "कोरोनरी आर्टरी डिजीज (2022 में Angioplasty)",
+        "language": "mixed",
+        "standardized_english_term": "Coronary Artery Disease (status post angioplasty 2022)",
+        "icd10_code": "I25.10",
+        "omop_concept_id": "317576",
+        "confidence": 0.97,
+        "reasoning": "'कोरोनरी आर्टरी डिजीज' is a Hindi transliteration of 'Coronary Artery Disease'. History of angioplasty in 2022 confirms established CAD. Maps to ICD-10 I25.10.",
+        "flag": null
+      }
+    ],
+    "medications": [
+      {
+        "original_text": "मेटफॉर्मिन 1000 मिग्रा — दो बार",
+        "language": "hindi",
+        "standardized_english_term": "Metformin 1000 mg twice daily",
+        "icd10_code": null,
+        "omop_concept_id": "1503297",
+        "confidence": 0.99,
+        "reasoning": "'मेटफॉर्मिन' is Hindi transliteration of 'Metformin'. 'मिग्रा' = mg. 'दो बार' = twice daily.",
+        "flag": null
+      },
+      {
+        "original_text": "सीताग्लिप्टिन 100 मिग्रा — एक बार",
+        "language": "hindi",
+        "standardized_english_term": "Sitagliptin 100 mg once daily",
+        "icd10_code": null,
+        "omop_concept_id": "1580747",
+        "confidence": 0.99,
+        "reasoning": "'सीताग्लिप्टिन' is Hindi transliteration of 'Sitagliptin'. 'एक बार' = once daily.",
+        "flag": null
+      },
+      {
+        "original_text": "अम्लोदिपिन 10 मिग्रा — सुबह",
+        "language": "hindi",
+        "standardized_english_term": "Amlodipine 10 mg once daily (morning)",
+        "icd10_code": null,
+        "omop_concept_id": "1332418",
+        "confidence": 0.99,
+        "reasoning": "'अम्लोदिपिन' is Hindi transliteration of 'Amlodipine'. 'सुबह' = morning.",
+        "flag": null
+      },
+      {
+        "original_text": "टेल्मिसार्टन 80 मिग्रा — सुबह",
+        "language": "hindi",
+        "standardized_english_term": "Telmisartan 80 mg once daily (morning)",
+        "icd10_code": null,
+        "omop_concept_id": "1317640",
+        "confidence": 0.99,
+        "reasoning": "'टेल्मिसार्टन' is Hindi transliteration of 'Telmisartan'. 'सुबह' = morning.",
+        "flag": null
+      },
+      {
+        "original_text": "एटोरवास्टेटिन 40 मिग्रा — रात को",
+        "language": "hindi",
+        "standardized_english_term": "Atorvastatin 40 mg once daily (at night)",
+        "icd10_code": null,
+        "omop_concept_id": "1545958",
+        "confidence": 0.99,
+        "reasoning": "'एटोरवास्टेटिन' is Hindi transliteration of 'Atorvastatin'. 'रात को' = at night.",
+        "flag": null
+      },
+      {
+        "original_text": "क्लोपिडोग्रेल 75 मिग्रा — सुबह",
+        "language": "hindi",
+        "standardized_english_term": "Clopidogrel 75 mg once daily (morning)",
+        "icd10_code": null,
+        "omop_concept_id": "1322184",
+        "confidence": 0.99,
+        "reasoning": "'क्लोपिडोग्रेल' is Hindi transliteration of 'Clopidogrel'. Part of dual antiplatelet therapy post-angioplasty.",
+        "flag": null
+      },
+      {
+        "original_text": "एस्पिरिन 75 मिग्रा — सुबह (dual antiplatelet)",
+        "language": "mixed",
+        "standardized_english_term": "Aspirin 75 mg once daily (morning)",
+        "icd10_code": null,
+        "omop_concept_id": "1112807",
+        "confidence": 0.99,
+        "reasoning": "'एस्पिरिन' is Hindi transliteration of 'Aspirin'. Given as part of dual antiplatelet therapy (DAPT) with clopidogrel post-angioplasty.",
+        "flag": null
+      }
+    ],
+    "vitals": [
+      {
+        "original_text": "रक्तचाप: 128/78 mmHg (नियंत्रित)",
+        "language": "hindi",
+        "standardized_english_term": "Systolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3004249",
+        "loinc_code": "8480-6",
+        "value": 128,
+        "unit": "mmHg",
+        "reference_range": "<130",
+        "interpretation": "Within target for hypertension control",
+        "confidence": 0.99,
+        "reasoning": "'रक्तचाप' = blood pressure. Systolic component 128 mmHg is within the reference range of <130 mmHg. Described as 'नियंत्रित' (controlled).",
+        "flag": null
+      },
+      {
+        "original_text": "रक्तचाप: 128/78 mmHg (नियंत्रित)",
+        "language": "hindi",
+        "standardized_english_term": "Diastolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3012888",
+        "loinc_code": "8462-4",
+        "value": 78,
+        "unit": "mmHg",
+        "reference_range": "<80",
+        "interpretation": "Within target for hypertension control",
+        "confidence": 0.99,
+        "reasoning": "Diastolic component 78 mmHg extracted from the blood pressure reading. Within the reference range of <80 mmHg.",
+        "flag": null
+      },
+      {
+        "original_text": "हृदय गति: 74/मिनट",
+        "language": "hindi",
+        "standardized_english_term": "Heart Rate",
+        "icd10_code": null,
+        "omop_concept_id": "3027018",
+        "loinc_code": "8867-4",
+        "value": 74,
+        "unit": "bpm",
+        "reference_range": "60-100",
+        "interpretation": "Normal",
+        "confidence": 0.99,
+        "reasoning": "'हृदय गति' = heart rate. 74 beats per minute is within normal range.",
+        "flag": null
+      },
+      {
+        "original_text": "वजन: 66 किग्रा",
+        "language": "hindi",
+        "standardized_english_term": "Body Weight",
+        "icd10_code": null,
+        "omop_concept_id": "3025315",
+        "loinc_code": "29463-7",
+        "value": 66,
+        "unit": "kg",
+        "reference_range": null,
+        "interpretation": null,
+        "confidence": 0.99,
+        "reasoning": "'वजन' = weight, 'किग्रा' = kg. Body weight is 66 kg.",
+        "flag": null
+      },
+      {
+        "original_text": "BMI: 27.1",
+        "language": "english",
+        "standardized_english_term": "Body Mass Index",
+        "icd10_code": null,
+        "omop_concept_id": "3038553",
+        "loinc_code": "39156-5",
+        "value": 27.1,
+        "unit": "kg/m2",
+        "reference_range": "18.5-24.9",
+        "interpretation": "Overweight (BMI 25.0-29.9)",
+        "confidence": 0.99,
+        "reasoning": "BMI of 27.1 kg/m2 indicates overweight status. Consistent with the weight of 66 kg in a 63-year-old female.",
+        "flag": null
+      }
+    ],
+    "lab_values": [
+      {
+        "original_text": "HbA1c: 7.4% (लक्ष्य के करीब)",
+        "language": "mixed",
+        "standardized_english_term": "HbA1c",
+        "icd10_code": null,
+        "omop_concept_id": "3004410",
+        "loinc_code": "4548-4",
+        "value": 7.4,
+        "unit": "%",
+        "reference_range": "<7.0",
+        "interpretation": "Above target; 'लक्ष्य के करीब' means 'close to target' but still above the standard <7.0% threshold",
+        "confidence": 0.99,
+        "reasoning": "HbA1c of 7.4% is above the reference of <7.0%. The Hindi note says 'close to target' indicating near-goal glycaemic control.",
+        "flag": null
+      },
+      {
+        "original_text": "उपवास ग्लूकोज: 8.1 mmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Fasting Blood Glucose",
+        "icd10_code": null,
+        "omop_concept_id": "3004501",
+        "loinc_code": "76629-5",
+        "value": 8.1,
+        "unit": "mmol/L",
+        "reference_range": "3.9-5.5",
+        "interpretation": "Elevated; above reference range, consistent with diabetes",
+        "confidence": 0.98,
+        "reasoning": "'उपवास ग्लूकोज' = fasting glucose. Value of 8.1 mmol/L is significantly above the reference range of 3.9-5.5 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "LDL: 1.8 mmol/L (लक्ष्य प्राप्त)",
+        "language": "mixed",
+        "standardized_english_term": "LDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3028437",
+        "loinc_code": "2089-1",
+        "value": 1.8,
+        "unit": "mmol/L",
+        "reference_range": "<1.4 (post-ACS)",
+        "interpretation": "Above post-ACS target of <1.4 mmol/L per guidelines, though clinical note states 'लक्ष्य प्राप्त' (target achieved). May warrant review given post-angioplasty status.",
+        "confidence": 0.95,
+        "reasoning": "'लक्ष्य प्राप्त' = target achieved. However, the CSV reference indicates <1.4 mmol/L for post-ACS patients. LDL 1.8 exceeds this stricter secondary prevention target. Flagging for review.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "HDL_mmol_L: 1.2",
+        "language": "english",
+        "standardized_english_term": "HDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3007070",
+        "loinc_code": "2085-9",
+        "value": 1.2,
+        "unit": "mmol/L",
+        "reference_range": ">1.2 (Female)",
+        "interpretation": "Borderline; at the lower limit of the reference range for females",
+        "confidence": 0.97,
+        "reasoning": "HDL of 1.2 mmol/L is at the threshold of the female reference range (>1.2). Available only from the CSV data.",
+        "flag": null
+      },
+      {
+        "original_text": "क्रिएटिनिन: 88 µmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Serum Creatinine",
+        "icd10_code": null,
+        "omop_concept_id": "3016723",
+        "loinc_code": "2160-0",
+        "value": 88,
+        "unit": "µmol/L",
+        "reference_range": "44-97",
+        "interpretation": "Within reference range",
+        "confidence": 0.99,
+        "reasoning": "'क्रिएटिनिन' is Hindi transliteration of 'Creatinine'. Value 88 µmol/L is within the reference range of 44-97.",
+        "flag": null
+      },
+      {
+        "original_text": "eGFR: 62",
+        "language": "english",
+        "standardized_english_term": "Estimated Glomerular Filtration Rate (eGFR)",
+        "icd10_code": null,
+        "omop_concept_id": "3049187",
+        "loinc_code": "62238-1",
+        "value": 62,
+        "unit": "mL/min/1.73m2",
+        "reference_range": ">60",
+        "interpretation": "Borderline; just above the threshold of 60, suggestive of mildly decreased kidney function. Close to CKD Stage 3a boundary.",
+        "confidence": 0.98,
+        "reasoning": "eGFR of 62 mL/min/1.73m2 is just above the >60 reference threshold. In a diabetic patient, this warrants monitoring for progression of kidney disease.",
+        "flag": "needs_review"
+      }
+    ],
+    "variants": []
+  },
+  "flags": [
+    "LDL 1.8 mmol/L exceeds post-ACS target of <1.4 mmol/L despite clinical note stating target achieved — consider intensifying lipid-lowering therapy (e.g., adding ezetimibe or switching to higher-potency statin)",
+    "eGFR 62 is borderline — close to CKD Stage 3a; recommend serial monitoring given diabetes and CAD comorbidities",
+    "HbA1c 7.4% above standard target of <7.0% — consider therapy adjustment or tighter glycaemic control",
+    "BMI 27.1 indicates overweight status — lifestyle modification should be reinforced",
+    "Patient on dual antiplatelet therapy (DAPT) — assess duration appropriateness given angioplasty was in 2022 (approx 2 years prior)"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "clinical_note_P008_hindi.txt",
+      "lab_results_P008.csv"
+    ],
+    "total_entities": 22,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "timestamp": "2026-03-08T21:48:25.460184Z",
+    "input_tokens": 2985,
+    "output_tokens": 4808
+  }
+}

@@ -1,0 +1,14 @@
+##fileformat=VCFv4.2
+##fileDate=20240115
+##source=BioHarmonize_SyntheticGen_v1.0
+##reference=GRCh38
+##INFO=<ID=GENE,Number=1,Type=String,Description="Gene name">
+##INFO=<ID=CLNSIG,Number=1,Type=String,Description="Clinical significance">
+##INFO=<ID=AF_SAS,Number=1,Type=Float,Description="Allele frequency in South Asian population">
+##INFO=<ID=PHENOTYPE,Number=1,Type=String,Description="Associated phenotype">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	P007
+9	22125503	rs2383206	G	A	.	PASS	GENE=CDKN2A_CDKN2B;CLNSIG=risk_factor;AF_SAS=0.52;PHENOTYPE=Myocardial_Infarction	GT	1/1
+1	55505689	rs11206510	T	C	.	PASS	GENE=PCSK9;CLNSIG=risk_factor;AF_SAS=0.18;PHENOTYPE=LDL_Cholesterol_MI	GT	1/1
+10	114758349	rs7903146	C	T	.	PASS	GENE=TCF7L2;CLNSIG=risk_factor;AF_SAS=0.28;PHENOTYPE=Type_2_Diabetes	GT	0/1
+13	111348196	rs8050136	C	A	.	PASS	GENE=FTO;CLNSIG=risk_factor;AF_SAS=0.22;PHENOTYPE=Obesity_T2D_risk	GT	0/1

@@ -1,0 +1,231 @@
+{
+  "patient_id": "P006",
+  "language_detected": "bengali",
+  "entities": {
+    "demographics": {
+      "name": {
+        "original_text": "প্রিয়া ব্যানার্জি",
+        "language": "bengali",
+        "standardized_english_term": "Priya Banerjee",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.95,
+        "reasoning": "Bengali name transliterated to English. 'প্রিয়া' = Priya, 'ব্যানার্জি' = Banerjee.",
+        "flag": null
+      },
+      "age": {
+        "original_text": "৪৯ বছর",
+        "language": "bengali",
+        "standardized_english_term": "49 years",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "Bengali numeral ৪৯ = 49, বছর = years.",
+        "flag": null
+      },
+      "sex": {
+        "original_text": "মহিলা",
+        "language": "bengali",
+        "standardized_english_term": "Female",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'মহিলা' is the Bengali term for female/woman.",
+        "flag": null
+      }
+    },
+    "diagnoses": [
+      {
+        "original_text": "টাইপ ২ ডায়াবেটিস (প্রাক-পর্যায় থেকে রূপান্তর, ৩ বছর)",
+        "language": "bengali",
+        "standardized_english_term": "Type 2 Diabetes Mellitus (converted from pre-diabetes, 3 years duration)",
+        "icd10_code": "E11.9",
+        "omop_concept_id": "201826",
+        "confidence": 0.95,
+        "reasoning": "'টাইপ ২ ডায়াবেটিস' directly translates to Type 2 Diabetes. The note mentions conversion from pre-diabetes stage ('প্রাক-পর্যায়') over 3 years, confirming established T2DM. Maps to ICD-10 E11.9 and OMOP 201826.",
+        "flag": null
+      },
+      {
+        "original_text": "মিশ্র ডিসলিপিডেমিয়া",
+        "language": "bengali",
+        "standardized_english_term": "Mixed Dyslipidemia",
+        "icd10_code": "E78.5",
+        "omop_concept_id": "432867",
+        "confidence": 0.97,
+        "reasoning": "'মিশ্র' = mixed, 'ডিসলিপিডেমিয়া' = dyslipidemia. Direct phonetic transliteration from English to Bengali. Maps to ICD-10 E78.5 and OMOP 432867.",
+        "flag": null
+      }
+    ],
+    "medications": [
+      {
+        "original_text": "মেটফর্মিন ৫০০ মিগ্রা — দিনে একবার (সকালে)",
+        "language": "bengali",
+        "standardized_english_term": "Metformin 500 mg once daily (morning)",
+        "icd10_code": null,
+        "omop_concept_id": "1503297",
+        "confidence": 0.98,
+        "reasoning": "'মেটফর্মিন' is the Bengali phonetic transliteration of Metformin. ৫০০ মিগ্রা = 500 mg, দিনে একবার = once daily, সকালে = morning. Maps to OMOP 1503297.",
+        "flag": null
+      },
+      {
+        "original_text": "অ্যাটোরভাস্টাটিন ২০ মিগ্রা — রাতে",
+        "language": "bengali",
+        "standardized_english_term": "Atorvastatin 20 mg at night",
+        "icd10_code": null,
+        "omop_concept_id": "1545958",
+        "confidence": 0.98,
+        "reasoning": "'অ্যাটোরভাস্টাটিন' is the Bengali phonetic transliteration of Atorvastatin. ২০ মিগ্রা = 20 mg, রাতে = at night. Maps to OMOP 1545958.",
+        "flag": null
+      },
+      {
+        "original_text": "ওমেগা-৩ ফ্যাটি অ্যাসিড ১ গ্রাম — দৈনিক",
+        "language": "bengali",
+        "standardized_english_term": "Omega-3 Fatty Acids 1 g daily",
+        "icd10_code": null,
+        "omop_concept_id": "19129655",
+        "confidence": 0.97,
+        "reasoning": "'ওমেগা-৩ ফ্যাটি অ্যাসিড' is Bengali phonetic transliteration of Omega-3 Fatty Acids. ১ গ্রাম = 1 gram, দৈনিক = daily. Maps to OMOP 19129655.",
+        "flag": null
+      }
+    ],
+    "vitals": [
+      {
+        "original_text": "রক্তচাপ: ১২৮/৮০ mmHg",
+        "language": "bengali",
+        "standardized_english_term": "Blood Pressure: 128/80 mmHg",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.98,
+        "reasoning": "'রক্তচাপ' = blood pressure. ১২৮/৮০ = 128/80. This is decomposed into systolic and diastolic components in the lab_values section.",
+        "flag": null
+      },
+      {
+        "original_text": "ওজন: ৬৮ কেজি",
+        "language": "bengali",
+        "standardized_english_term": "Body Weight: 68 kg",
+        "icd10_code": null,
+        "omop_concept_id": "3025315",
+        "confidence": 0.99,
+        "reasoning": "'ওজন' = weight, ৬৮ কেজি = 68 kg. Maps to OMOP 3025315 (Body Weight), LOINC 29463-7. Normal weight for given height.",
+        "flag": null
+      }
+    ],
+    "lab_values": [
+      {
+        "original_text": "রক্তচাপ: ১২৮ mmHg (সিস্টোলিক)",
+        "language": "bengali",
+        "standardized_english_term": "Systolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3004249",
+        "confidence": 0.98,
+        "reasoning": "Extracted systolic component from 'রক্তচাপ: ১২৮/৮০ mmHg'. Value 128 mmHg is in the pre-hypertension range (120-139 mmHg). LOINC 8480-6.",
+        "flag": null,
+        "value": 128,
+        "unit": "mmHg",
+        "loinc_code": "8480-6",
+        "reference_range_status": "borderline_high"
+      },
+      {
+        "original_text": "রক্তচাপ: ৮০ mmHg (ডায়াস্টোলিক)",
+        "language": "bengali",
+        "standardized_english_term": "Diastolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3012888",
+        "confidence": 0.98,
+        "reasoning": "Extracted diastolic component from 'রক্তচাপ: ১২৮/৮০ mmHg'. Value 80 mmHg is at the upper limit of normal. LOINC 8462-4.",
+        "flag": null,
+        "value": 80,
+        "unit": "mmHg",
+        "loinc_code": "8462-4",
+        "reference_range_status": "normal"
+      },
+      {
+        "original_text": "খালি পেটে গ্লুকোজ: ৭.৮ mmol/L",
+        "language": "bengali",
+        "standardized_english_term": "Fasting Blood Glucose",
+        "icd10_code": null,
+        "omop_concept_id": "3004501",
+        "confidence": 0.97,
+        "reasoning": "'খালি পেটে গ্লুকোজ' literally means 'empty stomach glucose' = fasting glucose. Value ৭.৮ = 7.8 mmol/L, which is above normal fasting range (≤5.5 mmol/L) and in the diabetic range (≥7.0 mmol/L), consistent with T2DM diagnosis. LOINC 76629-5.",
+        "flag": null,
+        "value": 7.8,
+        "unit": "mmol/L",
+        "loinc_code": "76629-5",
+        "reference_range_status": "above_normal"
+      },
+      {
+        "original_text": "LDL কোলেস্টেরল: ৪.১ mmol/L (লক্ষ্যমাত্রা <২.৬)",
+        "language": "mixed",
+        "standardized_english_term": "LDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3028437",
+        "confidence": 0.98,
+        "reasoning": "'LDL কোলেস্টেরল' = LDL Cholesterol (mixed English abbreviation with Bengali). Value ৪.১ = 4.1 mmol/L with target ('লক্ষ্যমাত্রা') <2.6 mmol/L. Significantly above target, indicating suboptimal lipid control. LOINC 2089-1.",
+        "flag": null,
+        "value": 4.1,
+        "unit": "mmol/L",
+        "loinc_code": "2089-1",
+        "reference_range_status": "above_target"
+      },
+      {
+        "original_text": "উচ্চতা: ১৫৮ সেমি",
+        "language": "bengali",
+        "standardized_english_term": "Height: 158 cm",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.98,
+        "reasoning": "'উচ্চতা' = height, ১৫৮ সেমি = 158 cm. Used for BMI calculation. No specific OMOP concept in the provided reference table for height.",
+        "flag": null,
+        "value": 158,
+        "unit": "cm"
+      },
+      {
+        "original_text": "BMI গণনা: ৬৮ কেজি / (১.৫৮ মি)²",
+        "language": "bengali",
+        "standardized_english_term": "BMI (calculated)",
+        "icd10_code": null,
+        "omop_concept_id": "3038553",
+        "confidence": 0.92,
+        "reasoning": "Calculated from weight 68 kg and height 158 cm: BMI = 68 / (1.58)^2 = 27.2 kg/m². This falls in the overweight category (25.0–29.9). LOINC 39156-5.",
+        "flag": null,
+        "value": 27.2,
+        "unit": "kg/m²",
+        "loinc_code": "39156-5",
+        "reference_range_status": "overweight"
+      }
+    ],
+    "variants": [],
+    "family_history": [
+      {
+        "original_text": "পারিবারিক ইতিহাস: বাবার হার্ট অ্যাটাক (৫৫ বছরে)",
+        "language": "bengali",
+        "standardized_english_term": "Family history: Father had myocardial infarction at age 55",
+        "icd10_code": "I21.9",
+        "omop_concept_id": "4329847",
+        "confidence": 0.93,
+        "reasoning": "'পারিবারিক ইতিহাস' = family history, 'বাবার' = father's, 'হার্ট অ্যাটাক' = heart attack (phonetic Bengali for English term), '৫৫ বছরে' = at 55 years. Father's MI at 55 is a significant cardiovascular risk factor, though it is just above the threshold for premature CAD in males (<55). The condition referenced is Myocardial Infarction mapped to ICD-10 I21.9 and OMOP 4329847.",
+        "flag": "needs_review"
+      }
+    ]
+  },
+  "flags": [
+    "LDL cholesterol 4.1 mmol/L is significantly above target (<2.6 mmol/L) — consider dose escalation of atorvastatin or addition of ezetimibe",
+    "Fasting glucose 7.8 mmol/L confirms diabetic range — consider HbA1c measurement for comprehensive glycemic assessment",
+    "BMI 27.2 (overweight) — lifestyle modification counseling recommended",
+    "Systolic BP 128 mmHg is in pre-hypertension range — monitor closely given diabetes and family history of MI",
+    "Family history of paternal MI at age 55 — elevated cardiovascular risk profile",
+    "Metformin dose (500 mg daily) is low starting dose — may need up-titration based on HbA1c"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "clinical_note_P006_bengali.txt"
+    ],
+    "total_entities": 16,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "timestamp": "2026-03-09T00:50:32.939842Z",
+    "input_tokens": 2702,
+    "output_tokens": 3853
+  }
+}

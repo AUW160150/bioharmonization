@@ -1,0 +1,3639 @@
+{
+  "pipeline": "BioHarmonize",
+  "version": "1.0",
+  "run_timestamp": "2026-03-08T21:52:38.357032Z",
+  "pipeline_metadata": {
+    "run_mode": "local",
+    "patients": [
+      "P001",
+      "P002",
+      "P003",
+      "P004",
+      "P005",
+      "P006",
+      "P007",
+      "P008",
+      "P009",
+      "P010"
+    ],
+    "total_duration": null
+  },
+  "patients": {
+    "P001": {
+      "patient_id": "P001",
+      "language_detected": "hindi",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P001_hindi.txt",
+          "lab_results_P001.csv",
+          "variants_P001.vcf"
+        ],
+        "total_entities": 25,
+        "low_confidence_count": 1,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:41:30.968163Z",
+        "input_tokens": 3442,
+        "output_tokens": 7439
+      },
+      "validation_summary": {
+        "entities_reviewed": 3,
+        "confirmed": 0,
+        "corrected": 2,
+        "flagged": 1
+      },
+      "flags": [
+        "HbA1c 8.6% is above target (<7.0%) — poor glycemic control, clinician considering adding SGLT2 inhibitor (e.g., Empagliflozin)",
+        "eGFR 58 mL/min/1.73m² — reduced renal function (CKD Stage 3a), requires monitoring; note SGLT2 inhibitors may provide renal protection but dosing should account for eGFR",
+        "LDL 2.8 mmol/L — above secondary prevention target of <1.8 mmol/L for post-CABG patients; consider intensifying statin therapy or adding ezetimibe",
+        "Triglycerides 3.2 mmol/L — significantly elevated (nearly 2x upper limit); consider lifestyle modification and possible pharmacotherapy",
+        "HDL 0.9 mmol/L — below normal for males; additional cardiovascular risk factor",
+        "Blood pressure 148/88 mmHg — suboptimally controlled despite Ramipril 5 mg; consider dose optimization or adding another antihypertensive",
+        "Homozygous TCF7L2 rs7903146 risk genotype — strongest genetic T2D risk factor, supports aggressive glycemic management",
+        "Homozygous CDKN2A/CDKN2B rs2383206 risk genotype — significant genetic CAD predisposition, supports aggressive secondary prevention",
+        "BMI 29.8 — obese by South Asian criteria (≥27.5 kg/m²); weight management recommended"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "टाइप 2 मधुमेह मेलिटस (12 वर्षों से)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'टाइप 2 मधुमेह मेलिटस' is a direct Hindi transliteration of 'Type 2 Diabetes Mellitus'. Duration of 12 years noted. Maps clearly to ICD-10 E11.9 and OMOP 201826."
+          },
+          {
+            "original_text": "कोरोनरी आर्टरी डिजीज (2021 में CABG किया गया)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'कोरोनरी आर्टरी डिजीज' is Hindi transliteration of 'Coronary Artery Disease'. CABG history noted in 2021. Maps to ICD-10 I25.10 and OMOP 317576."
+          },
+          {
+            "original_text": "रक्तचाप: 148/88 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I10",
+            "final_omop": "320128",
+            "final_confidence": 0.85,
+            "flag": null,
+            "reasoning": "Blood pressure reading of 148/88 mmHg exceeds the hypertension threshold (≥140/90). While not explicitly listed as a diagnosis, the elevated reading combined with current Ramipril therapy strongly suggests hypertension. Inferred diagnosis."
+          },
+          {
+            "original_text": "LDL: 2.8 mmol/L, HDL: 0.9 mmol/L, ट्राइग्लिसराइड: 3.2 mmol/L",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Mixed Dyslipidemia",
+              "icd10_code": "E78.5",
+              "omop_concept_id": "432867",
+              "confidence": 0.82,
+              "flag": null
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Hyperlipidemia, Mixed",
+              "icd10_code": "E78.49",
+              "omop_concept_id": null,
+              "confidence": 0.87,
+              "flag": null
+            },
+            "validation_reasoning": "E78.5 is 'Hyperlipidemia, unspecified' — not the correct code for a documented mixed pattern. ICD-10-CM E78.49 ('Other mixed hyperlipidemia') is the appropriate code when elevated LDL, low HDL, and elevated triglycerides are all explicitly documented. OMOP concept ID 432867 corresponds to E78.5 (unspecified), so it must be set to null pending verification of the correct concept for E78.49.",
+            "final_icd10": "E78.49",
+            "final_omop": null,
+            "final_confidence": 0.87,
+            "flag": null,
+            "reasoning": "Patient has elevated LDL (2.8 mmol/L, above 2.6 target for CAD), low HDL (0.9 mmol/L, below 1.0 for males), and significantly elevated triglycerides (3.2 mmol/L, above 1.7). This pattern of multiple lipid abnormalities indicates mixed dyslipidemia. Patient is on atorvastatin."
+          },
+          {
+            "original_text": "eGFR: 58 mL/min/1.73m², क्रिएटिनिन: 112 µmol/L",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "Chronic Kidney Disease Stage 3b",
+              "icd10_code": "N18.32",
+              "omop_concept_id": "443601",
+              "confidence": 0.8,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Chronic Kidney Disease, Stage 3a",
+              "icd10_code": "N18.31",
+              "omop_concept_id": null,
+              "confidence": 0.88,
+              "flag": null
+            },
+            "validation_reasoning": "Per KDIGO classification, CKD Stage 3a is defined as eGFR 45–59 mL/min/1.73m²; an eGFR of 58 falls squarely in this range, making N18.31 the correct code. The original mapping to N18.32 (Stage 3b, eGFR 30–44) is clinically inaccurate regardless of anticipated progression; coding must reflect the current documented value, not a projected future stage. Additionally, N18.32 is not a valid ICD-10-CM code — the correct codes are N18.31 and N18.32 only as of ICD-10-CM 2023 update, confirming N18.31 for Stage 3a. OMOP concept ID requires verification for N18.31 and is set to null.",
+            "final_icd10": "N18.31",
+            "final_omop": null,
+            "final_confidence": 0.88,
+            "flag": null,
+            "reasoning": "eGFR of 58 mL/min/1.73m² falls within the CKD Stage 3a range (45-59). Elevated creatinine at 112 µmol/L supports renal impairment. With 12-year diabetes history and CAD, diabetic nephropathy is likely. Mapped to Stage 3b as closest available code; clinical note recommends eGFR monitoring suggesting concern about progression."
+          },
+          {
+            "original_text": "BMI: 29.8",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Obesity (BMI 29.8 — borderline)",
+              "icd10_code": "E66.9",
+              "omop_concept_id": "433736",
+              "confidence": 0.65,
+              "flag": "low_confidence"
+            },
+            "validation_status": "flagged",
+            "corrected_mapping": null,
+            "validation_reasoning": "The correct classification depends on the coding standard applied: under standard WHO criteria (BMI ≥30 = obesity), this BMI of 29.8 maps to overweight (E66 is inappropriate; Z68.29 or E66 should not be assigned); under WHO Asia-Pacific/South Asian criteria (BMI ≥27.5 = obesity), E66.9 may be defensible. ICD-10-CM does not have a separate code for South Asian BMI thresholds, and clinical documentation must explicitly support the obesity diagnosis — clinician confirmation of the applicable population-specific threshold and a formal obesity diagnosis in the medical record is required before any obesity code can be assigned.",
+            "final_icd10": "E66.9",
+            "final_omop": "433736",
+            "final_confidence": 0.65,
+            "flag": "low_confidence",
+            "reasoning": "BMI of 29.8 is just below the WHO obesity threshold of 30.0 (overweight category 25-29.9). However, for South Asian populations, WHO recommends lower BMI cutoffs — a BMI ≥27.5 is considered obese. Under South Asian criteria this qualifies as obesity. Flagged due to borderline value."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "मेटफॉर्मिन 1000 मिग्रा — दिन में दो बार (सुबह-शाम, भोजन के साथ)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'मेटफॉर्मिन' is Hindi transliteration of 'Metformin'. Dose 1000 mg ('मिग्रा' = mg), frequency 'दिन में दो बार' = twice daily, with meals."
+          },
+          {
+            "original_text": "एटोरवास्टेटिन 40 मिग्रा — रात को सोते समय",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1545958",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'एटोरवास्टेटिन' is Hindi transliteration of 'Atorvastatin'. Dose 40 mg, taken at bedtime ('रात को सोते समय')."
+          },
+          {
+            "original_text": "एस्पिरिन 75 मिग्रा — प्रतिदिन सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1112807",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'एस्पिरिन' is Hindi transliteration of 'Aspirin'. Dose 75 mg, 'प्रतिदिन सुबह' = daily in the morning. Low-dose aspirin for secondary cardiovascular prevention post-CABG."
+          },
+          {
+            "original_text": "रामिप्रिल 5 मिग्रा — रात को",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1308216",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'रामिप्रिल' is Hindi transliteration of 'Ramipril'. Dose 5 mg, 'रात को' = at night. ACE inhibitor for cardio-renal protection."
+          },
+          {
+            "original_text": "ग्लिमेपिराइड 2 मिग्रा — नाश्ते से पहले",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1597756",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'ग्लिमेपिराइड' is Hindi transliteration of 'Glimepiride'. Dose 2 mg, 'नाश्ते से पहले' = before breakfast. Sulfonylurea for glycemic control."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "रक्तचाप: 148/88 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": null,
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'रक्तचाप' means 'blood pressure' in Hindi. Decomposed into systolic and diastolic components below."
+          },
+          {
+            "original_text": "हृदय गति: 72 बार/मिनट",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'हृदय गति' means 'heart rate' in Hindi. '72 बार/मिनट' = 72 beats per minute. Normal resting heart rate."
+          },
+          {
+            "original_text": "वजन: 84 किग्रा",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'वजन' means 'weight' in Hindi. '84 किग्रा' = 84 kg."
+          },
+          {
+            "original_text": "BMI: 29.8",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3038553",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "BMI directly stated as 29.8. Verified: 84 / (1.68^2) ≈ 29.76, consistent with reported value."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "उपवास रक्त शर्करा: 9.4 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'उपवास रक्त शर्करा' translates to 'fasting blood sugar/glucose' in Hindi. Value 9.4 mmol/L is well above the reference upper limit of 5.5."
+          },
+          {
+            "original_text": "HbA1c: 8.6%",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "HbA1c is written in English within the Hindi note. Value of 8.6% clearly exceeds the diabetic target of <7.0%."
+          },
+          {
+            "original_text": "कुल कोलेस्ट्रॉल: 5.1 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'कुल कोलेस्ट्रॉल' translates to 'total cholesterol' in Hindi. Value 5.1 is within the stated reference range of <5.2."
+          },
+          {
+            "original_text": "LDL: 2.8 mmol/L",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "LDL written in English. Value 2.8 mmol/L exceeds the stated reference of <2.6 and is considerably above guideline-directed targets for secondary prevention."
+          },
+          {
+            "original_text": "HDL: 0.9 mmol/L",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "HDL written in English. Value 0.9 mmol/L is below the male reference threshold of >1.0."
+          },
+          {
+            "original_text": "ट्राइग्लिसराइड: 3.2 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3022192",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'ट्राइग्लिसराइड' is Hindi transliteration of 'Triglyceride'. Value 3.2 mmol/L is markedly above reference of <1.7."
+          },
+          {
+            "original_text": "क्रिएटिनिन: 112 µmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'क्रिएटिनिन' is Hindi transliteration of 'Creatinine'. Value 112 µmol/L exceeds the upper reference limit of 106."
+          },
+          {
+            "original_text": "eGFR: 58 mL/min/1.73m²",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3049187",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "eGFR written in English. Value 58 is below the reference threshold of >60, indicating mildly to moderately reduced kidney function."
+          }
+        ],
+        "variants": [
+          {
+            "original_text": "rsID=rs7903146  GENE=TCF7L2  GT=1/1  CLNSIG=risk_factor  AF_SAS=0.28  PHENOTYPE=Type_2_Diabetes",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "rs7903146 in TCF7L2 is one of the strongest known genetic risk factors for T2D. Homozygous (1/1) genotype confers highest risk. South Asian allele frequency of 0.28 is notable. Phenotype maps directly to Type 2 Diabetes Mellitus (OMOP 201826)."
+          },
+          {
+            "original_text": "rsID=rs1801282  GENE=PPARG  GT=0/1  CLNSIG=protective  AF_SAS=0.04  PHENOTYPE=Type_2_Diabetes_T2D",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.93,
+            "flag": null,
+            "reasoning": "rs1801282 in PPARG (Pro12Ala polymorphism) is a well-known protective variant against T2D. Heterozygous (0/1) genotype confers partial protective effect. Low South Asian allele frequency (0.04) is consistent with known population data. Despite protective status, patient still developed T2D, likely due to TCF7L2 homozygous risk and other factors."
+          },
+          {
+            "original_text": "rsID=rs2383206  GENE=CDKN2A_CDKN2B  GT=1/1  CLNSIG=risk_factor  AF_SAS=0.52  PHENOTYPE=Coronary_Artery_Disease",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.93,
+            "flag": null,
+            "reasoning": "rs2383206 at the 9p21 locus (CDKN2A/CDKN2B) is a well-established GWAS risk locus for CAD. Homozygous risk genotype (1/1) is consistent with patient's established CAD requiring CABG. High South Asian allele frequency (0.52) contributes to the elevated CAD burden in this population."
+          },
+          {
+            "original_text": "rsID=rs11206510  GENE=PCSK9  GT=0/1  CLNSIG=risk_factor  AF_SAS=0.18  PHENOTYPE=LDL_Cholesterol_CAD",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E78.00",
+            "final_omop": "432867",
+            "final_confidence": 0.88,
+            "flag": null,
+            "reasoning": "rs11206510 in PCSK9 is associated with LDL cholesterol levels and CAD risk. Heterozygous genotype (0/1). Phenotype involves both LDL cholesterol regulation and CAD susceptibility. Mapped to hypercholesterolaemia (OMOP 432867) as the primary lipid phenotype; CAD is already captured separately."
+          }
+        ]
+      }
+    },
+    "P002": {
+      "patient_id": "P002",
+      "language_detected": "bengali",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P002_bengali.txt",
+          "lab_results_P002.csv"
+        ],
+        "total_entities": 21,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "needs_review_count": 2,
+        "timestamp": "2026-03-08T21:42:28.729419Z",
+        "input_tokens": 3173,
+        "output_tokens": 5549
+      },
+      "validation_summary": {
+        "entities_reviewed": 2,
+        "confirmed": 0,
+        "corrected": 2,
+        "flagged": 0
+      },
+      "flags": [
+        "Poorly controlled Type 2 Diabetes: HbA1c 9.8% and FBG 11.2 mmol/L — physician notes insulin therapy consideration",
+        "Uncontrolled hypertension: BP 158/96 mmHg despite amlodipine 5 mg",
+        "Mixed dyslipidemia: all lipid parameters abnormal — no statin currently prescribed",
+        "Early renal impairment: eGFR 54, creatinine 102 — CKD Stage 3a; Metformin dose should be reviewed given renal function",
+        "BMI 29.9 — obese by South Asian criteria (≥27.5), borderline by WHO standard criteria (≥30)",
+        "No statin therapy prescribed despite diabetes with dyslipidemia — potential treatment gap"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "টাইপ ২ ডায়াবেটিস মেলিটাস (৬ বছর ধরে)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'টাইপ ২ ডায়াবেটিস মেলিটাস' is a direct Bengali transliteration of 'Type 2 Diabetes Mellitus'. Duration of 6 years noted. Maps clearly to ICD-10 E11.9 and OMOP 201826."
+          },
+          {
+            "original_text": "উচ্চ রক্তচাপ (নিয়ন্ত্রণে নেই)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I10",
+            "final_omop": "320128",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'উচ্চ রক্তচাপ' literally means 'high blood pressure' in Bengali. 'নিয়ন্ত্রণে নেই' means 'not under control'. BP reading of 158/96 confirms uncontrolled status. Maps to ICD-10 I10 and OMOP 320128."
+          },
+          {
+            "original_text": "ক্রিয়েটিনিন_umol: 102, eGFR_ml_min: 54",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "Chronic Kidney Disease Stage 3b",
+              "icd10_code": "N18.32",
+              "omop_concept_id": "443601",
+              "confidence": 0.88,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Chronic Kidney Disease Stage 3a",
+              "icd10_code": "N18.31",
+              "omop_concept_id": null,
+              "confidence": 0.92,
+              "flag": null
+            },
+            "validation_reasoning": "Per KDIGO 2012 CKD classification, eGFR of 54 mL/min/1.73m² falls strictly within Stage G3a (45–59 mL/min/1.73m²), not Stage G3b (30–44). ICD-10-CM differentiates these: N18.31 = CKD Stage 3a, N18.32 = CKD Stage 3b; the original mapping to N18.32 is therefore incorrect. OMOP concept ID for N18.31 is not confirmed and set to null to avoid error.",
+            "final_icd10": "N18.31",
+            "final_omop": null,
+            "final_confidence": 0.92,
+            "flag": null,
+            "reasoning": "eGFR of 54 mL/min/1.73m² falls within CKD Stage 3a (45-59) range. Serum creatinine is also elevated at 102 µmol/L (above ref 44-97). Strictly 45-59 is Stage 3a, but the reference table only provides Stage 3b mapping. Mapping to CKD Stage 3b per available codes, but this may actually be Stage 3a — flagged for review."
+          },
+          {
+            "original_text": "মোট_কোলেস্টেরল_mmol: 6.2, ট্রাইগ্লিসারাইড_mmol: 2.9, HDL_mmol: 0.8, LDL_mmol: 4.1",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E78.5",
+            "final_omop": "432867",
+            "final_confidence": 0.92,
+            "flag": null,
+            "reasoning": "All lipid parameters are abnormal: total cholesterol 6.2 (ref <5.2), triglycerides 2.9 (ref <1.7), HDL 0.8 (ref >1.2 for females), LDL 4.1 (ref <2.6). Elevated cholesterol, triglycerides, and low HDL together constitute mixed dyslipidemia. Maps to ICD-10 E78.5 and OMOP 432867."
+          },
+          {
+            "original_text": "BMI: ২৯.৯",
+            "language": "bengali",
+            "original_mapping": {
+              "standardized_english_term": "Obesity",
+              "icd10_code": "E66.9",
+              "omop_concept_id": "433736",
+              "confidence": 0.85,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Overweight",
+              "icd10_code": "E66.09",
+              "omop_concept_id": null,
+              "confidence": 0.72,
+              "flag": "needs_review"
+            },
+            "validation_reasoning": "Under standard WHO global criteria, BMI 29.9 kg/m² classifies as Overweight (25.0–29.9), coded E66.09 or more appropriately Z68.29 (BMI 29.0–29.9); the South Asian re-threshold (≥27.5 = obese) is not universally adopted in ICD-10-CM coding practice and requires explicit clinical documentation of ethnicity-adjusted criteria before coding as Obesity (E66.9). Flagged for clinician confirmation of which threshold was applied.",
+            "final_icd10": "E66.09",
+            "final_omop": null,
+            "final_confidence": 0.72,
+            "flag": "needs_review",
+            "reasoning": "BMI of 29.9 is at the upper boundary of overweight (25-29.9) per WHO criteria. For South Asian populations, WHO recommends lower thresholds where BMI ≥27.5 is considered obese. Mapping as obesity per South Asian criteria, but flagging as borderline."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "মেটফর্মিন ৫০০ মিগ্রা — দিনে দুইবার (সকাল ও রাতে খাবারের সাথে)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'মেটফর্মিন' is a direct Bengali transliteration of 'Metformin'. ৫০০ মিগ্রা = 500 mg. 'দিনে দুইবার' = twice daily. 'সকাল ও রাতে খাবারের সাথে' = with morning and evening meals. Maps to OMOP 1503297."
+          },
+          {
+            "original_text": "অ্যামলোডিপিন ৫ মিগ্রা — প্রতিদিন একবার",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1332418",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'অ্যামলোডিপিন' is a direct Bengali transliteration of 'Amlodipine'. ৫ মিগ্রা = 5 mg. 'প্রতিদিন একবার' = once daily. Maps to OMOP 1332418."
+          },
+          {
+            "original_text": "গ্লাইক্লাজাইড ৮০ মিগ্রা — সকালে খাবারের আগে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1516766",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'গ্লাইক্লাজাইড' is the Bengali transliteration of 'Gliclazide'. ৮০ মিগ্রা = 80 mg. 'সকালে খাবারের আগে' = before morning meal. Maps to OMOP 1516766 (Gliclazide/Glyclazide)."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "রক্তচাপ: ১৫৮/৯৬ মিমিএইচজি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'রক্তচাপ' = blood pressure. ১৫৮ = 158 (systolic component). 'মিমিএইচজি' = mmHg. Value 158 mmHg is above the hypertension threshold of 140 mmHg, confirming uncontrolled hypertension."
+          },
+          {
+            "original_text": "রক্তচাপ: ১৫৮/৯৬ মিমিএইচজি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "Diastolic component of the blood pressure reading. ৯৬ = 96 mmHg. Value 96 mmHg exceeds the normal threshold of 90 mmHg, consistent with uncontrolled hypertension."
+          },
+          {
+            "original_text": "নাড়ির গতি: ৮৮ বার/মিনিট",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'নাড়ির গতি' literally means 'pulse rate' in Bengali. ৮৮ বার/মিনিট = 88 beats per minute. Within normal range (60-100 bpm)."
+          },
+          {
+            "original_text": "ওজন: ৭২ কেজি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'ওজন' = weight. ৭২ কেজি = 72 kg. Maps to Body Weight OMOP 3025315."
+          },
+          {
+            "original_text": "BMI: ২৯.৯",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3038553",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "BMI is an English abbreviation used directly in Bengali text. ২৯.৯ = 29.9 kg/m². Calculated from weight 72 kg and height 155 cm (72/(1.55²) ≈ 29.97). Above normal range, classifying as overweight/obese."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "খালি পেটে রক্ত শর্করা: ১১.২ mmol/L (স্বাভাবিক: ৩.৯–৫.৫)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'খালি পেটে রক্ত শর্করা' literally means 'empty stomach blood sugar' = fasting blood glucose. ১১.২ = 11.2 mmol/L, significantly above the reference range of 3.9-5.5, indicating poorly controlled diabetes."
+          },
+          {
+            "original_text": "HbA1c: ৯.৮%",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "HbA1c is used directly in the Bengali clinical note. ৯.৮% = 9.8%, well above the target of <7.0%, indicating very poor glycemic control. Consistent with physician's note about considering insulin therapy."
+          },
+          {
+            "original_text": "মোট কোলেস্টেরল: ৬.২ mmol/L",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'মোট কোলেস্টেরল' = total cholesterol. ৬.২ = 6.2 mmol/L, above the reference range of <5.2 mmol/L, indicating hypercholesterolemia."
+          },
+          {
+            "original_text": "ট্রাইগ্লিসারাইড_mmol: 2.9",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3022192",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'ট্রাইগ্লিসারাইড' is the Bengali transliteration of 'Triglyceride'. Value 2.9 mmol/L is significantly above the reference range of <1.7 mmol/L, indicating hypertriglyceridemia."
+          },
+          {
+            "original_text": "HDL_mmol: 0.8",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "HDL cholesterol at 0.8 mmol/L is below the female reference threshold of >1.2 mmol/L, indicating low HDL — a cardiovascular risk factor."
+          },
+          {
+            "original_text": "LDL_mmol: 4.1",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "LDL cholesterol at 4.1 mmol/L is significantly above the reference of <2.6 mmol/L. This is a high cardiovascular risk level, especially in a diabetic patient."
+          },
+          {
+            "original_text": "ক্রিয়েটিনিন_umol: 102",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'ক্রিয়েটিনিন' is the Bengali transliteration of 'creatinine'. Value 102 µmol/L is above the reference range of 44-97, suggesting mild renal impairment consistent with the low eGFR."
+          },
+          {
+            "original_text": "eGFR_ml_min: 54",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3049187",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "eGFR of 54 mL/min/1.73m² is below the reference threshold of >60, indicating CKD Stage 3a (eGFR 45-59). This is consistent with the elevated creatinine and supports the CKD diagnosis."
+          }
+        ],
+        "variants": []
+      }
+    },
+    "P003": {
+      "patient_id": "P003",
+      "language_detected": "hindi",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P003_hindi.txt",
+          "lab_results_P003.csv"
+        ],
+        "total_entities": 20,
+        "low_confidence_count": 2,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:43:23.357561Z",
+        "input_tokens": 3011,
+        "output_tokens": 5358
+      },
+      "validation_summary": {
+        "entities_reviewed": 3,
+        "confirmed": 0,
+        "corrected": 3,
+        "flagged": 0
+      },
+      "flags": [
+        "Critically elevated LDL (5.6 mmol/L) despite rosuvastatin + ezetimibe combination — suspected familial hypercholesterolaemia; consider genetic testing (LDLR, APOB, PCSK9) and PCSK9 inhibitor therapy",
+        "Elevated Lp(a) at 210 nmol/L (nearly 3x upper limit) — independent and non-modifiable cardiovascular risk factor; no OMOP mapping in reference table",
+        "Elevated hs-CRP at 4.8 mg/L — high residual inflammatory risk; no OMOP mapping in reference table",
+        "Blood pressure 136/84 mmHg may be above target for very high CV risk CAD patient (target <130/80); consider antihypertensive initiation",
+        "Low HDL (0.8 mmol/L) and elevated triglycerides (2.8 mmol/L) contribute to mixed dyslipidemia profile",
+        "Lipoprotein(a) and hs-CRP lack OMOP concept IDs in the provided reference — flagged as low_confidence for code mapping"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "कोरोनरी आर्टरी डिजीज (स्थिर एनजाइना)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "'कोरोनरी आर्टरी डिजीज' is a direct Hindi transliteration of 'Coronary Artery Disease'. 'स्थिर एनजाइना' translates to 'Stable Angina'. Mapping to CAD as the primary diagnosis with stable angina as qualifier."
+          },
+          {
+            "original_text": "स्थिर एनजाइना",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I20.9",
+            "final_omop": "321318",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "'स्थिर एनजाइना' is a Hindi transliteration of 'Stable Angina'. Separately coded as it has its own ICD-10 and OMOP mapping."
+          },
+          {
+            "original_text": "गंभीर डिसलिपिडेमिया (पारिवारिक हाइपरकोलेस्टेरोलेमिया संभावित)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E78.00",
+            "final_omop": "432867",
+            "final_confidence": 0.88,
+            "flag": null,
+            "reasoning": "'गंभीर डिसलिपिडेमिया' translates to 'Severe Dyslipidemia'. 'पारिवारिक हाइपरकोलेस्टेरोलेमिया संभावित' means 'Familial Hypercholesterolaemia suspected'. Given the LDL of 5.6 mmol/L and Lp(a) of 210 nmol/L at age 45, familial hypercholesterolaemia is clinically plausible. Mapped to Hypercholesterolaemia E78.00. The 'suspected' qualifier introduces slight uncertainty."
+          },
+          {
+            "original_text": "सीने में दर्द (परिश्रम पर), सांस फूलना",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Chest pain on exertion, Dyspnea",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.85,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Chest pain on exertion; Dyspnea",
+              "icd10_code": "R07.9; R06.00",
+              "omop_concept_id": null,
+              "confidence": 0.78,
+              "flag": "multiple_symptoms_combined"
+            },
+            "validation_reasoning": "ICD-10 R07.9 (Chest pain, unspecified) is the best available symptom code for chest pain on exertion absent a confirmed angina diagnosis (I20.x would require clinical confirmation); R06.00 maps to Dyspnea, unspecified. These are correctly identified as symptoms rather than diagnoses, but standard codes should be assigned — these two should be split into separate entries for proper coding granularity per ICD-10-CM guidelines.",
+            "final_icd10": "R07.9; R06.00",
+            "final_omop": null,
+            "final_confidence": 0.78,
+            "flag": "multiple_symptoms_combined",
+            "reasoning": "'सीने में दर्द (परिश्रम पर)' translates to 'Chest pain on exertion' and 'सांस फूलना' translates to 'Shortness of breath/Dyspnea'. These are presenting symptoms rather than coded diagnoses; included for completeness."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "रोसुवास्टेटिन 40 मिग्रा — रात को (उच्च तीव्रता)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1510813",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'रोसुवास्टेटिन' is a Hindi transliteration of 'Rosuvastatin'. Dose 40 mg, frequency nightly. 'उच्च तीव्रता' means 'high intensity' statin therapy, consistent with dose."
+          },
+          {
+            "original_text": "एज़ेटिमिब 10 मिग्रा — सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1547504",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'एज़ेटिमिब' is a Hindi transliteration of 'Ezetimibe'. Dose 10 mg, frequency once daily in the morning."
+          },
+          {
+            "original_text": "एस्पिरिन 75 मिग्रा — प्रतिदिन",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1112807",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'एस्पिरिन' is a Hindi transliteration of 'Aspirin'. Dose 75 mg, frequency daily. Standard antiplatelet dose for CAD."
+          },
+          {
+            "original_text": "आइसोसोर्बाइड मोनोनाइट्रेट 30 मिग्रा — सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1361364",
+            "final_confidence": 0.96,
+            "flag": null,
+            "reasoning": "'आइसोसोर्बाइड मोनोनाइट्रेट' is a Hindi transliteration of 'Isosorbide Mononitrate'. Dose 30 mg, frequency once daily in the morning. Used as anti-anginal therapy."
+          },
+          {
+            "original_text": "बिसोप्रोलल 5 मिग्रा — सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1338005",
+            "final_confidence": 0.96,
+            "flag": null,
+            "reasoning": "'बिसोप्रोलल' is a Hindi transliteration of 'Bisoprolol'. Dose 5 mg, frequency once daily in the morning. Beta-blocker for rate control and anti-anginal effect."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "रक्तचाप: 136/84 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'रक्तचाप' means 'Blood Pressure' in Hindi. Systolic component is 136 mmHg, which is above normal (elevated/Stage 1 hypertension range)."
+          },
+          {
+            "original_text": "रक्तचाप: 136/84 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "Diastolic component extracted from the same blood pressure reading. 84 mmHg is slightly above optimal for very high CV risk patients."
+          },
+          {
+            "original_text": "हृदय गति: 68/मिनट",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'हृदय गति' means 'Heart Rate' in Hindi. 68 bpm is within normal range and well-controlled on bisoprolol."
+          },
+          {
+            "original_text": "वजन: 76 किग्रा",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'वजन' means 'Weight' and 'किग्रा' means 'kg' in Hindi. Body weight is 76 kg."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "LDL कोलेस्ट्रॉल: 5.6 mmol/L (बहुत अधिक — लक्ष्य <1.4)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'LDL कोलेस्ट्रॉल' is Hindi transliteration of 'LDL Cholesterol'. Value 5.6 mmol/L is critically elevated; 'बहुत अधिक' means 'very high'. Target <1.4 mmol/L for very high CV risk. This extremely elevated LDL supports the suspected familial hypercholesterolaemia diagnosis."
+          },
+          {
+            "original_text": "Total_Chol_mmol: 7.1",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "Total cholesterol from CSV lab data. 7.1 mmol/L is significantly above the reference of <5.2 mmol/L, consistent with severe dyslipidemia."
+          },
+          {
+            "original_text": "ट्राइग्लिसराइड: 2.8 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3022192",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'ट्राइग्लिसराइड' is a Hindi transliteration of 'Triglycerides'. Value 2.8 mmol/L is above the reference range of <1.7 mmol/L, indicating hypertriglyceridemia."
+          },
+          {
+            "original_text": "HDL: 0.8 mmol/L",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "HDL cholesterol 0.8 mmol/L is below the male reference of >1.0 mmol/L, indicating low HDL — an independent cardiovascular risk factor."
+          },
+          {
+            "original_text": "उपवास ग्लूकोज: 5.2 mmol/L (सामान्य)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'उपवास ग्लूकोज' means 'Fasting Glucose' in Hindi. 'सामान्य' means 'normal'. Value 5.2 mmol/L is within normal reference range (3.9-5.5 mmol/L)."
+          },
+          {
+            "original_text": "HbA1c_%: 5.4",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "HbA1c from CSV lab data. 5.4% is within normal range (<5.7%), indicating no diabetes or pre-diabetes."
+          },
+          {
+            "original_text": "Lp_a_nmol_L: 210",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Lipoprotein(a)",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.65,
+              "flag": "low_confidence"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Lipoprotein(a) [Lp(a)] measurement, 210 nmol/L (elevated; reference <75 nmol/L)",
+              "icd10_code": null,
+              "omop_concept_id": "3028437",
+              "confidence": 0.72,
+              "flag": "omop_id_unverified"
+            },
+            "validation_reasoning": "OMOP concept ID 3028437 corresponds to 'Lipoprotein a [Mass/volume] in Serum or Plasma' (LOINC 10835-7); however, standard unit in this LOINC is mg/dL and the result here is in nmol/L — a unit conversion discrepancy must be noted and the OMOP concept ID flagged as unverified pending confirmation that a nmol/L-specific concept (e.g., LOINC 49363-0) is not more appropriate for this laboratory system.",
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.72,
+            "flag": "omop_id_unverified",
+            "reasoning": "Lipoprotein(a) at 210 nmol/L is significantly elevated above the reference of <75 nmol/L. This is a strong independent cardiovascular risk factor and supports the suspicion of familial hypercholesterolaemia. No exact OMOP concept ID available in the provided reference table."
+          },
+          {
+            "original_text": "hs_CRP_mg_L: 4.8",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "High-sensitivity C-Reactive Protein (hs-CRP)",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.65,
+              "flag": "low_confidence"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "High-sensitivity C-reactive protein (hs-CRP), 4.8 mg/L (elevated; reference <1.0 mg/L — high cardiovascular risk tier)",
+              "icd10_code": null,
+              "omop_concept_id": "3049491",
+              "confidence": 0.75,
+              "flag": "omop_id_unverified"
+            },
+            "validation_reasoning": "OMOP concept ID 3049491 maps to 'C reactive protein [Mass/volume] in Serum or Plasma by High sensitivity method' (LOINC 30522-7), which is the correct high-sensitivity assay distinct from standard CRP (LOINC 1988-5); the value of 4.8 mg/L places this patient in the high residual inflammatory risk category per ACC/AHA guidelines (>3.0 mg/L), and this distinction is clinically important for the mapping — the concept ID is provided as best-available but flagged as unverified.",
+            "final_icd10": null,
+            "final_omop": "3049491",
+            "final_confidence": 0.75,
+            "flag": "omop_id_unverified",
+            "reasoning": "hs-CRP at 4.8 mg/L is elevated above the reference of <1.0 mg/L, indicating high residual inflammatory cardiovascular risk. No exact OMOP concept ID available in the provided reference table."
+          }
+        ],
+        "variants": []
+      }
+    },
+    "P004": {
+      "patient_id": "P004",
+      "language_detected": "bengali",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P004_bengali.txt",
+          "lab_results_P004.csv",
+          "variants_P004.vcf"
+        ],
+        "total_entities": 26,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:44:35.164609Z",
+        "input_tokens": 3354,
+        "output_tokens": 6808
+      },
+      "validation_summary": {
+        "entities_reviewed": 4,
+        "confirmed": 1,
+        "corrected": 2,
+        "flagged": 1
+      },
+      "flags": [
+        "Irregular heart rhythm noted ('অনিয়মিত') — evaluate for atrial fibrillation, consider ECG/Holter monitor",
+        "Rapid weight gain (3 kg in 1 week) with peripheral edema — signs of CHF decompensation, may need diuretic dose adjustment",
+        "SpO2 94% on room air — mildly hypoxemic, correlates with heart failure decompensation",
+        "BNP markedly elevated at 820 pg/mL — active heart failure, consider therapy escalation",
+        "eGFR 44 mL/min/1.73m² with Metformin 1000 mg BID — monitor closely, metformin dose reduction may be needed per guidelines (contraindicated if eGFR <30)",
+        "HbA1c 8.3% — suboptimal glycemic control despite insulin glargine and metformin; consider therapy intensification (e.g., adding SGLT2 inhibitor which may also benefit HFrEF)",
+        "Serum Creatinine elevated at 124 µmol/L — consistent with CKD Stage 3b, supports E11.65 coding for diabetic CKD",
+        "Homozygous KCNJ11 rs5219 risk variant — may contribute to impaired insulin secretion and suboptimal glycemic response",
+        "CDKN2A/CDKN2B variant phenotype listed as Heart_Failure_CAD — needs clinical correlation to determine if underlying CAD is present"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "টাইপ ২ ডায়াবেটিস মেলিটাস (৯ বছর)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "Direct Bengali transliteration of 'Type 2 Diabetes Mellitus'. Duration noted as 9 years. Unambiguous mapping."
+          },
+          {
+            "original_text": "কনজেস্টিভ হার্ট ফেইলিউর (EF ৩৫%)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I50.20",
+            "final_omop": "316139",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "Bengali transliteration of 'Congestive Heart Failure' with EF 35% explicitly stated. EF ≤40% qualifies as HFrEF per guidelines. 'EF' is in English within Bengali text."
+          },
+          {
+            "original_text": "eGFR: 44 [ref: >60]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "N18.32",
+            "final_omop": "443601",
+            "final_confidence": 0.92,
+            "flag": null,
+            "reasoning": "eGFR of 44 mL/min/1.73m² falls within CKD Stage 3b (30-44). The clinical note also mentions monitoring eGFR with metformin use, consistent with impaired renal function. Serum creatinine is also elevated at 124 µmol/L."
+          },
+          {
+            "original_text": "টাইপ ২ ডায়াবেটিস মেলিটাস with Cr_umol_L: 124 and eGFR: 44",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.65",
+            "final_omop": "201826",
+            "final_confidence": 0.9,
+            "flag": null,
+            "reasoning": "Patient has established T2DM and eGFR 44 indicating CKD Stage 3b. The combination warrants the specific ICD-10 code E11.65 for diabetic CKD. Metformin note also flags renal caution."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "ইনসুলিন গ্লার্জিন ২০ ইউনিট — রাতে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "40239216",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'ইনসুলিন গ্লার্জিন' is a direct Bengali transliteration of 'Insulin Glargine'. Dose: 20 units. Frequency: once daily at night ('রাতে')."
+          },
+          {
+            "original_text": "মেটফর্মিন ১০০০ মিগ্রা — দুইবার (সতর্কতার সাথে, eGFR পর্যবেক্ষণ করুন)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'মেটফর্মিন' is Bengali transliteration of 'Metformin'. Dose: 1000 mg. Frequency: twice daily ('দুইবার'). Note advises caution due to renal function and eGFR monitoring."
+          },
+          {
+            "original_text": "ফুরোসেমাইড ৪০ মিগ্রা — সকালে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "956874",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'ফুরোসেমাইড' is Bengali transliteration of 'Furosemide'. Dose: 40 mg. Frequency: once daily in the morning ('সকালে'). Consistent with CHF management."
+          },
+          {
+            "original_text": "কার্ভেডিলল ৬.২৫ মিগ্রা — দুইবার",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1346823",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'কার্ভেডিলল' is Bengali transliteration of 'Carvedilol'. Dose: 6.25 mg. Frequency: twice daily ('দুইবার'). Guideline-directed therapy for HFrEF."
+          },
+          {
+            "original_text": "র‍্যামিপ্রিল ২.৫ মিগ্রা — রাতে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1308216",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'র‍্যামিপ্রিল' is Bengali transliteration of 'Ramipril'. Dose: 2.5 mg. Frequency: once daily at night ('রাতে'). ACE inhibitor for HFrEF."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "রক্তচাপ: ১৩২/৮২ mmHg",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'রক্তচাপ' means 'blood pressure' in Bengali. Systolic component: 132 mmHg. Within acceptable range for heart failure patient but slightly elevated."
+          },
+          {
+            "original_text": "রক্তচাপ: ১৩২/৮২ mmHg",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "Diastolic component of the blood pressure reading: 82 mmHg. Within normal range."
+          },
+          {
+            "original_text": "হৃদস্পন্দন: ৬৮/মিনিট (অনিয়মিত)",
+            "language": "bengali",
+            "original_mapping": {
+              "standardized_english_term": "Heart Rate",
+              "icd10_code": null,
+              "omop_concept_id": "3027018",
+              "confidence": 1.0,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Heart Rate (Irregular)",
+              "icd10_code": null,
+              "omop_concept_id": "3027018",
+              "confidence": 0.82,
+              "flag": "needs_clinical_review"
+            },
+            "validation_reasoning": "The OMOP concept 3027018 correctly captures 'Heart Rate' as a vital sign measurement. However, the qualifier 'অনিয়মিত' (irregular) is clinically significant and not captured in the current mapping — an irregular pulse at 68 bpm raises concern for atrial fibrillation or other arrhythmia (ICD-10 I49.9 or I48.x), which requires a separate diagnosis entry rather than being absorbed into the vital sign alone. Confidence is reduced to reflect this unresolved clinical nuance requiring physician review.",
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.82,
+            "flag": "needs_clinical_review",
+            "reasoning": "'হৃদস্পন্দন' means 'heart rate/pulse' in Bengali. Rate: 68/min. 'অনিয়মিত' means 'irregular', which may suggest arrhythmia (possible atrial fibrillation — needs review)."
+          },
+          {
+            "original_text": "ওজন: ৬৫ কেজি (গত সপ্তাহে ৩ কেজি বৃদ্ধি — তরল জমে)",
+            "language": "bengali",
+            "original_mapping": {
+              "standardized_english_term": "Body Weight",
+              "icd10_code": null,
+              "omop_concept_id": "3025315",
+              "confidence": 1.0,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Body Weight (with rapid 3 kg gain over 1 week — fluid retention noted)",
+              "icd10_code": null,
+              "omop_concept_id": "3025315",
+              "confidence": 0.88,
+              "flag": "needs_clinical_review"
+            },
+            "validation_reasoning": "OMOP 3025315 correctly maps to 'Body Weight' as a vital sign; however, the clinically critical information — a 3 kg weight gain over one week attributed to fluid retention ('তরল জমে') — is a strong indicator of CHF decompensation and should trigger a separate diagnosis flag (e.g., R60.9 Edema unspecified or linked to existing I50.x). The vital sign mapping itself is correct, but the contextual finding must not be lost in harmonization.",
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.88,
+            "flag": "needs_clinical_review",
+            "reasoning": "'ওজন' means 'weight' in Bengali. Weight: 65 kg. Note: 3 kg increase in the past week attributed to fluid retention ('তরল জমে'), consistent with CHF decompensation."
+          },
+          {
+            "original_text": "SpO2: ৯৪% (বায়ুতে)",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "Oxygen Saturation (SpO2)",
+              "icd10_code": null,
+              "omop_concept_id": "3016502",
+              "confidence": 1.0,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "OMOP 3016502 correctly represents 'Oxygen saturation in Arterial blood by Pulse oximetry' (LOINC 59408-5). The value of 94% on room air is accurately described, and 'বায়ুতে' unambiguously means 'on room air' in Bengali, so no correction is needed; the needs_review flag can be cleared as the mapping is standard and correct.",
+            "final_icd10": null,
+            "final_omop": "3016502",
+            "final_confidence": 1.0,
+            "flag": "needs_review",
+            "reasoning": "SpO2 94% on room air ('বায়ুতে' means 'in air/on air'). Mildly low; consistent with heart failure and possible pulmonary congestion."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "FBS_mmol_per_L: 8.9 [ref: 3.9-5.5]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "FBS = Fasting Blood Sugar/Glucose. Value 8.9 mmol/L is significantly above reference range (3.9-5.5), indicating poor glycemic control."
+          },
+          {
+            "original_text": "HbA1c_শতাংশ: 8.3 [ref: <7.0]",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'শতাংশ' means 'percentage' in Bengali. HbA1c 8.3% is above target (<7.0%), indicating suboptimal glycemic control over the past 2-3 months."
+          },
+          {
+            "original_text": "Na_mEq_L: 138 [ref: 135-145]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019550",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "Na = Sodium. Value 138 mEq/L is within normal reference range (135-145)."
+          },
+          {
+            "original_text": "K_mEq_L: 4.1 [ref: 3.5-5.0]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3023103",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "K = Potassium. Value 4.1 mEq/L is within normal reference range (3.5-5.0). Important to monitor given furosemide and ramipril use."
+          },
+          {
+            "original_text": "Cr_umol_L: 124 [ref: 44-97]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "Cr = Creatinine. Value 124 µmol/L is above reference range (44-97), indicating impaired renal function consistent with CKD Stage 3b."
+          },
+          {
+            "original_text": "eGFR: 44 [ref: >60]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3049187",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "eGFR 44 mL/min/1.73m² is below reference (>60), placing patient in CKD Stage 3b (30-44). Clinically significant for drug dosing decisions."
+          },
+          {
+            "original_text": "BNP_pg_mL: 820 [ref: <100]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3024929",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "BNP 820 pg/mL is markedly elevated (reference <100), consistent with significant heart failure. Correlates with clinical presentation of dyspnea, edema, and reduced EF."
+          },
+          {
+            "original_text": "INR: 1.1 [ref: 0.8-1.2]",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3023314",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "INR 1.1 is within normal reference range (0.8-1.2). Patient is not on anticoagulation therapy currently."
+          }
+        ],
+        "variants": [
+          {
+            "original_text": "rsID=rs7903146  GENE=TCF7L2  GT=0/1  CLNSIG=risk_factor  AF_SAS=0.28  PHENOTYPE=Type_2_Diabetes",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "rs7903146 in TCF7L2 is one of the strongest common genetic risk factors for T2DM. Heterozygous (0/1). South Asian allele frequency 0.28. Well-established association with impaired insulin secretion."
+          },
+          {
+            "original_text": "rsID=rs5219  GENE=KCNJ11  GT=1/1  CLNSIG=risk_factor  AF_SAS=0.38  PHENOTYPE=Type_2_Diabetes",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "rs5219 (E23K) in KCNJ11 encodes a potassium channel subunit involved in insulin secretion. Homozygous (1/1) — carrying two risk alleles. South Asian AF 0.38. Established T2DM risk factor."
+          },
+          {
+            "original_text": "rsID=rs9465871  GENE=CDKAL1  GT=0/1  CLNSIG=risk_factor  AF_SAS=0.31  PHENOTYPE=Type_2_Diabetes",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.93,
+            "flag": null,
+            "reasoning": "rs9465871 in CDKAL1 is a GWAS-identified T2DM susceptibility locus. Heterozygous (0/1). South Asian AF 0.31. Associated with impaired beta-cell function."
+          },
+          {
+            "original_text": "rsID=rs2383206  GENE=CDKN2A_CDKN2B  GT=0/1  CLNSIG=risk_factor  AF_SAS=0.52  PHENOTYPE=Heart_Failure_CAD",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "CDKN2A/CDKN2B rs2383206 — Heart Failure / Coronary Artery Disease risk variant",
+              "icd10_code": "I50.9",
+              "omop_concept_id": "316139",
+              "confidence": 0.85,
+              "flag": "needs_review"
+            },
+            "validation_status": "flagged",
+            "corrected_mapping": null,
+            "validation_reasoning": "The 9p21 locus (rs2383206, CDKN2A/CDKN2B) has established GWAS associations primarily with coronary artery disease (CAD) and secondarily with heart failure — mapping solely to CHF (I50.9 / OMOP 316139) is an oversimplification given that the PHENOTYPE field explicitly lists both 'Heart_Failure_CAD'. A single ICD-10 or OMOP concept cannot accurately represent the dual phenotype association, and selecting I50.9 over I25.10 (CAD) without clinical adjudication introduces coding ambiguity; this case must be escalated for clinician-guided phenotype prioritization before finalizing the mapping.",
+            "final_icd10": "I50.9",
+            "final_omop": "316139",
+            "final_confidence": 0.85,
+            "flag": "needs_review",
+            "reasoning": "rs2383206 at the 9p21 locus (CDKN2A/CDKN2B) is associated with coronary artery disease and heart failure. Heterozygous (0/1). High South Asian AF of 0.52. Phenotype mapped to CHF given patient's established HFrEF diagnosis. Could also map to CAD (I25.10/317576)."
+          }
+        ]
+      }
+    },
+    "P005": {
+      "patient_id": "P005",
+      "language_detected": "hindi",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P005_hindi.txt",
+          "lab_results_P005.csv"
+        ],
+        "total_entities": 22,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:45:36.102039Z",
+        "input_tokens": 3106,
+        "output_tokens": 5694
+      },
+      "validation_summary": {
+        "entities_reviewed": 6,
+        "confirmed": 1,
+        "corrected": 4,
+        "flagged": 1
+      },
+      "flags": [
+        "CRITICAL: HbA1c 10.2% indicates very poorly controlled diabetes — urgent glycaemic management review required",
+        "CRITICAL: Fasting glucose 13.8 mmol/L severely elevated — uncontrolled hyperglycaemia",
+        "ALERT: Serum Potassium 5.4 mEq/L (hyperkalaemia) — risk with CKD; avoid potassium-sparing agents; monitor closely",
+        "ALERT: eGFR 32 mL/min/1.73m² — borderline for empagliflozin continuation (threshold eGFR >30); close monitoring required",
+        "ALERT: Urine ACR 68 mg/mmol — severely increased albuminuria (A3); consider ACEi/ARB if potassium allows",
+        "ALERT: Haemoglobin 10.8 g/dL — anaemia likely secondary to CKD; consider EPO/iron evaluation",
+        "ALERT: Blood pressure 142/86 mmHg — above target for diabetic/CKD patient (<130/80 mmHg recommended); no antihypertensive currently prescribed",
+        "NOTE: No ACE inhibitor or ARB in medication list despite CAD and CKD with albuminuria — potential treatment gap, but hyperkalaemia (K+ 5.4) may be the contraindication",
+        "NOTE: CKD-adjusted dosing noted for atorvastatin; verify all medication doses against current renal function"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "टाइप 2 मधुमेह (15 वर्ष, खराब नियंत्रण)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.65",
+            "final_omop": "201826",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "'टाइप 2 मधुमेह' translates to 'Type 2 Diabetes Mellitus'. Given concurrent CKD Stage 3b, E11.65 (Type 2 Diabetes with CKD) is the most specific ICD-10 code. Duration 15 years with poor control noted."
+          },
+          {
+            "original_text": "कोरोनरी आर्टरी डिजीज",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'कोरोनरी आर्टरी डिजीज' is a direct Hindi transliteration of 'Coronary Artery Disease'. Unambiguous mapping to ICD-10 I25.10."
+          },
+          {
+            "original_text": "क्रोनिक किडनी रोग (Stage 3b)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "N18.32",
+            "final_omop": "443601",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'क्रोनिक किडनी रोग' translates to 'Chronic Kidney Disease', and Stage 3b is explicitly stated. eGFR of 32 mL/min/1.73m² confirms Stage 3b (30-44 range)."
+          },
+          {
+            "original_text": "रक्तचाप: 142/86 mmHg",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Hypertension",
+              "icd10_code": "I10",
+              "omop_concept_id": "320128",
+              "confidence": 0.85,
+              "flag": "needs_review"
+            },
+            "validation_status": "flagged",
+            "corrected_mapping": null,
+            "validation_reasoning": "A single blood pressure reading of 142/86 mmHg is a vital sign observation, not a confirmed diagnosis. ICD-10 I10 (Essential Hypertension) requires an explicit clinical diagnosis; inferring it solely from one BP measurement violates diagnostic coding guidelines (ICD-10-CM Official Guidelines Section I.C.9.a), which require physician documentation. This should be captured under vitals, not diagnoses, unless hypertension is explicitly documented.",
+            "final_icd10": "I10",
+            "final_omop": "320128",
+            "final_confidence": 0.85,
+            "flag": "needs_review",
+            "reasoning": "Blood pressure of 142/86 mmHg exceeds 140/90 threshold for hypertension. While not explicitly listed as a diagnosis, the elevated BP in a 67-year-old with diabetes and CAD strongly suggests hypertension. Flagging as it is inferred rather than explicitly stated."
+          },
+          {
+            "original_text": "मूत्र में प्रोटीन: ++ (एल्बुमिनूरिया)",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Albuminuria",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.7,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Albuminuria",
+              "icd10_code": "R80.3",
+              "omop_concept_id": null,
+              "confidence": 0.78,
+              "flag": "omop_id_unavailable"
+            },
+            "validation_reasoning": "Albuminuria with 2+ proteinuria on urine dipstick is a codeable clinical finding under ICD-10-CM R80.3 (Bence Jones proteinuria is R80.1; unspecified proteinuria R80.9; however R80.3 specifically maps to 'Bence Jones proteinuria' — correcting to R80.9 Proteinuria, unspecified, or more precisely R80.0 for isolated proteinuria is appropriate). Per ICD-10-CM, proteinuria/albuminuria as a standalone documented finding warrants a code even when associated with CKD; it is not excluded by the CKD code alone. OMOP concept ID cannot be confirmed without a verified reference table.",
+            "final_icd10": "R80.3",
+            "final_omop": null,
+            "final_confidence": 0.78,
+            "flag": "omop_id_unavailable",
+            "reasoning": "'एल्बुमिनूरिया' is a transliteration of 'Albuminuria'. This is a clinical finding associated with diabetic nephropathy and CKD, already captured under the CKD and diabetes diagnoses. No separate ICD-10 assigned as it is a laboratory finding rather than a standalone diagnosis in this context."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "इंसुलिन ग्लार्जिन 30 यूनिट — रात को",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "40239216",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'इंसुलिन ग्लार्जिन' is a direct Hindi transliteration of 'Insulin Glargine'. Dose is 30 units at bedtime (basal insulin)."
+          },
+          {
+            "original_text": "इंसुलिन लिस्प्रो — भोजन के साथ (8-10 यूनिट)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1516023",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'इंसुलिन लिस्प्रो' is a direct Hindi transliteration of 'Insulin Lispro'. Dose is 8-10 units with meals (bolus/prandial insulin)."
+          },
+          {
+            "original_text": "एम्पाग्लिफ्लोज़िन 10 मिग्रा — सुबह (eGFR >30 होने पर)",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Empagliflozin 10 mg — morning (conditional on eGFR >30)",
+              "icd10_code": null,
+              "omop_concept_id": "45774751",
+              "confidence": 0.97,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "The transliteration of 'एम्पाग्लिफ्लोज़िन' to Empagliflozin is accurate, and the 10 mg dose and morning timing are correctly captured. The eGFR >30 conditionality is clinically valid per SGLT2 inhibitor prescribing guidelines (FDA label and KDIGO 2022); the flag is appropriately a clinical monitoring note, not a coding error, and the OMOP concept ID 45774751 corresponds to Empagliflozin 10 mg oral tablet.",
+            "final_icd10": null,
+            "final_omop": "45774751",
+            "final_confidence": 0.97,
+            "flag": "needs_review",
+            "reasoning": "'एम्पाग्लिफ्लोज़िन' is a Hindi transliteration of 'Empagliflozin'. Dose is 10 mg in the morning. Note the conditional use based on eGFR >30; patient's current eGFR is 32, just above the threshold — warrants monitoring."
+          },
+          {
+            "original_text": "एटोरवास्टेटिन 20 मिग्रा — रात को (खुराक कम — CKD)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1545958",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'एटोरवास्टेटिन' is a Hindi transliteration of 'Atorvastatin'. Dose is 20 mg at night. Note specifies dose has been reduced due to CKD."
+          },
+          {
+            "original_text": "एस्पिरिन 75 मिग्रा — प्रतिदिन",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1112807",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'एस्पिरिन' is a Hindi transliteration of 'Aspirin'. Dose is 75 mg daily, consistent with antiplatelet therapy for CAD."
+          },
+          {
+            "original_text": "ओमेप्राज़ोल 20 मिग्रा — सुबह (गैस्ट्रो-सुरक्षा)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "923645",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'ओमेप्राज़ोल' is a Hindi transliteration of 'Omeprazole'. Dose is 20 mg in the morning for gastroprotection (likely aspirin-related GI prophylaxis)."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "रक्तचाप: 142/86 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'रक्तचाप' means 'blood pressure' in Hindi. Systolic component is 142 mmHg, which is elevated (>140 mmHg)."
+          },
+          {
+            "original_text": "रक्तचाप: 142/86 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "Diastolic component of blood pressure reading is 86 mmHg, which is borderline elevated."
+          },
+          {
+            "original_text": "वजन: 71 किग्रा",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'वजन' means 'weight' in Hindi and 'किग्रा' means 'kg'. Body weight is 71 kg."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "HbA1c_प्रतिशत: 10.2",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'HbA1c_प्रतिशत' translates to 'HbA1c percentage'. Value of 10.2% is critically above the target of <7.0%, indicating very poor glycaemic control as noted in the clinical note ('बहुत खराब' = 'very poor')."
+          },
+          {
+            "original_text": "उपवास_ग्लूकोज: 13.8",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'उपवास_ग्लूकोज' translates to 'Fasting Glucose'. Value of 13.8 mmol/L is significantly above the reference range of 3.9-5.5 mmol/L, indicating severe hyperglycaemia."
+          },
+          {
+            "original_text": "क्रिएटिनिन_µmol: 198",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'क्रिएटिनिन' is a Hindi transliteration of 'Creatinine'. Value of 198 µmol/L is significantly elevated above the reference range of 62-106 µmol/L, consistent with CKD Stage 3b."
+          },
+          {
+            "original_text": "eGFR_ml_min: 32",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3049187",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "eGFR of 32 mL/min/1.73m² is below the reference of >60, confirming CKD Stage 3b (30-44 range). This is critically important for medication dosing, especially empagliflozin (threshold eGFR >30)."
+          },
+          {
+            "original_text": "पोटेशियम_mEq: 5.4",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Serum Potassium",
+              "icd10_code": null,
+              "omop_concept_id": "3023103",
+              "confidence": 0.98,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Serum Potassium 5.4 mEq/L (Hyperkalemia)",
+              "icd10_code": null,
+              "omop_concept_id": "3023103",
+              "confidence": 0.98,
+              "flag": null
+            },
+            "validation_reasoning": "The mapping of 'पोटेशियम' to Serum Potassium and OMOP concept ID 3023103 is correct. The flag 'needs_review' is a clinical alert rather than a coding issue — the lab value mapping itself is accurate and the flag can be removed from the coding perspective. The clinical significance note regarding CKD and medication interactions is valid but does not affect the coding validity.",
+            "final_icd10": null,
+            "final_omop": "3023103",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'पोटेशियम' is a Hindi transliteration of 'Potassium'. Value of 5.4 mEq/L is above the reference range of 3.5-5.0 mEq/L, indicating hyperkalaemia. This is clinically significant given CKD and warrants caution with ACE inhibitors/ARBs/potassium-sparing diuretics."
+          },
+          {
+            "original_text": "एल्ब्यूमिन_g_dL: 3.6",
+            "language": "hindi",
+            "original_mapping": {
+              "standardized_english_term": "Serum Albumin",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.9,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Serum Albumin",
+              "icd10_code": null,
+              "omop_concept_id": "3024561",
+              "confidence": 0.82,
+              "flag": "omop_id_requires_verification"
+            },
+            "validation_reasoning": "The standardized term 'Serum Albumin' is correct and the transliteration of 'एल्ब्यूमिन' is accurate. OMOP concept ID 3024561 is the commonly referenced LOINC-based concept for 'Albumin [Mass/volume] in Serum or Plasma' (LOINC 1751-7); however, this must be verified against the local OMOP vocabulary instance before finalization, hence the flag is retained with a corrected descriptor.",
+            "final_icd10": null,
+            "final_omop": "3024561",
+            "final_confidence": 0.82,
+            "flag": "omop_id_requires_verification",
+            "reasoning": "'एल्ब्यूमिन' is a Hindi transliteration of 'Albumin'. Value of 3.6 g/dL is within the reference range of 3.5-5.0 g/dL. No exact OMOP concept ID available in the provided reference table for serum albumin."
+          },
+          {
+            "original_text": "Urine_ACR_mg_mmol: 68",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3029683",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "Urine ACR of 68 mg/mmol is massively above the reference of <3.0, indicating severely increased albuminuria (A3 category, >30 mg/mmol). This is consistent with diabetic nephropathy and CKD progression. Correlates with '++' proteinuria on dipstick."
+          },
+          {
+            "original_text": "Hb_g_dL: 10.8",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Haemoglobin",
+              "icd10_code": null,
+              "omop_concept_id": "3000963",
+              "confidence": 0.98,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Hemoglobin",
+              "icd10_code": null,
+              "omop_concept_id": "3000963",
+              "confidence": 0.98,
+              "flag": null
+            },
+            "validation_reasoning": "The mapping to Haemoglobin with OMOP concept ID 3000963 is correct; this corresponds to LOINC 718-7 (Hemoglobin [Mass/volume] in Blood). The 'needs_review' flag reflects a clinical interpretation note (anaemia of CKD) rather than a coding deficiency, so the flag can be cleared from the coding validation standpoint — the lab value mapping is valid and complete.",
+            "final_icd10": null,
+            "final_omop": "3000963",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "Haemoglobin of 10.8 g/dL is below the male reference range of 13-17 g/dL, indicating anaemia. This is likely anaemia of chronic kidney disease (renal anaemia), commonly seen in CKD Stage 3b and beyond."
+          }
+        ],
+        "variants": []
+      }
+    },
+    "P006": {
+      "patient_id": "P006",
+      "language_detected": "mixed",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P006_bengali.txt",
+          "lab_results_P006.csv"
+        ],
+        "total_entities": 20,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:46:31.192659Z",
+        "input_tokens": 2942,
+        "output_tokens": 5454
+      },
+      "validation_summary": {
+        "entities_reviewed": 4,
+        "confirmed": 0,
+        "corrected": 3,
+        "flagged": 1
+      },
+      "flags": [
+        "LDL cholesterol discrepancy between clinical note (4.1 mmol/L) and lab CSV (3.8 mmol/L) — needs reconciliation",
+        "HbA1c 7.2% above target <7.0% — consider intensification of antidiabetic therapy",
+        "Mixed dyslipidemia with significantly elevated LDL, elevated triglycerides, and low HDL despite atorvastatin 20 mg — consider dose uptitration or combination therapy",
+        "BMI 27.2 kg/m² (overweight) — lifestyle intervention recommended",
+        "Borderline elevated systolic BP 128 mmHg with family history of premature MI — cardiovascular risk assessment recommended",
+        "Family history of premature MI (father at 55) increases cardiovascular risk profile"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "টাইপ ২ ডায়াবেটিস (প্রাক-পর্যায় থেকে রূপান্তর, ৩ বছর)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'টাইপ ২ ডায়াবেটিস' directly translates to Type 2 Diabetes. Note indicates conversion from pre-diabetes (প্রাক-পর্যায়) 3 years ago. Maps to ICD-10 E11.9 and OMOP 201826."
+          },
+          {
+            "original_text": "প্রাক-পর্যায় থেকে রূপান্তর",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "R73.09",
+            "final_omop": "4193704",
+            "final_confidence": 0.85,
+            "flag": null,
+            "reasoning": "'প্রাক-পর্যায়' means pre-stage/pre-diabetes phase. The note indicates the patient transitioned from pre-diabetes to T2DM, so this is a historical diagnosis. Mapped to ICD-10 R73.09 and OMOP 4193704."
+          },
+          {
+            "original_text": "মিশ্র ডিসলিপিডেমিয়া",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E78.5",
+            "final_omop": "432867",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'মিশ্র ডিসলিপিডেমিয়া' is a direct Bengali transliteration of Mixed Dyslipidemia. Lab results confirm elevated total cholesterol, LDL, triglycerides, and low HDL. Maps to ICD-10 E78.5 and OMOP 432867."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "মেটফর্মিন ৫০০ মিগ্রা — দিনে একবার (সকালে)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'মেটফর্মিন' is Bengali transliteration of Metformin. ৫০০ মিগ্রা = 500 mg. দিনে একবার = once daily. সকালে = in the morning. Maps to OMOP 1503297."
+          },
+          {
+            "original_text": "অ্যাটোরভাস্টাটিন ২০ মিগ্রা — রাতে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1545958",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'অ্যাটোরভাস্টাটিন' is Bengali transliteration of Atorvastatin. ২০ মিগ্রা = 20 mg. রাতে = at night. Maps to OMOP 1545958."
+          },
+          {
+            "original_text": "ওমেগা-৩ ফ্যাটি অ্যাসিড ১ গ্রাম — দৈনিক",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "19129655",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'ওমেগা-৩ ফ্যাটি অ্যাসিড' is Bengali transliteration of Omega-3 Fatty Acids. ১ গ্রাম = 1 gram. দৈনিক = daily. Maps to OMOP 19129655."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "রক্তচাপ: ১২৮/৮০ mmHg",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'রক্তচাপ' = blood pressure. Systolic component ১২৮ = 128 mmHg. Value of 128 mmHg is borderline elevated (pre-hypertension range). LOINC 8480-6, OMOP 3004249."
+          },
+          {
+            "original_text": "রক্তচাপ: ১২৮/৮০ mmHg",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "Diastolic component ৮০ = 80 mmHg. Value of 80 mmHg is at the upper limit of normal. LOINC 8462-4, OMOP 3012888."
+          },
+          {
+            "original_text": "ওজন: ৬৮ কেজি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'ওজন' = weight. ৬৮ কেজি = 68 kg. LOINC 29463-7, OMOP 3025315."
+          },
+          {
+            "original_text": "উচ্চতা: ১৫৮ সেমি",
+            "language": "bengali",
+            "original_mapping": {
+              "standardized_english_term": "Body Height",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.95,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Body Height",
+              "icd10_code": null,
+              "omop_concept_id": "607590",
+              "confidence": 0.95,
+              "flag": null
+            },
+            "validation_reasoning": "Body Height maps to OMOP concept ID 607590 (LOINC 8302-2, 'Body height'), which is a standard measurement concept in the OMOP CDM. The original mapping was correct in terminology but missing the OMOP concept ID; vitals do not carry ICD-10 codes.",
+            "final_icd10": null,
+            "final_omop": "607590",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "'উচ্চতা' = height. ১৫৮ সেমি = 158 cm. No direct OMOP concept ID provided in reference table for height."
+          },
+          {
+            "original_text": "derived from ওজন: ৬৮ কেজি, উচ্চতা: ১৫৮ সেমি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3038553",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "BMI calculated from weight 68 kg and height 158 cm: 68 / (1.58)^2 = 27.2 kg/m². This indicates overweight status (BMI 25-29.9). LOINC 39156-5, OMOP 3038553."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "খালি পেটে গ্লুকোজ: ৭.৮ mmol/L / Glu_F_mmol: 7.8",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'খালি পেটে গ্লুকোজ' = fasting glucose (lit. 'empty stomach glucose'). CSV column 'Glu_F_mmol' confirms fasting glucose. Value 7.8 mmol/L is above reference range 3.9-5.5 mmol/L, consistent with diabetic fasting glucose. LOINC 76629-5, OMOP 3004501."
+          },
+          {
+            "original_text": "HbA1c_pct: 7.2",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "CSV column 'HbA1c_pct' maps directly to Hemoglobin A1c. Value 7.2% is above target of <7.0%, indicating suboptimal glycemic control. LOINC 4548-4, OMOP 3004410."
+          },
+          {
+            "original_text": "Chol_T_mmol: 5.9",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "CSV column 'Chol_T_mmol' maps to Total Cholesterol. Value 5.9 mmol/L is above reference <5.2 mmol/L, indicating hypercholesterolemia. LOINC 2093-3, OMOP 3019900."
+          },
+          {
+            "original_text": "TG_mmol: 2.4",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3022192",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "CSV column 'TG_mmol' maps to Triglycerides. Value 2.4 mmol/L is above reference <1.7 mmol/L, indicating hypertriglyceridemia. LOINC 2571-8, OMOP 3022192."
+          },
+          {
+            "original_text": "HDL_F_mmol: 1.0",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "CSV column 'HDL_F_mmol' maps to HDL Cholesterol (the 'F' likely denotes female-specific reference). Value 1.0 mmol/L is below the female reference >1.2 mmol/L, indicating low HDL. LOINC 2085-9, OMOP 3007070."
+          },
+          {
+            "original_text": "LDL কোলেস্টেরল: ৪.১ mmol/L / LDL_calc_mmol: 3.8",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "LDL Cholesterol",
+              "icd10_code": null,
+              "omop_concept_id": "3028437",
+              "confidence": 0.9,
+              "flag": "needs_review"
+            },
+            "validation_status": "flagged",
+            "corrected_mapping": null,
+            "validation_reasoning": "A 0.3 mmol/L discrepancy exists between the directly measured clinical note value (4.1 mmol/L) and the calculated CSV value (3.8 mmol/L); selecting the calculated value without source reconciliation risks recording an inaccurate result, and clinical adjudication is required to determine which value should be the canonical record. OMOP 3028437 (LOINC 2089-1) correctly maps to LDL Cholesterol [Calc], so the concept ID is retained pending value resolution.",
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.9,
+            "flag": "needs_review",
+            "reasoning": "Clinical note reports LDL কোলেস্টেরল as ৪.১ mmol/L (4.1) while CSV 'LDL_calc_mmol' shows 3.8 mmol/L. There is a discrepancy of 0.3 mmol/L between the two sources. The CSV value is calculated (LDL_calc). Both are significantly above reference <2.6 mmol/L. Using CSV value 3.8 as the lab-confirmed calculated result. LOINC 2089-1, OMOP 3028437."
+          },
+          {
+            "original_text": "ALT_U_L: 32",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Alanine Aminotransferase (ALT)",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.92,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Alanine Aminotransferase (ALT)",
+              "icd10_code": null,
+              "omop_concept_id": "3006923",
+              "confidence": 0.93,
+              "flag": null
+            },
+            "validation_reasoning": "ALT (Alanine Aminotransferase) in serum/plasma maps to LOINC 1742-6 ('Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma') and OMOP concept ID 3006923; the standardized term and reference range interpretation (32 U/L within 7–40 U/L) are correct.",
+            "final_icd10": null,
+            "final_omop": "3006923",
+            "final_confidence": 0.93,
+            "flag": null,
+            "reasoning": "CSV column 'ALT_U_L' maps to ALT (Alanine Aminotransferase). Value 32 U/L is within reference range 7-40 U/L. No OMOP concept ID provided in reference table for ALT."
+          },
+          {
+            "original_text": "AST_U_L: 28",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Aspartate Aminotransferase (AST)",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.92,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Aspartate Aminotransferase (AST)",
+              "icd10_code": null,
+              "omop_concept_id": "3013721",
+              "confidence": 0.93,
+              "flag": null
+            },
+            "validation_reasoning": "AST (Aspartate Aminotransferase) in serum/plasma maps to LOINC 1920-8 ('Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma') and OMOP concept ID 3013721; the standardized term and reference range interpretation (28 U/L within 10–40 U/L) are correct.",
+            "final_icd10": null,
+            "final_omop": "3013721",
+            "final_confidence": 0.93,
+            "flag": null,
+            "reasoning": "CSV column 'AST_U_L' maps to AST (Aspartate Aminotransferase). Value 28 U/L is within reference range 10-40 U/L. No OMOP concept ID provided in reference table for AST."
+          }
+        ],
+        "variants": []
+      }
+    },
+    "P007": {
+      "patient_id": "P007",
+      "language_detected": "mixed",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P007_bengali.txt",
+          "lab_results_P007.csv",
+          "variants_P007.vcf"
+        ],
+        "total_entities": 25,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:47:37.256997Z",
+        "input_tokens": 3385,
+        "output_tokens": 6450
+      },
+      "validation_summary": {
+        "entities_reviewed": 4,
+        "confirmed": 1,
+        "corrected": 3,
+        "flagged": 0
+      },
+      "flags": [
+        "LDL 3.2 mmol/L is significantly above the high-risk post-MI target of <1.4 mmol/L — lipid management review urgently needed",
+        "PCSK9 rs11206510 homozygous risk genotype may explain statin-resistant hyperlipidemia — consider PCSK9 inhibitor therapy",
+        "HbA1c 7.9% above target — Metformin dose escalation planned, may need additional antidiabetic agent",
+        "Troponin I at upper limit of normal (0.04 ng/mL) — borderline, recommend serial monitoring",
+        "HDL 0.9 mmol/L below male reference — additional cardiovascular risk factor",
+        "Dual antiplatelet therapy (Aspirin + Clopidogrel) post-PCI — duration 12 months, reassess at endpoint"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "তীব্র মায়োকার্ডিয়াল ইনফার্কশন (STEMI, LAD অক্লুশন)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I21.3",
+            "final_omop": "314666",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "তীব্র মায়োকার্ডিয়াল ইনফার্কশন translates to acute myocardial infarction. Parenthetical explicitly states STEMI with LAD occlusion, mapping to ICD-10 I21.3 (STEMI of unspecified site, though LAD involvement is anterior). Best mapped to STEMI concept."
+          },
+          {
+            "original_text": "টাইপ ২ ডায়াবেটিস",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "টাইপ ২ ডায়াবেটিস is a direct Bengali transliteration of Type 2 Diabetes. Recently diagnosed per the note."
+          },
+          {
+            "original_text": "PCI করা হয়েছে, ২টি স্টেন্ট স্থাপিত",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.85,
+            "flag": null,
+            "reasoning": "PCI with stent placement implies underlying coronary artery disease. Post-STEMI with stents maps to history of coronary artery disease (I25.10). The procedure itself is noted but the underlying condition is CAD."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "অ্যাসপিরিন ৭৫ মিগ্রা — দৈনিক",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1112807",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "অ্যাসপিরিন is Bengali transliteration of Aspirin. ৭৫ মিগ্রা = 75 mg, দৈনিক = daily."
+          },
+          {
+            "original_text": "ক্লোপিডোগ্রেল ৭৫ মিগ্রা — দৈনিক (১২ মাস পর্যন্ত)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1322184",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "ক্লোপিডোগ্রেল is Bengali transliteration of Clopidogrel. ৭৫ মিগ্রা = 75 mg, দৈনিক = daily, ১২ মাস পর্যন্ত = up to 12 months (dual antiplatelet therapy post-PCI)."
+          },
+          {
+            "original_text": "অ্যাটোরভাস্টাটিন ৮০ মিগ্রা — রাতে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1545958",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "অ্যাটোরভাস্টাটিন is Bengali transliteration of Atorvastatin. ৮০ মিগ্রা = 80 mg, রাতে = at night. High-intensity statin post-MI."
+          },
+          {
+            "original_text": "মেটোপ্রোলল সাকসিনেট ৫০ মিগ্রা — সকালে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1307046",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "মেটোপ্রোলল সাকসিনেট is Bengali transliteration of Metoprolol Succinate. ৫০ মিগ্রা = 50 mg, সকালে = in the morning. Beta-blocker post-MI."
+          },
+          {
+            "original_text": "র‍্যামিপ্রিল ৫ মিগ্রা — রাতে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1308216",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "র‍্যামিপ্রিল is Bengali transliteration of Ramipril. ৫ মিগ্রা = 5 mg, রাতে = at night. ACE inhibitor post-MI."
+          },
+          {
+            "original_text": "মেটফর্মিন ৫০০ মিগ্রা — দৈনিক (ডোজ বাড়ানো হবে)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "মেটফর্মিন is Bengali transliteration of Metformin. ৫০০ মিগ্রা = 500 mg, দৈনিক = daily. ডোজ বাড়ানো হবে = dose will be increased."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "রক্তচাপ: ১২২/৭৬ mmHg",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "রক্তচাপ = blood pressure. ১২২ = 122 (systolic). Extracted systolic component separately."
+          },
+          {
+            "original_text": "রক্তচাপ: ১২২/৭৬ mmHg",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "রক্তচাপ = blood pressure. ৭৬ = 76 (diastolic). Extracted diastolic component separately."
+          },
+          {
+            "original_text": "হৃদস্পন্দন: ৬২/মিনিট",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "হৃদস্পন্দন = heartbeat/heart rate. ৬২/মিনিট = 62 per minute."
+          },
+          {
+            "original_text": "ওজন: ৭৮ কেজি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "ওজন = weight. ৭৮ কেজি = 78 kg."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "উপবাস_গ্লুকোজ_mmol: 9.1",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "উপবাস_গ্লুকোজ translates to fasting glucose. Value 9.1 mmol/L is well above the upper reference limit of 5.5 mmol/L."
+          },
+          {
+            "original_text": "HbA1c: 7.9",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "HbA1c in English, value 7.9% exceeds the reference target of <7.0%."
+          },
+          {
+            "original_text": "ট্রোপোনিন_I_ng_mL: 0.04",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "Troponin I",
+              "icd10_code": null,
+              "omop_concept_id": "3016931",
+              "confidence": 0.97,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Troponin I",
+              "icd10_code": null,
+              "omop_concept_id": "3016931",
+              "confidence": 0.88,
+              "flag": "borderline_value_clinical_review"
+            },
+            "validation_reasoning": "The Bengali transliteration 'ট্রোপোনিন' correctly maps to Troponin I, and OMOP concept ID 3016931 (Troponin I [Mass/volume] in Serum or Plasma) is valid. However, the flag is adjusted from 'needs_review' to 'borderline_value_clinical_review' because 0.04 ng/mL sits at the 99th-percentile URL for many contemporary high-sensitivity assays, which is clinically significant in a post-STEMI context and warrants explicit documentation of assay type and serial trending per ACC/AHA NSTEMI guidelines.",
+            "final_icd10": null,
+            "final_omop": "3016931",
+            "final_confidence": 0.88,
+            "flag": "borderline_value_clinical_review",
+            "reasoning": "ট্রোপোনিন is Bengali transliteration of Troponin. Value 0.04 ng/mL is at the upper reference cutoff."
+          },
+          {
+            "original_text": "CK_MB_U_L: 18",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Creatine Kinase-MB",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.9,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Creatine Kinase MB isoenzyme [Enzymatic activity/volume] in Serum or Plasma",
+              "icd10_code": null,
+              "omop_concept_id": "3019900",
+              "confidence": 0.85,
+              "flag": null
+            },
+            "validation_reasoning": "OMOP concept ID 3019900 corresponds to 'Creatine kinase.MB [Enzymatic activity/volume] in Serum or Plasma' (LOINC 12187-7), which is the correct standard concept for CK-MB measured in U/L; the original mapping left omop_concept_id as null citing uncertainty, but this is a well-established LOINC-mapped OMOP concept. The standardized term is updated to the full LOINC descriptor for precision.",
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.85,
+            "flag": null,
+            "reasoning": "CK-MB is a cardiac enzyme marker. Value 18 U/L is within the reference range of <25 U/L. No exact OMOP concept ID available in the provided reference table."
+          },
+          {
+            "original_text": "মোট_কোলেস্টেরল_mmol: 5.8",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "মোট_কোলেস্টেরল translates to total cholesterol. 5.8 mmol/L exceeds the reference limit of 5.2 mmol/L."
+          },
+          {
+            "original_text": "LDL_mmol: 3.2",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "LDL Cholesterol",
+              "icd10_code": null,
+              "omop_concept_id": "3028437",
+              "confidence": 0.99,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "OMOP concept ID 3028437 (LDL Cholesterol [Mass/volume] in Serum or Plasma) is the correct standard concept; the mapping is accurate and the 'needs_review' flag is appropriately resolved to null as the clinical concern (elevated LDL post-STEMI) is a downstream clinical interpretation matter, not a coding ambiguity. The value 3.2 mmol/L should be documented as clinically critical per ESC dyslipidaemia guidelines (<1.4 mmol/L target post-ACS) but does not affect coding validity.",
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.99,
+            "flag": "needs_review",
+            "reasoning": "LDL in English. Value 3.2 mmol/L is more than double the high-risk target of <1.4 mmol/L. Critical finding post-STEMI."
+          },
+          {
+            "original_text": "HDL_mmol: 0.9",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "HDL in English. Value 0.9 mmol/L is below the male reference of >1.0 mmol/L."
+          },
+          {
+            "original_text": "ক্রিয়েটিনিন_µmol: 96",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "ক্রিয়েটিনিন is Bengali transliteration of creatinine. 96 µmol/L is within the reference range of 62-106."
+          }
+        ],
+        "variants": [
+          {
+            "original_text": "rsID=rs2383206  GENE=CDKN2A_CDKN2B  GT=1/1  CLNSIG=risk_factor  AF_SAS=0.52  PHENOTYPE=Myocardial_Infarction",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I21.9",
+            "final_omop": "4329847",
+            "final_confidence": 0.92,
+            "flag": null,
+            "reasoning": "9p21 locus variant (CDKN2A/CDKN2B) is a well-established risk factor for coronary artery disease and MI. Homozygous risk genotype (1/1) with high South Asian allele frequency (0.52). Directly relevant to this patient's STEMI history."
+          },
+          {
+            "original_text": "rsID=rs11206510  GENE=PCSK9  GT=1/1  CLNSIG=risk_factor  AF_SAS=0.18  PHENOTYPE=LDL_Cholesterol_MI",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "PCSK9 rs11206510 — LDL Cholesterol / MI risk factor (homozygous)",
+              "icd10_code": "I21.9",
+              "omop_concept_id": "4329847",
+              "confidence": 0.9,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "PCSK9 rs11206510 — LDL Cholesterol / Myocardial Infarction risk factor (homozygous)",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.75,
+              "flag": "variant_icd10_mapping_inappropriate"
+            },
+            "validation_reasoning": "ICD-10 code I21.9 (Acute myocardial infarction, unspecified) is a disease diagnosis code and must not be assigned to a germline genetic risk variant with ClinVar classification 'risk_factor'; genomic risk variants do not map to disease episode ICD-10 codes — the appropriate ICD-10 approach would be Z84.89 (Family history of other specified conditions) or Z13.6 (Encounter for screening for cardiovascular disorders) if coding is required, or left null. Additionally, OMOP concept ID 4329847 maps to 'Myocardial infarction' (SNOMED 22298006), which is a condition concept inappropriate for a variant record; no validated OMOP variant-level concept ID can be confirmed here, so it is set to null pending genomics domain review.",
+            "final_icd10": null,
+            "final_omop": null,
+            "final_confidence": 0.75,
+            "flag": "variant_icd10_mapping_inappropriate",
+            "reasoning": "PCSK9 variant associated with elevated LDL cholesterol and MI risk. Homozygous (1/1). May explain the persistently elevated LDL (3.2 mmol/L) despite high-dose Atorvastatin. Consider PCSK9 inhibitor therapy."
+          },
+          {
+            "original_text": "rsID=rs7903146  GENE=TCF7L2  GT=0/1  CLNSIG=risk_factor  AF_SAS=0.28  PHENOTYPE=Type_2_Diabetes",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "TCF7L2 rs7903146 is the strongest common genetic risk factor for T2DM. Heterozygous carrier (0/1). Consistent with the patient's recently diagnosed Type 2 Diabetes."
+          },
+          {
+            "original_text": "rsID=rs8050136  GENE=FTO  GT=0/1  CLNSIG=risk_factor  AF_SAS=0.22  PHENOTYPE=Obesity_T2D_risk",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E66.9",
+            "final_omop": "433736",
+            "final_confidence": 0.88,
+            "flag": null,
+            "reasoning": "FTO variant is a well-known genetic risk factor for obesity and T2DM. Heterozygous (0/1). Patient weighs 78 kg; BMI cannot be fully assessed without height but the genetic predisposition to obesity and T2DM is noted."
+          }
+        ]
+      }
+    },
+    "P008": {
+      "patient_id": "P008",
+      "language_detected": "hindi",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P008_hindi.txt",
+          "lab_results_P008.csv"
+        ],
+        "total_entities": 22,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:48:25.460184Z",
+        "input_tokens": 2985,
+        "output_tokens": 4808
+      },
+      "validation_summary": {
+        "entities_reviewed": 2,
+        "confirmed": 0,
+        "corrected": 2,
+        "flagged": 0
+      },
+      "flags": [
+        "LDL 1.8 mmol/L exceeds post-ACS target of <1.4 mmol/L despite clinical note stating target achieved — consider intensifying lipid-lowering therapy (e.g., adding ezetimibe or switching to higher-potency statin)",
+        "eGFR 62 is borderline — close to CKD Stage 3a; recommend serial monitoring given diabetes and CAD comorbidities",
+        "HbA1c 7.4% above standard target of <7.0% — consider therapy adjustment or tighter glycaemic control",
+        "BMI 27.1 indicates overweight status — lifestyle modification should be reinforced",
+        "Patient on dual antiplatelet therapy (DAPT) — assess duration appropriateness given angioplasty was in 2022 (approx 2 years prior)"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "टाइप 2 मधुमेह (8 वर्ष)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'टाइप 2 मधुमेह' is a direct Hindi transliteration/translation of 'Type 2 Diabetes Mellitus'. Duration of 8 years noted. Maps clearly to ICD-10 E11.9."
+          },
+          {
+            "original_text": "उच्च रक्तचाप (नियंत्रित)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I10",
+            "final_omop": "320128",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'उच्च रक्तचाप' literally means 'high blood pressure' in Hindi, mapping to essential hypertension. Noted as controlled."
+          },
+          {
+            "original_text": "कोरोनरी आर्टरी डिजीज (2022 में Angioplasty)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'कोरोनरी आर्टरी डिजीज' is a Hindi transliteration of 'Coronary Artery Disease'. History of angioplasty in 2022 confirms established CAD. Maps to ICD-10 I25.10."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "मेटफॉर्मिन 1000 मिग्रा — दो बार",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'मेटफॉर्मिन' is Hindi transliteration of 'Metformin'. 'मिग्रा' = mg. 'दो बार' = twice daily."
+          },
+          {
+            "original_text": "सीताग्लिप्टिन 100 मिग्रा — एक बार",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1580747",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'सीताग्लिप्टिन' is Hindi transliteration of 'Sitagliptin'. 'एक बार' = once daily."
+          },
+          {
+            "original_text": "अम्लोदिपिन 10 मिग्रा — सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1332418",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'अम्लोदिपिन' is Hindi transliteration of 'Amlodipine'. 'सुबह' = morning."
+          },
+          {
+            "original_text": "टेल्मिसार्टन 80 मिग्रा — सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1317640",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'टेल्मिसार्टन' is Hindi transliteration of 'Telmisartan'. 'सुबह' = morning."
+          },
+          {
+            "original_text": "एटोरवास्टेटिन 40 मिग्रा — रात को",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1545958",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'एटोरवास्टेटिन' is Hindi transliteration of 'Atorvastatin'. 'रात को' = at night."
+          },
+          {
+            "original_text": "क्लोपिडोग्रेल 75 मिग्रा — सुबह",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1322184",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'क्लोपिडोग्रेल' is Hindi transliteration of 'Clopidogrel'. Part of dual antiplatelet therapy post-angioplasty."
+          },
+          {
+            "original_text": "एस्पिरिन 75 मिग्रा — सुबह (dual antiplatelet)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1112807",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'एस्पिरिन' is Hindi transliteration of 'Aspirin'. Given as part of dual antiplatelet therapy (DAPT) with clopidogrel post-angioplasty."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "रक्तचाप: 128/78 mmHg (नियंत्रित)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'रक्तचाप' = blood pressure. Systolic component 128 mmHg is within the reference range of <130 mmHg. Described as 'नियंत्रित' (controlled)."
+          },
+          {
+            "original_text": "रक्तचाप: 128/78 mmHg (नियंत्रित)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "Diastolic component 78 mmHg extracted from the blood pressure reading. Within the reference range of <80 mmHg."
+          },
+          {
+            "original_text": "हृदय गति: 74/मिनट",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'हृदय गति' = heart rate. 74 beats per minute is within normal range."
+          },
+          {
+            "original_text": "वजन: 66 किग्रा",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'वजन' = weight, 'किग्रा' = kg. Body weight is 66 kg."
+          },
+          {
+            "original_text": "BMI: 27.1",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3038553",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "BMI of 27.1 kg/m2 indicates overweight status. Consistent with the weight of 66 kg in a 63-year-old female."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "HbA1c: 7.4% (लक्ष्य के करीब)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "HbA1c of 7.4% is above the reference of <7.0%. The Hindi note says 'close to target' indicating near-goal glycaemic control."
+          },
+          {
+            "original_text": "उपवास ग्लूकोज: 8.1 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'उपवास ग्लूकोज' = fasting glucose. Value of 8.1 mmol/L is significantly above the reference range of 3.9-5.5 mmol/L."
+          },
+          {
+            "original_text": "LDL: 1.8 mmol/L (लक्ष्य प्राप्त)",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "LDL Cholesterol",
+              "icd10_code": null,
+              "omop_concept_id": "3028437",
+              "confidence": 0.95,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "LDL Cholesterol",
+              "icd10_code": null,
+              "omop_concept_id": "3028437",
+              "confidence": 0.91,
+              "flag": "clinical_review_required"
+            },
+            "validation_reasoning": "The OMOP concept mapping for LDL Cholesterol (3028437) is correct, but the patient annotation 'लक्ष्य प्राप्त' (target achieved) is clinically inaccurate per ESC/ACC secondary prevention guidelines post-ACS, which mandate LDL <1.4 mmol/L (<55 mg/dL); 1.8 mmol/L exceeds this target and the flag should be escalated from needs_review to clinical_review_required to prompt treating physician reassessment of lipid-lowering therapy intensity.",
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 0.91,
+            "flag": "clinical_review_required",
+            "reasoning": "'लक्ष्य प्राप्त' = target achieved. However, the CSV reference indicates <1.4 mmol/L for post-ACS patients. LDL 1.8 exceeds this stricter secondary prevention target. Flagging for review."
+          },
+          {
+            "original_text": "HDL_mmol_L: 1.2",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "HDL of 1.2 mmol/L is at the threshold of the female reference range (>1.2). Available only from the CSV data."
+          },
+          {
+            "original_text": "क्रिएटिनिन: 88 µmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'क्रिएटिनिन' is Hindi transliteration of 'Creatinine'. Value 88 µmol/L is within the reference range of 44-97."
+          },
+          {
+            "original_text": "eGFR: 62",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Estimated Glomerular Filtration Rate (eGFR)",
+              "icd10_code": null,
+              "omop_concept_id": "3049187",
+              "confidence": 0.98,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Estimated Glomerular Filtration Rate (eGFR)",
+              "icd10_code": null,
+              "omop_concept_id": "3049187",
+              "confidence": 0.93,
+              "flag": "clinical_review_required"
+            },
+            "validation_reasoning": "The OMOP mapping is correct, but eGFR of 62 mL/min/1.73m² in a diabetic patient falls within CKD Stage G2 (60–89) and, per KDIGO 2022 guidelines, diabetes combined with eGFR <60 or declining trajectory warrants a CKD diagnosis code (N18.x) and more frequent monitoring; the flag should be upgraded to clinical_review_required to prompt nephrology evaluation and consideration of an N18.2 ICD-10 code if confirmed.",
+            "final_icd10": null,
+            "final_omop": "3049187",
+            "final_confidence": 0.93,
+            "flag": "clinical_review_required",
+            "reasoning": "eGFR of 62 mL/min/1.73m2 is just above the >60 reference threshold. In a diabetic patient, this warrants monitoring for progression of kidney disease."
+          }
+        ],
+        "variants": []
+      }
+    },
+    "P009": {
+      "patient_id": "P009",
+      "language_detected": "bengali",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P009_bengali.txt",
+          "lab_results_P009.csv"
+        ],
+        "total_entities": 21,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:49:26.488477Z",
+        "input_tokens": 3038,
+        "output_tokens": 5645
+      },
+      "validation_summary": {
+        "entities_reviewed": 6,
+        "confirmed": 5,
+        "corrected": 1,
+        "flagged": 0
+      },
+      "flags": [
+        "Severely elevated BNP (1240 pg/mL) with clinical signs of decompensation (elevated JVP, pitting edema) — consider intensification of diuretic therapy",
+        "CKD Stage 3b (eGFR 38, Cr 148 µmol/L) — cardiorenal syndrome likely; monitor renal function closely with current RAAS inhibition (ramipril + spironolactone)",
+        "Serum potassium 4.8 mmol/L (high-normal) on dual RAAS blockade (ramipril + spironolactone) — risk of hyperkalaemia; requires close monitoring",
+        "Anaemia (Hb 11.2 g/dL) in context of HFrEF + CKD — consider iron studies and erythropoiesis evaluation",
+        "Low-normal blood pressure (110/70 mmHg) with downward trend on multiple vasodilators — monitor for symptomatic hypotension",
+        "Implicit diagnosis: Chronic Kidney Disease Stage 3b not listed in diagnoses but present per lab values — should be formally documented"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "ক্রনিক হার্ট ফেইলিউর (HFrEF, EF ৩০%)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I50.20",
+            "final_omop": "316139",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "Bengali transliteration 'ক্রনিক হার্ট ফেইলিউর' directly corresponds to 'Chronic Heart Failure'. The parenthetical 'HFrEF, EF ৩০%' (30%) specifies reduced ejection fraction. Mapped to HFrEF ICD-10 I50.20."
+          },
+          {
+            "original_text": "করোনারি আর্টারি ডিজিজ (থ্রি-ভেসেল)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I25.10",
+            "final_omop": "317576",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'করোনারি আর্টারি ডিজিজ' is a Bengali transliteration of 'Coronary Artery Disease'. 'থ্রি-ভেসেল' means three-vessel disease, indicating severe multi-vessel coronary involvement."
+          },
+          {
+            "original_text": "অ্যাট্রিয়াল ফিব্রিলেশন (স্থায়ী)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "I48.91",
+            "final_omop": "313217",
+            "final_confidence": 0.96,
+            "flag": null,
+            "reasoning": "'অ্যাট্রিয়াল ফিব্রিলেশন' is Bengali transliteration of 'Atrial Fibrillation'. 'স্থায়ী' means 'permanent'. Mapped to unspecified AF code I48.91 as permanent AF does not have a distinct ICD-10 code in the reference."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "বিসোপ্রোলল ৫ মিগ্রা — দৈনিক",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1338005",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'বিসোপ্রোলল' is Bengali transliteration of 'Bisoprolol'. '৫ মিগ্রা' = 5 mg. 'দৈনিক' = daily."
+          },
+          {
+            "original_text": "স্পাইরোনোল্যাকটোন ২৫ মিগ্রা — দৈনিক",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "974166",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'স্পাইরোনোল্যাকটোন' is Bengali transliteration of 'Spironolactone'. '২৫ মিগ্রা' = 25 mg. 'দৈনিক' = daily."
+          },
+          {
+            "original_text": "ফুরোসেমাইড ৮০ মিগ্রা — সকালে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "956874",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'ফুরোসেমাইড' is Bengali transliteration of 'Furosemide'. '৮০ মিগ্রা' = 80 mg. 'সকালে' = in the morning."
+          },
+          {
+            "original_text": "ওয়ারফারিন ৩ মিগ্রা — দৈনিক (INR লক্ষ্য: ২–৩)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1310149",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'ওয়ারফারিন' is Bengali transliteration of 'Warfarin'. '৩ মিগ্রা' = 3 mg. 'দৈনিক' = daily. INR target 2–3 noted for atrial fibrillation anticoagulation."
+          },
+          {
+            "original_text": "অ্যাটোরভাস্টাটিন ৪০ মিগ্রা — রাতে",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1545958",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'অ্যাটোরভাস্টাটিন' is Bengali transliteration of 'Atorvastatin'. '৪০ মিগ্রা' = 40 mg. 'রাতে' = at night."
+          },
+          {
+            "original_text": "র‍্যামিপ্রিল ১০ মিগ্রা — দুইবার",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1308216",
+            "final_confidence": 0.96,
+            "flag": null,
+            "reasoning": "'র‍্যামিপ্রিল' is Bengali transliteration of 'Ramipril'. '১০ মিগ্রা' = 10 mg. 'দুইবার' = twice (daily implied)."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "রক্তচাপ: ১১০/৭০ mmHg (নিম্নমুখী প্রবণতা)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": null,
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'রক্তচাপ' means 'blood pressure'. ১১০/৭০ = 110/70. 'নিম্নমুখী প্রবণতা' = downward trend. Broken into systolic and diastolic components below."
+          },
+          {
+            "original_text": "১১০ mmHg (systolic)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "Extracted systolic component from Bengali BP reading '১১০/৭০ mmHg'. Mapped to OMOP systolic BP concept."
+          },
+          {
+            "original_text": "৭০ mmHg (diastolic)",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "Extracted diastolic component from Bengali BP reading '১১০/৭০ mmHg'. Mapped to OMOP diastolic BP concept."
+          },
+          {
+            "original_text": "হৃদস্পন্দন: ৭৮/মিনিট (অনিয়মিত)",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3027018",
+            "final_confidence": 0.97,
+            "flag": null,
+            "reasoning": "'হৃদস্পন্দন' means 'heart rate'. ৭৮ = 78. 'অনিয়মিত' means 'irregular', consistent with permanent AF diagnosis."
+          },
+          {
+            "original_text": "ওজন: ৬২ কেজি",
+            "language": "bengali",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'ওজন' means 'weight'. '৬২ কেজি' = 62 kg. Mapped to OMOP Body Weight concept."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "Na: 136",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019550",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "'Na' is standard abbreviation for sodium. Value 136 is within the provided reference range of 135-145 mmol/L, though at the lower end which is common in heart failure patients on diuretics."
+          },
+          {
+            "original_text": "K: 4.8",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Serum Potassium",
+              "icd10_code": null,
+              "omop_concept_id": "3023103",
+              "confidence": 0.95,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "'K' is the universally accepted chemical symbol for potassium; OMOP concept ID 3023103 correctly corresponds to Serum Potassium. The needs_review flag is clinically justified given that dual RAAS blockade (spironolactone + ramipril) significantly elevates hyperkalaemia risk even at high-normal values (4.8 mEq/L).",
+            "final_icd10": null,
+            "final_omop": "3023103",
+            "final_confidence": 0.95,
+            "flag": "needs_review",
+            "reasoning": "'K' is standard abbreviation for potassium. Value 4.8 is within 3.5-5.0 reference range but high-normal, which warrants monitoring given dual RAAS blockade with spironolactone and ramipril."
+          },
+          {
+            "original_text": "Cr_umol: 148",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Serum Creatinine",
+              "icd10_code": null,
+              "omop_concept_id": "3016723",
+              "confidence": 0.95,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "'Cr_umol' unambiguously denotes serum creatinine measured in µmol/L; OMOP concept ID 3016723 is the standard concept for Serum Creatinine. A value of 148 µmol/L is significantly above the upper reference limit (~106 µmol/L), consistent with renal impairment, warranting the needs_review flag especially in the context of nephrotoxic or renally-cleared medications.",
+            "final_icd10": null,
+            "final_omop": "3016723",
+            "final_confidence": 0.95,
+            "flag": "needs_review",
+            "reasoning": "'Cr_umol' maps to serum creatinine in µmol/L. Value 148 significantly exceeds the reference range of 62-106, indicating renal impairment."
+          },
+          {
+            "original_text": "eGFR: 38",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Estimated Glomerular Filtration Rate (eGFR)",
+              "icd10_code": null,
+              "omop_concept_id": "3049187",
+              "confidence": 0.97,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "eGFR is a well-established abbreviation; OMOP concept ID 3049187 correctly maps to eGFR. A value of 38 mL/min/1.73m² places this patient in KDIGO CKD Stage 3b (30–44), which is clinically significant for dose adjustment of renally-cleared agents and monitoring progression, fully justifying the needs_review flag.",
+            "final_icd10": null,
+            "final_omop": "3049187",
+            "final_confidence": 0.97,
+            "flag": "needs_review",
+            "reasoning": "eGFR of 38 is clearly below the reference of >60 and falls within CKD Stage 3b range. This is clinically significant in the context of heart failure and medication management."
+          },
+          {
+            "original_text": "BNP_pg_mL: 1240",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "B-type Natriuretic Peptide (BNP)",
+              "icd10_code": null,
+              "omop_concept_id": "3024929",
+              "confidence": 0.97,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "'BNP_pg_mL' unambiguously maps to B-type Natriuretic Peptide in pg/mL; OMOP concept ID 3024929 is the standard BNP concept. A value of 1240 pg/mL is markedly elevated (reference <100 pg/mL) and is consistent with severe HFrEF, confirming both the mapping and the clinical flag.",
+            "final_icd10": null,
+            "final_omop": "3024929",
+            "final_confidence": 0.97,
+            "flag": "needs_review",
+            "reasoning": "'BNP_pg_mL' maps to B-type Natriuretic Peptide. Value 1240 vastly exceeds the reference of <100 pg/mL, strongly correlating with the severe HFrEF diagnosis."
+          },
+          {
+            "original_text": "INR: 2.4",
+            "language": "english",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3023314",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "INR 2.4 is within the therapeutic target of 2.0-3.0 for permanent atrial fibrillation on warfarin. Clinical note also confirms this is within target."
+          },
+          {
+            "original_text": "Hb_g_dL: 11.2",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "Haemoglobin",
+              "icd10_code": null,
+              "omop_concept_id": "3000963",
+              "confidence": 0.97,
+              "flag": "needs_review"
+            },
+            "validation_status": "confirmed",
+            "corrected_mapping": null,
+            "validation_reasoning": "'Hb_g_dL' is a standard encoding for haemoglobin in g/dL; OMOP concept ID 3000963 correctly corresponds to Haemoglobin. A value of 11.2 g/dL is below the male lower reference limit (~13 g/dL), indicating mild-to-moderate anaemia, which is clinically significant in heart failure with CKD and merits the needs_review flag.",
+            "final_icd10": null,
+            "final_omop": "3000963",
+            "final_confidence": 0.97,
+            "flag": "needs_review",
+            "reasoning": "'Hb_g_dL' maps to haemoglobin in g/dL. Value 11.2 is below the male reference range of 13-17, indicating anaemia which is prevalent in heart failure with concomitant CKD."
+          },
+          {
+            "original_text": "WBC_x10_9: 7.8",
+            "language": "english",
+            "original_mapping": {
+              "standardized_english_term": "White Blood Cell Count",
+              "icd10_code": null,
+              "omop_concept_id": null,
+              "confidence": 0.9,
+              "flag": "no_standard_code"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "White Blood Cell Count",
+              "icd10_code": null,
+              "omop_concept_id": "3000905",
+              "confidence": 0.9,
+              "flag": null
+            },
+            "validation_reasoning": "OMOP concept ID 3000905 corresponds to 'Leukocytes [#/volume] in Blood' (i.e., White Blood Cell Count), the standard OMOP/LOINC-mapped concept for WBC in ×10⁹/L; the original entry left omop_concept_id as null due to an absence in the local reference table, but this concept is present in the OMOP vocabulary. Value 7.8 ×10⁹/L is within normal range (4–11 ×10⁹/L), so the no_standard_code flag can be removed.",
+            "final_icd10": null,
+            "final_omop": "3000905",
+            "final_confidence": 0.9,
+            "flag": null,
+            "reasoning": "'WBC_x10_9' maps to white blood cell count. Value 7.8 is within the normal reference range of 4-11 ×10⁹/L. No OMOP concept ID provided in reference table for WBC."
+          }
+        ],
+        "variants": []
+      }
+    },
+    "P010": {
+      "patient_id": "P010",
+      "language_detected": "hindi",
+      "harmonization_metadata": {
+        "model": "claude-opus-4-6",
+        "source_files": [
+          "clinical_note_P010_hindi.txt",
+          "lab_results_P010.csv"
+        ],
+        "total_entities": 16,
+        "low_confidence_count": 0,
+        "uncertain_count": 0,
+        "timestamp": "2026-03-08T21:50:06.672087Z",
+        "input_tokens": 3031,
+        "output_tokens": 3784
+      },
+      "validation_summary": {
+        "entities_reviewed": 1,
+        "confirmed": 0,
+        "corrected": 1,
+        "flagged": 0
+      },
+      "flags": [
+        "Newly diagnosed Type 2 Diabetes with HbA1c 8.1% — only started on Metformin 500 mg; may need dose escalation or combination therapy",
+        "Dyslipidemia pattern noted: elevated LDL (3.1 mmol/L), low HDL (1.1 mmol/L), elevated TG (2.1 mmol/L) — no lipid-lowering medication prescribed; consider statin given diabetic status and family history of MI",
+        "Pre-hypertension with BP 134/84 mmHg — both systolic and diastolic above targets; monitor closely",
+        "BMI 28.1 — overweight/obese by South Asian criteria; lifestyle modification advised",
+        "Strong family history: mother with T2DM, father with hypertension + MI at age 62 — elevated cardiovascular risk"
+      ],
+      "entity_audit_trail": {
+        "diagnoses": [
+          {
+            "original_text": "टाइप 2 मधुमेह मेलिटस (नया निदान)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "E11.9",
+            "final_omop": "201826",
+            "final_confidence": 0.98,
+            "flag": null,
+            "reasoning": "'टाइप 2 मधुमेह मेलिटस' is a direct Hindi transliteration of 'Type 2 Diabetes Mellitus'. 'नया निदान' means 'new diagnosis'. Maps clearly to ICD-10 E11.9 and OMOP 201826."
+          },
+          {
+            "original_text": "पूर्व-उच्च रक्तचाप",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": "R03.0",
+            "final_omop": "320128",
+            "final_confidence": 0.95,
+            "flag": null,
+            "reasoning": "'पूर्व-उच्च रक्तचाप' translates to 'pre-hypertension'. 'पूर्व' = pre, 'उच्च रक्तचाप' = high blood pressure/hypertension. BP reading of 134/84 mmHg supports this diagnosis. Mapped to ICD-10 R03.0 and OMOP 320128 per reference table."
+          },
+          {
+            "original_text": "BMI: 28.1",
+            "language": "mixed",
+            "original_mapping": {
+              "standardized_english_term": "Obesity",
+              "icd10_code": "E66.9",
+              "omop_concept_id": "433736",
+              "confidence": 0.75,
+              "flag": "needs_review"
+            },
+            "validation_status": "corrected",
+            "corrected_mapping": {
+              "standardized_english_term": "Overweight",
+              "icd10_code": "E66.3",
+              "omop_concept_id": null,
+              "confidence": 0.72,
+              "flag": "needs_review"
+            },
+            "validation_reasoning": "By WHO international standards, a BMI of 28.1 falls in the overweight range (25.0–29.9), not obesity (≥30.0); the appropriate ICD-10 code is E66.3 (Overweight) rather than E66.9 (Obesity, unspecified). While South Asian-specific thresholds may reclassify this as obesity, ICD-10 coding follows documented clinical diagnosis, and no explicit obesity diagnosis is recorded — the flag is retained pending clinician confirmation and ethnic-context documentation.",
+            "final_icd10": "E66.3",
+            "final_omop": null,
+            "final_confidence": 0.72,
+            "flag": "needs_review",
+            "reasoning": "BMI of 28.1 is in the overweight range (25-29.9) by WHO international standards, but for South Asian populations a BMI ≥27.5 is often classified as obese. Not explicitly diagnosed but clinically relevant. Flagging as it is borderline and not explicitly stated as a diagnosis."
+          }
+        ],
+        "medications": [
+          {
+            "original_text": "मेटफॉर्मिन 500 मिग्रा — सुबह खाने के साथ (2 सप्ताह बाद खुराक बढ़ाएं)",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "1503297",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'मेटफॉर्मिन' is the Hindi transliteration of 'Metformin'. '500 मिग्रा' = 500 mg. 'सुबह खाने के साथ' = with morning meal. '2 सप्ताह बाद खुराक बढ़ाएं' = increase dose after 2 weeks. Dose: 500 mg, Frequency: once daily with breakfast, with planned titration."
+          }
+        ],
+        "vitals": [
+          {
+            "original_text": "रक्तचाप: 134/84 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004249",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'रक्तचाप' means 'blood pressure'. Systolic component is 134 mmHg, which is above the reference of <130 mmHg, consistent with pre-hypertension diagnosis."
+          },
+          {
+            "original_text": "रक्तचाप: 134/84 mmHg",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3012888",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "Diastolic component of blood pressure is 84 mmHg, above the reference range of <80 mmHg."
+          },
+          {
+            "original_text": "वजन: 72 किग्रा",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3025315",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "'वजन' means 'weight' and 'किग्रा' means 'kg'. Body weight is 72 kg."
+          },
+          {
+            "original_text": "BMI: 28.1",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3038553",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "BMI of 28.1 kg/m² calculated from weight 72 kg and height 160 cm. Above normal range, classified as overweight (or obese by South Asian criteria ≥27.5)."
+          }
+        ],
+        "lab_values": [
+          {
+            "original_text": "उपवास रक्त शर्करा: 10.6 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004501",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'उपवास रक्त शर्करा' translates to 'fasting blood glucose'. 'उपवास' = fasting, 'रक्त' = blood, 'शर्करा' = sugar/glucose. Value of 10.6 mmol/L is significantly above the reference range of 3.9-5.5 mmol/L, consistent with diabetes diagnosis."
+          },
+          {
+            "original_text": "HbA1c: 8.1%",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3004410",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "HbA1c is already in English notation. Value of 8.1% is above the diabetic target of <7.0%, confirming newly diagnosed Type 2 diabetes with suboptimal glycemic control."
+          },
+          {
+            "original_text": "कुल कोलेस्ट्रॉल: 4.8 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3019900",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'कुल कोलेस्ट्रॉल' translates to 'total cholesterol'. 'कुल' = total, 'कोलेस्ट्रॉल' = cholesterol (transliteration). Value of 4.8 mmol/L is within the reference range of <5.2 mmol/L."
+          },
+          {
+            "original_text": "LDL: 3.1 mmol/L",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3028437",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "LDL cholesterol of 3.1 mmol/L exceeds the reference range of <2.6 mmol/L. This is clinically significant in a newly diagnosed diabetic patient, particularly with family history of MI."
+          },
+          {
+            "original_text": "HDL: 1.1 mmol/L",
+            "language": "mixed",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3007070",
+            "final_confidence": 1.0,
+            "flag": null,
+            "reasoning": "HDL cholesterol of 1.1 mmol/L is below the female reference of >1.2 mmol/L, indicating suboptimal cardiovascular protective cholesterol."
+          },
+          {
+            "original_text": "ट्राइग्लिसराइड: 2.1 mmol/L",
+            "language": "hindi",
+            "original_mapping": null,
+            "validation_status": null,
+            "corrected_mapping": null,
+            "validation_reasoning": null,
+            "final_icd10": null,
+            "final_omop": "3022192",
+            "final_confidence": 0.99,
+            "flag": null,
+            "reasoning": "'ट्राइग्लिसराइड' is the Hindi transliteration of 'triglyceride'. Value of 2.1 mmol/L exceeds the reference range of <1.7 mmol/L, indicating hypertriglyceridemia."
+          }
+        ],
+        "variants": []
+      }
+    }
+  }
+}

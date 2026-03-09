@@ -1,0 +1,14 @@
+##fileformat=VCFv4.2
+##fileDate=20240115
+##source=BioHarmonize_SyntheticGen_v1.0
+##reference=GRCh38
+##INFO=<ID=GENE,Number=1,Type=String,Description="Gene name">
+##INFO=<ID=CLNSIG,Number=1,Type=String,Description="Clinical significance">
+##INFO=<ID=AF_SAS,Number=1,Type=Float,Description="Allele frequency in South Asian population">
+##INFO=<ID=PHENOTYPE,Number=1,Type=String,Description="Associated phenotype">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	P004
+10	114758349	rs7903146	C	T	.	PASS	GENE=TCF7L2;CLNSIG=risk_factor;AF_SAS=0.28;PHENOTYPE=Type_2_Diabetes	GT	0/1
+11	2159775	rs5219	C	T	.	PASS	GENE=KCNJ11;CLNSIG=risk_factor;AF_SAS=0.38;PHENOTYPE=Type_2_Diabetes	GT	1/1
+6	20679709	rs9465871	C	T	.	PASS	GENE=CDKAL1;CLNSIG=risk_factor;AF_SAS=0.31;PHENOTYPE=Type_2_Diabetes	GT	0/1
+9	22125503	rs2383206	G	A	.	PASS	GENE=CDKN2A_CDKN2B;CLNSIG=risk_factor;AF_SAS=0.52;PHENOTYPE=Heart_Failure_CAD	GT	0/1

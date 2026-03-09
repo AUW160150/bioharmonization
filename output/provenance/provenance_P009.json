@@ -1,0 +1,348 @@
+{
+  "patient_id": "P009",
+  "language_detected": "bengali",
+  "entities": {
+    "demographics": {
+      "name": {
+        "original_text": "করিম শেখ",
+        "language": "bengali",
+        "standardized_english_term": "Karim Sheikh",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.95,
+        "reasoning": "Bengali name transliterated to English. 'করিম শেখ' is a common Bengali Muslim name.",
+        "flag": null
+      },
+      "age": {
+        "original_text": "৭০ বছর",
+        "language": "bengali",
+        "standardized_english_term": "70 years",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "Bengali numeral ৭০ = 70. 'বছর' means 'years'.",
+        "flag": null
+      },
+      "sex": {
+        "original_text": "পুরুষ",
+        "language": "bengali",
+        "standardized_english_term": "Male",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'পুরুষ' is the Bengali word for 'male'.",
+        "flag": null
+      }
+    },
+    "diagnoses": [
+      {
+        "original_text": "ক্রনিক হার্ট ফেইলিউর (HFrEF, EF ৩০%)",
+        "language": "mixed",
+        "standardized_english_term": "Heart Failure with Reduced Ejection Fraction (HFrEF), EF 30%",
+        "icd10_code": "I50.20",
+        "omop_concept_id": "316139",
+        "confidence": 0.97,
+        "reasoning": "Bengali transliteration 'ক্রনিক হার্ট ফেইলিউর' directly corresponds to 'Chronic Heart Failure'. The parenthetical 'HFrEF, EF ৩০%' (30%) specifies reduced ejection fraction. Mapped to HFrEF ICD-10 I50.20.",
+        "flag": null
+      },
+      {
+        "original_text": "করোনারি আর্টারি ডিজিজ (থ্রি-ভেসেল)",
+        "language": "bengali",
+        "standardized_english_term": "Coronary Artery Disease (Three-Vessel Disease)",
+        "icd10_code": "I25.10",
+        "omop_concept_id": "317576",
+        "confidence": 0.97,
+        "reasoning": "'করোনারি আর্টারি ডিজিজ' is a Bengali transliteration of 'Coronary Artery Disease'. 'থ্রি-ভেসেল' means three-vessel disease, indicating severe multi-vessel coronary involvement.",
+        "flag": null
+      },
+      {
+        "original_text": "অ্যাট্রিয়াল ফিব্রিলেশন (স্থায়ী)",
+        "language": "bengali",
+        "standardized_english_term": "Atrial Fibrillation (Permanent)",
+        "icd10_code": "I48.91",
+        "omop_concept_id": "313217",
+        "confidence": 0.96,
+        "reasoning": "'অ্যাট্রিয়াল ফিব্রিলেশন' is Bengali transliteration of 'Atrial Fibrillation'. 'স্থায়ী' means 'permanent'. Mapped to unspecified AF code I48.91 as permanent AF does not have a distinct ICD-10 code in the reference.",
+        "flag": null
+      }
+    ],
+    "medications": [
+      {
+        "original_text": "বিসোপ্রোলল ৫ মিগ্রা — দৈনিক",
+        "language": "bengali",
+        "standardized_english_term": "Bisoprolol 5 mg — once daily",
+        "icd10_code": null,
+        "omop_concept_id": "1338005",
+        "confidence": 0.97,
+        "reasoning": "'বিসোপ্রোলল' is Bengali transliteration of 'Bisoprolol'. '৫ মিগ্রা' = 5 mg. 'দৈনিক' = daily.",
+        "flag": null
+      },
+      {
+        "original_text": "স্পাইরোনোল্যাকটোন ২৫ মিগ্রা — দৈনিক",
+        "language": "bengali",
+        "standardized_english_term": "Spironolactone 25 mg — once daily",
+        "icd10_code": null,
+        "omop_concept_id": "974166",
+        "confidence": 0.97,
+        "reasoning": "'স্পাইরোনোল্যাকটোন' is Bengali transliteration of 'Spironolactone'. '২৫ মিগ্রা' = 25 mg. 'দৈনিক' = daily.",
+        "flag": null
+      },
+      {
+        "original_text": "ফুরোসেমাইড ৮০ মিগ্রা — সকালে",
+        "language": "bengali",
+        "standardized_english_term": "Furosemide 80 mg — in the morning",
+        "icd10_code": null,
+        "omop_concept_id": "956874",
+        "confidence": 0.97,
+        "reasoning": "'ফুরোসেমাইড' is Bengali transliteration of 'Furosemide'. '৮০ মিগ্রা' = 80 mg. 'সকালে' = in the morning.",
+        "flag": null
+      },
+      {
+        "original_text": "ওয়ারফারিন ৩ মিগ্রা — দৈনিক (INR লক্ষ্য: ২–৩)",
+        "language": "mixed",
+        "standardized_english_term": "Warfarin 3 mg — once daily (INR target: 2–3)",
+        "icd10_code": null,
+        "omop_concept_id": "1310149",
+        "confidence": 0.97,
+        "reasoning": "'ওয়ারফারিন' is Bengali transliteration of 'Warfarin'. '৩ মিগ্রা' = 3 mg. 'দৈনিক' = daily. INR target 2–3 noted for atrial fibrillation anticoagulation.",
+        "flag": null
+      },
+      {
+        "original_text": "অ্যাটোরভাস্টাটিন ৪০ মিগ্রা — রাতে",
+        "language": "bengali",
+        "standardized_english_term": "Atorvastatin 40 mg — at night",
+        "icd10_code": null,
+        "omop_concept_id": "1545958",
+        "confidence": 0.97,
+        "reasoning": "'অ্যাটোরভাস্টাটিন' is Bengali transliteration of 'Atorvastatin'. '৪০ মিগ্রা' = 40 mg. 'রাতে' = at night.",
+        "flag": null
+      },
+      {
+        "original_text": "র‍্যামিপ্রিল ১০ মিগ্রা — দুইবার",
+        "language": "bengali",
+        "standardized_english_term": "Ramipril 10 mg — twice daily",
+        "icd10_code": null,
+        "omop_concept_id": "1308216",
+        "confidence": 0.96,
+        "reasoning": "'র‍্যামিপ্রিল' is Bengali transliteration of 'Ramipril'. '১০ মিগ্রা' = 10 mg. 'দুইবার' = twice (daily implied).",
+        "flag": null
+      }
+    ],
+    "vitals": [
+      {
+        "original_text": "রক্তচাপ: ১১০/৭০ mmHg (নিম্নমুখী প্রবণতা)",
+        "language": "mixed",
+        "standardized_english_term": "Blood Pressure: 110/70 mmHg (downward trend)",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.97,
+        "reasoning": "'রক্তচাপ' means 'blood pressure'. ১১০/৭০ = 110/70. 'নিম্নমুখী প্রবণতা' = downward trend. Broken into systolic and diastolic components below.",
+        "flag": null
+      },
+      {
+        "original_text": "১১০ mmHg (systolic)",
+        "language": "mixed",
+        "standardized_english_term": "Systolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3004249",
+        "value": 110,
+        "unit": "mmHg",
+        "loinc": "8480-6",
+        "reference_range": null,
+        "interpretation": "Low-normal for age; note downward trend documented",
+        "confidence": 0.97,
+        "reasoning": "Extracted systolic component from Bengali BP reading '১১০/৭০ mmHg'. Mapped to OMOP systolic BP concept.",
+        "flag": null
+      },
+      {
+        "original_text": "৭০ mmHg (diastolic)",
+        "language": "mixed",
+        "standardized_english_term": "Diastolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3012888",
+        "value": 70,
+        "unit": "mmHg",
+        "loinc": "8462-4",
+        "reference_range": null,
+        "interpretation": "Low-normal; consistent with HFrEF on vasodilators",
+        "confidence": 0.97,
+        "reasoning": "Extracted diastolic component from Bengali BP reading '১১০/৭০ mmHg'. Mapped to OMOP diastolic BP concept.",
+        "flag": null
+      },
+      {
+        "original_text": "হৃদস্পন্দন: ৭৮/মিনিট (অনিয়মিত)",
+        "language": "bengali",
+        "standardized_english_term": "Heart Rate: 78/min (irregular)",
+        "icd10_code": null,
+        "omop_concept_id": "3027018",
+        "value": 78,
+        "unit": "/min",
+        "loinc": "8867-4",
+        "reference_range": "60-100",
+        "interpretation": "Within normal range but irregular rhythm consistent with atrial fibrillation",
+        "confidence": 0.97,
+        "reasoning": "'হৃদস্পন্দন' means 'heart rate'. ৭৮ = 78. 'অনিয়মিত' means 'irregular', consistent with permanent AF diagnosis.",
+        "flag": null
+      },
+      {
+        "original_text": "ওজন: ৬২ কেজি",
+        "language": "bengali",
+        "standardized_english_term": "Body Weight: 62 kg",
+        "icd10_code": null,
+        "omop_concept_id": "3025315",
+        "value": 62,
+        "unit": "kg",
+        "loinc": "29463-7",
+        "reference_range": null,
+        "interpretation": "Documented weight; important for HF fluid monitoring",
+        "confidence": 0.98,
+        "reasoning": "'ওজন' means 'weight'. '৬২ কেজি' = 62 kg. Mapped to OMOP Body Weight concept.",
+        "flag": null
+      }
+    ],
+    "lab_values": [
+      {
+        "original_text": "Na: 136",
+        "language": "english",
+        "standardized_english_term": "Serum Sodium",
+        "icd10_code": null,
+        "omop_concept_id": "3019550",
+        "value": 136,
+        "unit": "mmol/L",
+        "loinc": "2951-2",
+        "reference_range": "135-145",
+        "interpretation": "Within normal range (low-normal). Monitor in context of HF and diuretic use.",
+        "confidence": 0.95,
+        "reasoning": "'Na' is standard abbreviation for sodium. Value 136 is within the provided reference range of 135-145 mmol/L, though at the lower end which is common in heart failure patients on diuretics.",
+        "flag": null
+      },
+      {
+        "original_text": "K: 4.8",
+        "language": "english",
+        "standardized_english_term": "Serum Potassium",
+        "icd10_code": null,
+        "omop_concept_id": "3023103",
+        "value": 4.8,
+        "unit": "mmol/L",
+        "loinc": "2823-3",
+        "reference_range": "3.5-5.0",
+        "interpretation": "Within normal range but at upper end. Monitor closely given concurrent spironolactone and ramipril use which can both raise potassium.",
+        "confidence": 0.95,
+        "reasoning": "'K' is standard abbreviation for potassium. Value 4.8 is within 3.5-5.0 reference range but high-normal, which warrants monitoring given dual RAAS blockade with spironolactone and ramipril.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "Cr_umol: 148",
+        "language": "english",
+        "standardized_english_term": "Serum Creatinine",
+        "icd10_code": null,
+        "omop_concept_id": "3016723",
+        "value": 148,
+        "unit": "µmol/L",
+        "loinc": "2160-0",
+        "reference_range": "62-106",
+        "interpretation": "ABOVE normal range. Elevated creatinine indicates impaired renal function, consistent with eGFR of 38. Corresponds to approximately 1.67 mg/dL.",
+        "confidence": 0.95,
+        "reasoning": "'Cr_umol' maps to serum creatinine in µmol/L. Value 148 significantly exceeds the reference range of 62-106, indicating renal impairment.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "eGFR: 38",
+        "language": "english",
+        "standardized_english_term": "Estimated Glomerular Filtration Rate (eGFR)",
+        "icd10_code": null,
+        "omop_concept_id": "3049187",
+        "value": 38,
+        "unit": "mL/min/1.73m²",
+        "loinc": "62238-1",
+        "reference_range": ">60",
+        "interpretation": "BELOW normal. eGFR 38 corresponds to CKD Stage 3b (30-44 mL/min/1.73m²). Significant renal impairment, likely cardiorenal syndrome in the context of HFrEF.",
+        "confidence": 0.97,
+        "reasoning": "eGFR of 38 is clearly below the reference of >60 and falls within CKD Stage 3b range. This is clinically significant in the context of heart failure and medication management.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "BNP_pg_mL: 1240",
+        "language": "english",
+        "standardized_english_term": "B-type Natriuretic Peptide (BNP)",
+        "icd10_code": null,
+        "omop_concept_id": "3024929",
+        "value": 1240,
+        "unit": "pg/mL",
+        "loinc": "42637-9",
+        "reference_range": "<100",
+        "interpretation": "CRITICALLY ELEVATED. BNP 1240 pg/mL is >12x the upper limit of normal, indicating significant heart failure with volume overload. Consistent with HFrEF EF 30% and clinical signs of elevated JVP and pedal edema.",
+        "confidence": 0.97,
+        "reasoning": "'BNP_pg_mL' maps to B-type Natriuretic Peptide. Value 1240 vastly exceeds the reference of <100 pg/mL, strongly correlating with the severe HFrEF diagnosis.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "INR: 2.4",
+        "language": "english",
+        "standardized_english_term": "International Normalized Ratio (INR)",
+        "icd10_code": null,
+        "omop_concept_id": "3023314",
+        "value": 2.4,
+        "unit": null,
+        "loinc": "6301-6",
+        "reference_range": "2.0-3.0 (for AF)",
+        "interpretation": "Within therapeutic target range for atrial fibrillation anticoagulation. Also confirmed in clinical note as 'লক্ষ্যমাত্রার মধ্যে' (within target).",
+        "confidence": 0.98,
+        "reasoning": "INR 2.4 is within the therapeutic target of 2.0-3.0 for permanent atrial fibrillation on warfarin. Clinical note also confirms this is within target.",
+        "flag": null
+      },
+      {
+        "original_text": "Hb_g_dL: 11.2",
+        "language": "english",
+        "standardized_english_term": "Haemoglobin",
+        "icd10_code": null,
+        "omop_concept_id": "3000963",
+        "value": 11.2,
+        "unit": "g/dL",
+        "loinc": "718-7",
+        "reference_range": "13-17 (Male)",
+        "interpretation": "BELOW normal range for males. Anaemia (Hb 11.2 g/dL vs reference 13-17 g/dL). Common in HFrEF with CKD (anaemia of chronic disease / cardiorenal anaemia).",
+        "confidence": 0.97,
+        "reasoning": "'Hb_g_dL' maps to haemoglobin in g/dL. Value 11.2 is below the male reference range of 13-17, indicating anaemia which is prevalent in heart failure with concomitant CKD.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "WBC_x10_9: 7.8",
+        "language": "english",
+        "standardized_english_term": "White Blood Cell Count",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "value": 7.8,
+        "unit": "×10⁹/L",
+        "loinc": null,
+        "reference_range": "4-11",
+        "interpretation": "Within normal range.",
+        "confidence": 0.9,
+        "reasoning": "'WBC_x10_9' maps to white blood cell count. Value 7.8 is within the normal reference range of 4-11 ×10⁹/L. No OMOP concept ID provided in reference table for WBC.",
+        "flag": "no_standard_code"
+      }
+    ],
+    "variants": []
+  },
+  "flags": [
+    "Severely elevated BNP (1240 pg/mL) with clinical signs of decompensation (elevated JVP, pitting edema) — consider intensification of diuretic therapy",
+    "CKD Stage 3b (eGFR 38, Cr 148 µmol/L) — cardiorenal syndrome likely; monitor renal function closely with current RAAS inhibition (ramipril + spironolactone)",
+    "Serum potassium 4.8 mmol/L (high-normal) on dual RAAS blockade (ramipril + spironolactone) — risk of hyperkalaemia; requires close monitoring",
+    "Anaemia (Hb 11.2 g/dL) in context of HFrEF + CKD — consider iron studies and erythropoiesis evaluation",
+    "Low-normal blood pressure (110/70 mmHg) with downward trend on multiple vasodilators — monitor for symptomatic hypotension",
+    "Implicit diagnosis: Chronic Kidney Disease Stage 3b not listed in diagnoses but present per lab values — should be formally documented"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "clinical_note_P009_bengali.txt",
+      "lab_results_P009.csv"
+    ],
+    "total_entities": 21,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "timestamp": "2026-03-08T21:49:26.488477Z",
+    "input_tokens": 3038,
+    "output_tokens": 5645
+  }
+}

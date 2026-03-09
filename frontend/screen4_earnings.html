@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioHarmonize — Earnings & Transactions</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #D6D3CE; border-radius: 3px; }
+
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+    @keyframes barGrow { from { height:0; } to { height:var(--h); } }
+    @keyframes spin    { to { transform:rotate(360deg); } }
+    @keyframes fillArc { from { stroke-dashoffset:var(--full); } to { stroke-dashoffset:var(--dash); } }
+    @keyframes countUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+    .anim-1 { animation: fadeUp 0.5s ease both; }
+    .anim-2 { animation: fadeUp 0.5s ease 0.07s both; }
+    .anim-3 { animation: fadeUp 0.5s ease 0.14s both; }
+    .anim-4 { animation: fadeUp 0.5s ease 0.21s both; }
+    .anim-5 { animation: fadeUp 0.5s ease 0.28s both; }
+    .anim-6 { animation: fadeUp 0.5s ease 0.35s both; }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E7E5E0;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(28,25,23,0.04);
+    }
+
+    .metric-card {
+      background: #FFFFFF;
+      border: 1px solid #E7E5E0;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(28,25,23,0.04);
+      padding: 18px 20px;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .metric-card:hover {
+      box-shadow: 0 4px 16px rgba(28,25,23,0.08);
+      transform: translateY(-1px);
+    }
+
+    .tx-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 14px 0;
+      border-bottom: 1px solid #F5F4F0;
+      transition: background 0.15s ease;
+    }
+    .tx-row:last-child { border-bottom: none; }
+    .tx-row:hover { background: #FAFAF8; margin-inline: -20px; padding-inline: 20px; border-radius: 8px; }
+
+    .toggle-btn {
+      padding: 8px 22px;
+      border-radius: 9px;
+      border: 1.5px solid transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .toggle-active {
+      background: #1C1917;
+      color: #FFFFFF;
+      border-color: #1C1917;
+    }
+    .toggle-inactive {
+      background: transparent;
+      color: #78716C;
+      border-color: #E7E5E0;
+    }
+    .toggle-inactive:hover { background: #F5F4F0; color: #1C1917; }
+
+    .nav-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; color: #78716C;
+      cursor: pointer; transition: all 0.15s ease;
+      border: none; background: none; font-family: 'DM Sans', sans-serif;
+    }
+    .nav-link:hover { background: #F5F4F0; color: #1C1917; }
+    .nav-link.active { background: #F5F4F0; color: #1C1917; }
+
+    .bar-seg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 4px 4px 0 0;
+      height: var(--h);
+      animation: barGrow 0.6s cubic-bezier(0.22,1,0.36,1) var(--delay, 0s) both;
+    }
+
+    .tooltip-wrap { position: relative; }
+    .tooltip-wrap:hover .tooltip-box { display: block; }
+    .tooltip-box {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1C1917;
+      color: #FAFAF8;
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 12px;
+      white-space: nowrap;
+      z-index: 50;
+      box-shadow: 0 4px 16px rgba(28,25,23,0.25);
+    }
+    .tooltip-box::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1C1917;
+    }
+
+    .btn-outline {
+      padding: 8px 16px; background: transparent; color: #1C1917;
+      border: 1.5px solid #E7E5E0; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .btn-outline:hover { border-color: #1C1917; background: #F5F4F0; }
+
+    .donut-seg {
+      transition: stroke-dasharray 0.6s cubic-bezier(0.22,1,0.36,1),
+                  stroke-dashoffset 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const C = {
+  bg:'#FAFAF8', surface:'#FFFFFF', surface2:'#F5F4F0',
+  primary:'#1C1917', accent:'#0D9488', success:'#059669',
+  warning:'#D97706', error:'#DC2626', muted:'#78716C',
+  border:'#E7E5E0', subtle:'#A8A29E'
+};
+
+// ── Hospital data ─────────────────────────────────────────────────────────────
+const MONTHLY = [
+  { m:'Apr', gross:1800, fee:270 },
+  { m:'May', gross:2100, fee:315 },
+  { m:'Jun', gross:1650, fee:248 },
+  { m:'Jul', gross:2800, fee:420 },
+  { m:'Aug', gross:3200, fee:480 },
+  { m:'Sep', gross:2900, fee:435 },
+  { m:'Oct', gross:4100, fee:615 },
+  { m:'Nov', gross:4800, fee:720 },
+  { m:'Dec', gross:5200, fee:780 },
+  { m:'Jan', gross:6100, fee:915 },
+  { m:'Feb', gross:7400, fee:1110 },
+  { m:'Mar', gross:6190, fee:929 },
+];
+const GROSS_MAX = Math.max(...MONTHLY.map(d => d.gross));
+const AVG_NET = Math.round(MONTHLY.reduce((s,d) => s + (d.gross - d.fee), 0) / MONTHLY.length);
+
+const TX_HOSPITAL = [
+  { buyer:'Novo Nordisk',  dataset:'T2DM South Asia',   gross:2500, fee:375,  net:2125, status:'Paid',       date:'Mar 01' },
+  { buyer:'AstraZeneca',   dataset:'Cardio Cohort',      gross:1800, fee:270,  net:1530, status:'Paid',       date:'Mar 01' },
+  { buyer:'IQVIA',         dataset:'RWE Package',        gross:3200, fee:480,  net:2720, status:'Processing', date:'Mar 04' },
+  { buyer:'Roche',         dataset:'Mixed T2DM',         gross:2500, fee:375,  net:2125, status:'Paid',       date:'Feb 25' },
+  { buyer:'Biocon',        dataset:'South Asia CV',      gross:1200, fee:180,  net:1020, status:'Paid',       date:'Feb 20' },
+  { buyer:'Pfizer',        dataset:'Metabolic',          gross:4800, fee:720,  net:4080, status:'Pending',    date:'Apr 01' },
+];
+
+const PAYOUT_HISTORY = [
+  { amount:'$18,240', date:'Mar 1, 2025', ref:'PAY-2025-0312' },
+  { amount:'$16,890', date:'Feb 1, 2025', ref:'PAY-2025-0211' },
+  { amount:'$13,110', date:'Jan 1, 2025', ref:'PAY-2025-0108' },
+];
+
+// ── Pharma data ───────────────────────────────────────────────────────────────
+const DONUT_SEGMENTS = [
+  { label:'Type 2 Diabetes', value:48, color:'#0D9488' },
+  { label:'Cardiovascular',  value:27, color:'#059669' },
+  { label:'CKD / Renal',     value:15, color:'#0D9488' },
+  { label:'Metabolic',       value:10, color:'#D97706' },
+];
+
+const TX_PHARMA = [
+  { seller:'SSKM Kolkata',     dataset:'T2DM South Asia · BH-2024-0047',  spend:210000, access:'Expires Dec 2025', prov:true,  status:'Active'   },
+  { seller:'Fortis Memorial',  dataset:'Delhi Metabolic · BH-2024-0039',  spend:140000, access:'Expires Nov 2025', prov:true,  status:'Active'   },
+  { seller:'Apollo Hospitals', dataset:'CVD Cohort · BH-2024-0028',       spend: 95000, access:'Expires Sep 2025', prov:false, status:'Active'   },
+  { seller:'BIRDEM General',   dataset:'Bangladesh T2DM · BH-2024-0031',  spend: 72000, access:'Expired Oct 2024', prov:true,  status:'Expired'  },
+  { seller:'PGIMER',           dataset:'CKD Registry · BH-2023-0019',     spend:160000, access:'Renew by May 2025',prov:true,  status:'Expiring' },
+];
+
+// ── animCount helper ──────────────────────────────────────────────────────────
+function animCount(setter, target, duration = 900, prefix = '', suffix = '') {
+  const start = Date.now();
+  const raf = () => {
+    const t = Math.min((Date.now() - start) / duration, 1);
+    const e = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(e * target);
+    setter(prefix + val.toLocaleString() + suffix);
+    if (t < 1) requestAnimationFrame(raf);
+  };
+  requestAnimationFrame(raf);
+}
+
+// ── Bar chart ─────────────────────────────────────────────────────────────────
+function BarChart({ data, avgNet, chartReady }) {
+  const W = 580, H = 180, pad = { t:14, b:28, l:48, r:12 };
+  const plotH = H - pad.t - pad.b;
+  const plotW = W - pad.l - pad.r;
+  const barW  = (plotW / data.length) * 0.55;
+  const gap   = plotW / data.length;
+
+  // Average net line Y
+  const avgY  = pad.t + plotH - (avgNet / GROSS_MAX) * plotH;
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow:'visible' }}>
+      {/* Y grid */}
+      {[0, 0.25, 0.5, 0.75, 1].map(f => {
+        const y = pad.t + plotH * (1 - f);
+        const val = Math.round(f * GROSS_MAX);
+        return (
+          <g key={f}>
+            <line x1={pad.l} y1={y} x2={W - pad.r} y2={y}
+              stroke={C.border} strokeWidth="0.7" strokeDasharray="3,3"/>
+            <text x={pad.l - 6} y={y + 4} textAnchor="end"
+              style={{ fontSize:9.5, fill:C.subtle, fontFamily:'DM Mono' }}>
+              {val >= 1000 ? `$${(val/1000).toFixed(0)}k` : `$${val}`}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Average net dashed line */}
+      {chartReady && (
+        <g style={{ animation:'fadeIn 0.5s ease 0.8s both', opacity:0 }}>
+          <line x1={pad.l} y1={avgY} x2={W - pad.r} y2={avgY}
+            stroke={C.warning} strokeWidth="1.3" strokeDasharray="5,4"/>
+          <rect x={W - pad.r - 58} y={avgY - 11} width={54} height={14}
+            rx="3" fill={C.warning} fillOpacity="0.12"/>
+          <text x={W - pad.r - 31} y={avgY} textAnchor="middle" dominantBaseline="middle"
+            style={{ fontSize:9, fill:C.warning, fontFamily:'DM Mono', fontWeight:600 }}>
+            avg ${(avgNet/1000).toFixed(1)}k
+          </text>
+        </g>
+      )}
+
+      {/* Bars */}
+      {data.map((d, i) => {
+        const x    = pad.l + i * gap + gap / 2 - barW / 2;
+        const netH = ((d.gross - d.fee) / GROSS_MAX) * plotH;
+        const feeH = (d.fee / GROSS_MAX) * plotH;
+        const yNet = pad.t + plotH - netH - feeH;
+        const yFee = pad.t + plotH - feeH;
+        const delay = `${0.05 + i * 0.04}s`;
+
+        return (
+          <g key={d.m} className="tooltip-wrap" style={{ cursor:'default' }}>
+            {/* Fee segment (top, lighter) */}
+            {chartReady && (
+              <rect x={x} y={yFee} width={barW} height={feeH}
+                fill={C.accent} fillOpacity="0.3" rx="0"
+                style={{ animation:`fadeIn 0.4s ease ${delay} both` }}/>
+            )}
+            {/* Net segment (bottom, solid) */}
+            {chartReady && (
+              <rect x={x} y={yNet + feeH} width={barW}
+                height={netH}
+                fill={C.accent}
+                rx="0"
+                style={{
+                  '--h': `${netH}px`,
+                  '--delay': delay,
+                  transformOrigin: `${x + barW/2}px ${pad.t + plotH}px`,
+                  transformBox: 'fill-box',
+                  animation: `barGrow 0.55s cubic-bezier(0.22,1,0.36,1) ${delay} both`,
+                  transformOrigin2: 'bottom',
+                }}/>
+            )}
+            {/* Rounded top cap */}
+            {chartReady && (
+              <rect x={x} y={yNet} width={barW} height={4}
+                fill={C.accent} rx="2"
+                style={{ animation:`fadeIn 0.3s ease ${parseFloat(delay)+0.3}s both`, opacity:0 }}/>
+            )}
+            {/* X label */}
+            <text x={x + barW/2} y={H - 8} textAnchor="middle"
+              style={{ fontSize:9.5, fill:C.muted, fontFamily:'DM Sans' }}>{d.m}</text>
+
+            {/* Tooltip */}
+            <foreignObject x={x - 60} y={pad.t - 80} width={150} height={72}
+              style={{ pointerEvents:'none', overflow:'visible' }}>
+              <div xmlns="http://www.w3.org/1999/xhtml" className="tooltip-box"
+                style={{ display:'none', position:'relative', left:'50%', transform:'translateX(-50%)',
+                  bottom:'auto', top:0 }}>
+                <div style={{ fontWeight:700, marginBottom:3, color:'#FAFAF8' }}>{d.m} 2024</div>
+                <div>Gross: <span style={{ fontFamily:'DM Mono', color:'#D1FAE5' }}>${d.gross.toLocaleString()}</span></div>
+                <div>Fee (15%): <span style={{ fontFamily:'DM Mono', color:'#FDE68A' }}>−${d.fee.toLocaleString()}</span></div>
+                <div>Net: <span style={{ fontFamily:'DM Mono', color:'#D1FAE5' }}>${(d.gross-d.fee).toLocaleString()}</span></div>
+              </div>
+            </foreignObject>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// ── Donut chart ───────────────────────────────────────────────────────────────
+function DonutChart({ segments, donutReady }) {
+  const r = 60, cx = 90, cy = 80, stroke = 28;
+  const circ = 2 * Math.PI * r;
+
+  let cumulative = 0;
+  const total = segments.reduce((s, d) => s + d.value, 0);
+
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:24 }}>
+      <svg width={180} height={160} viewBox={`0 0 ${cx*2} ${cy*2+20}`}>
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke={C.surface2} strokeWidth={stroke}/>
+        {segments.map((seg, i) => {
+          const pct    = seg.value / total;
+          const dash   = circ * pct;
+          const offset = circ * (1 - cumulative);
+          cumulative  += pct;
+          const delay  = `${0.3 + i * 0.15}s`;
+
+          return (
+            <circle key={seg.label}
+              cx={cx} cy={cy} r={r}
+              fill="none"
+              stroke={seg.color}
+              strokeWidth={stroke}
+              strokeDasharray={`${donutReady ? dash : 0} ${circ}`}
+              strokeDashoffset={offset}
+              style={{
+                transition: `stroke-dasharray 0.7s cubic-bezier(0.22,1,0.36,1) ${delay}`,
+                transform: 'rotate(-90deg)',
+                transformOrigin: `${cx}px ${cy}px`,
+              }}/>
+          );
+        })}
+        {/* Centre label */}
+        <text x={cx} y={cy - 4} textAnchor="middle"
+          style={{ fontSize:18, fontFamily:'DM Mono', fontWeight:500, fill:C.primary }}>
+          $677K
+        </text>
+        <text x={cx} y={cy + 13} textAnchor="middle"
+          style={{ fontSize:9.5, fill:C.muted, fontFamily:'DM Sans' }}>
+          total spend
+        </text>
+      </svg>
+
+      {/* Legend */}
+      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        {segments.map(seg => (
+          <div key={seg.label} style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ width:10, height:10, borderRadius:'50%', background:seg.color, flexShrink:0 }}/>
+            <div>
+              <div style={{ fontSize:12.5, fontWeight:500, color:C.primary }}>{seg.label}</div>
+              <div style={{ fontSize:11, fontFamily:'DM Mono', color:C.muted }}>{seg.value}%</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Status badge ──────────────────────────────────────────────────────────────
+function StatusBadge({ status }) {
+  const map = {
+    'Paid':       { bg:'#F0FDF4', border:'#BBF7D0', color:'#059669', icon:'✅' },
+    'Processing': { bg:'#EFF6FF', border:'#BFDBFE', color:'#2563EB', icon:'🔄' },
+    'Pending':    { bg:'#FFFBEB', border:'#FDE68A', color:'#D97706', icon:'⏳' },
+    'Active':     { bg:'rgba(13,148,136,0.08)', border:'rgba(13,148,136,0.25)', color:'#0D9488', icon:'●' },
+    'Expired':    { bg:'#FFF1F2', border:'#FECDD3', color:'#E11D48', icon:'✗' },
+    'Expiring':   { bg:'#FFFBEB', border:'#FDE68A', color:'#D97706', icon:'⚠' },
+  };
+  const s = map[status] || map['Pending'];
+  return (
+    <span style={{ display:'inline-flex', alignItems:'center', gap:4,
+      fontSize:11.5, fontWeight:600, padding:'3px 8px', borderRadius:6,
+      background:s.bg, border:`1px solid ${s.border}`, color:s.color }}>
+      <span style={{ fontSize:10 }}>{s.icon}</span>
+      {status}
+    </span>
+  );
+}
+
+// ── Main App ──────────────────────────────────────────────────────────────────
+function App() {
+  const initView = new URLSearchParams(window.location.search).get('view') === 'pharma' ? 'pharma' : 'hospital';
+  const [view, setView]             = useState(initView); // 'hospital' | 'pharma'
+  const [chartReady, setChartReady] = useState(false);
+  const [donutReady, setDonutReady] = useState(false);
+
+  // Metric counter states
+  const [m1, setM1] = useState('$0');
+  const [m2, setM2] = useState('0');
+  const [m3, setM3] = useState('0');
+  const [m4, setM4] = useState('$0');
+
+  // Pharma metric states
+  const [p1, setP1] = useState('$0');
+  const [p2, setP2] = useState('0');
+  const [p3, setP3] = useState('0');
+
+  useEffect(() => {
+    if (view === 'hospital') {
+      setM1('$0'); setM2('0'); setM3('0'); setM4('$0');
+      setChartReady(false);
+      setTimeout(() => {
+        animCount(setM1, 48240, 900, '$');
+        animCount(setM2, 3, 400, '', '');
+        animCount(setM3, 847, 800, '', '');
+        animCount(setM4, 12400, 700, '$');
+        setTimeout(() => setChartReady(true), 400);
+      }, 100);
+    } else {
+      setP1('$0'); setP2('0'); setP3('0');
+      setDonutReady(false);
+      setTimeout(() => {
+        animCount(setP1, 677000, 900, '$');
+        animCount(setP2, 5, 400, '', '');
+        animCount(setP3, 2, 300, '', '');
+        setTimeout(() => setDonutReady(true), 500);
+      }, 100);
+    }
+  }, [view]);
+
+  return (
+    <div style={{ minHeight:'100vh', background:C.bg, display:'flex', flexDirection:'column' }}>
+
+      {/* ── Nav ───────────────────────────────────────────────────────────── */}
+      <nav style={{ height:56, background:C.surface, borderBottom:`1px solid ${C.border}`,
+        display:'flex', alignItems:'center', paddingInline:24, gap:0,
+        position:'sticky', top:0, zIndex:100 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer', marginRight:32 }}
+          onClick={() => window.location.href='screen0_landing.html'}>
+          <div style={{ width:28, height:28, borderRadius:7,
+            background:'linear-gradient(135deg,#0D9488,#059669)',
+            display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <circle cx="7.5" cy="7.5" r="5.5" stroke="white" strokeWidth="1.5"/>
+              <path d="M5 7.5 C5 5.5 6 4 7.5 4 S10 5.5 10 7.5 S9 11 7.5 11 S5 9.5 5 7.5Z"
+                fill="white" fillOpacity="0.5"/>
+            </svg>
+          </div>
+          <span style={{ fontFamily:'Playfair Display', fontSize:15, fontWeight:600, color:C.primary }}>
+            BioHarmonize
+          </span>
+        </div>
+
+        <button className="nav-link" onClick={() => window.location.href='screen1a_hospital.html'}>
+          Dashboard
+        </button>
+        <button className="nav-link" onClick={() => window.location.href='screen2_pipeline.html'}>
+          Pipeline
+        </button>
+        <button className="nav-link" onClick={() => window.location.href='screen3_results.html'}>
+          Marketplace
+        </button>
+        <button className="nav-link active">
+          Earnings
+        </button>
+
+        <div style={{ flex:1 }}/>
+
+        {/* View toggle */}
+        <div style={{ display:'flex', gap:6, background:C.surface2,
+          padding:'4px', borderRadius:10, border:`1px solid ${C.border}` }}>
+          <button className={`toggle-btn ${view==='hospital'?'toggle-active':'toggle-inactive'}`}
+            onClick={() => setView('hospital')}>
+            Hospital View
+          </button>
+          <button className={`toggle-btn ${view==='pharma'?'toggle-active':'toggle-inactive'}`}
+            onClick={() => setView('pharma')}>
+            Pharma View
+          </button>
+        </div>
+      </nav>
+
+      {/* ── Content ───────────────────────────────────────────────────────── */}
+      <div style={{ flex:1, overflowY:'auto', padding:'28px 28px 40px' }}>
+
+        {view === 'hospital' ? (
+
+          /* ════════════ HOSPITAL VIEW ════════════ */
+          <div style={{ maxWidth:1100, margin:'0 auto' }}>
+
+            {/* Page heading */}
+            <div className="anim-1" style={{ marginBottom:24 }}>
+              <button onClick={() => window.location.href='screen1a_hospital.html'}
+                style={{ display:'inline-flex', alignItems:'center', gap:6, marginBottom:12,
+                  background:'none', border:'none', cursor:'pointer', padding:0,
+                  fontSize:12.5, color:C.muted, fontFamily:'DM Sans', transition:'color 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.color=C.primary}
+                onMouseLeave={e => e.currentTarget.style.color=C.muted}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Back to Dashboard
+              </button>
+              <h1 style={{ fontFamily:'Playfair Display', fontSize:24, fontWeight:600, color:C.primary }}>
+                Earnings & Payouts
+              </h1>
+              <p style={{ fontSize:13.5, color:C.muted, marginTop:4 }}>
+                SSKM Kolkata · Dataset revenue through BioHarmonize Marketplace
+              </p>
+            </div>
+
+            {/* ── Metric cards ─────────────────────────────────────────── */}
+            <div className="anim-2" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)',
+              gap:14, marginBottom:24 }}>
+              {[
+                { label:'Total Earned', value:m1, sub:'All time', icon:'💰', accent:C.success },
+                { label:'Active Datasets', value:m2, sub:'Listed on marketplace', icon:'📦', accent:C.accent },
+                { label:'Queries Served', value:m3, sub:'Last 90 days', icon:'🔍', accent:'#0D9488' },
+                { label:'Next Payout', value:m4, sub:'April 1, 2025', icon:'📅', accent:C.warning },
+              ].map(card => (
+                <div key={card.label} className="metric-card">
+                  <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between',
+                    marginBottom:10 }}>
+                    <span style={{ fontSize:20 }}>{card.icon}</span>
+                    <div style={{ width:8, height:8, borderRadius:'50%', background:card.accent }}/>
+                  </div>
+                  <div style={{ fontFamily:'DM Mono', fontSize:24, fontWeight:500,
+                    color:C.primary, marginBottom:3, animation:'countUp 0.5s ease both' }}>
+                    {card.value}
+                  </div>
+                  <div style={{ fontSize:11.5, fontWeight:600, color:C.primary, marginBottom:2 }}>
+                    {card.label}
+                  </div>
+                  <div style={{ fontSize:11, color:C.subtle }}>{card.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* ── Middle row ───────────────────────────────────────────── */}
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 300px', gap:18, marginBottom:22 }}>
+
+              {/* Bar chart */}
+              <div className="card anim-3" style={{ padding:20 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between',
+                  marginBottom:16 }}>
+                  <div>
+                    <h2 style={{ fontSize:14.5, fontWeight:600, color:C.primary }}>Monthly Revenue</h2>
+                    <p style={{ fontSize:12, color:C.muted, marginTop:2 }}>Apr 2024 – Mar 2025</p>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                      <div style={{ width:10, height:10, borderRadius:2, background:C.accent }}/>
+                      <span style={{ fontSize:11, color:C.muted }}>Net revenue</span>
+                    </div>
+                    <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                      <div style={{ width:10, height:10, borderRadius:2, background:C.accent, opacity:0.3 }}/>
+                      <span style={{ fontSize:11, color:C.muted }}>Platform fee</span>
+                    </div>
+                    <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                      <div style={{ width:18, height:2, background:C.warning, borderRadius:1 }}
+                        style={{ borderTop:`2px dashed ${C.warning}` }}/>
+                      <span style={{ fontSize:11, color:C.muted }}>Avg net</span>
+                    </div>
+                  </div>
+                </div>
+                <BarChart data={MONTHLY} avgNet={AVG_NET} chartReady={chartReady}/>
+              </div>
+
+              {/* Stripe payout panel */}
+              <div className="anim-4" style={{ display:'flex', flexDirection:'column', gap:14 }}>
+
+                {/* Stripe card */}
+                <div className="card" style={{ padding:18 }}>
+                  {/* Stripe logo (wordmark SVG) */}
+                  <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
+                    <svg width="42" height="17" viewBox="0 0 60 24" fill="none">
+                      <path d="M 0 0 C 6.8 0 11 3.3 11 8.3 C 11 14 7 16 2.5 17 L 0 17.5 L 0 23 L -6 23 L -6 0 Z M 0 12.5 C 2.5 12 4.5 10.5 4.5 8.3 C 4.5 6 3 4.8 0 4.8 Z" fill="#635BFF" transform="translate(6,1)"/>
+                      <text x="18" y="16" style={{ fontFamily:'sans-serif', fontSize:14, fontWeight:700, fill:'#635BFF' }}>stripe</text>
+                    </svg>
+                    <span style={{ fontSize:11, color:C.subtle }}>Payments powered by Stripe</span>
+                  </div>
+
+                  <div style={{ background:C.surface2, borderRadius:9, padding:'12px 14px', marginBottom:12 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                      <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                        <rect x="0.5" y="0.5" width="17" height="11" rx="1.5" stroke={C.muted}/>
+                        <rect x="0" y="3" width="18" height="3" fill={C.muted} fillOpacity="0.3"/>
+                        <rect x="2" y="7.5" width="5" height="2" rx="0.5" fill={C.muted} fillOpacity="0.4"/>
+                      </svg>
+                      <span style={{ fontSize:12.5, color:C.primary, fontFamily:'DM Mono' }}>
+                        •••• •••• •••• 4821
+                      </span>
+                    </div>
+                    <div style={{ fontSize:11.5, color:C.muted }}>
+                      Standard Chartered · INR account
+                    </div>
+                  </div>
+
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between',
+                    padding:'10px 0', borderTop:`1px solid ${C.border}` }}>
+                    <div>
+                      <div style={{ fontSize:11.5, color:C.muted }}>Next payout</div>
+                      <div style={{ fontSize:14, fontWeight:600, color:C.primary, fontFamily:'DM Mono', marginTop:2 }}>
+                        $12,400
+                      </div>
+                    </div>
+                    <div style={{ textAlign:'right' }}>
+                      <div style={{ fontSize:11.5, color:C.muted }}>Date</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:C.warning, marginTop:2 }}>
+                        April 1, 2025
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payout history */}
+                <div className="card" style={{ padding:16 }}>
+                  <h3 style={{ fontSize:12.5, fontWeight:600, color:C.primary, marginBottom:12 }}>
+                    Payout History
+                  </h3>
+                  {PAYOUT_HISTORY.map((p, i) => (
+                    <div key={p.ref} style={{ display:'flex', alignItems:'center',
+                      justifyContent:'space-between', padding:'9px 0',
+                      borderBottom: i < PAYOUT_HISTORY.length-1 ? `1px solid ${C.border}` : 'none' }}>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:600, color:C.primary,
+                          fontFamily:'DM Mono' }}>{p.amount}</div>
+                        <div style={{ fontSize:11, color:C.subtle, marginTop:1 }}>{p.date}</div>
+                      </div>
+                      <div style={{ textAlign:'right' }}>
+                        <span style={{ fontSize:10.5, fontFamily:'DM Mono', color:C.subtle }}>{p.ref}</span>
+                        <div style={{ marginTop:3 }}>
+                          <span style={{ fontSize:10.5, padding:'2px 7px', borderRadius:4,
+                            background:'#F0FDF4', border:'1px solid #BBF7D0',
+                            color:'#059669', fontWeight:600 }}>✓ Settled</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ── Transactions table ────────────────────────────────────── */}
+            <div className="card anim-5" style={{ padding:20 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between',
+                marginBottom:16 }}>
+                <h2 style={{ fontSize:14.5, fontWeight:600, color:C.primary }}>
+                  Transaction Ledger
+                </h2>
+                <button className="btn-outline">Export CSV</button>
+              </div>
+
+              {/* Table header */}
+              <div style={{ display:'grid', gridTemplateColumns:'1.6fr 1.8fr 80px 80px 80px 100px 80px',
+                gap:0, padding:'8px 0', borderBottom:`2px solid ${C.border}`,
+                fontSize:11, fontWeight:700, color:C.muted,
+                textTransform:'uppercase', letterSpacing:'0.07em' }}>
+                {['Buyer','Dataset','Gross','Fee','Net','Date','Status'].map(h => (
+                  <div key={h} style={{ paddingInline:8 }}>{h}</div>
+                ))}
+              </div>
+
+              {TX_HOSPITAL.map((tx, i) => (
+                <div key={i} className="tx-row"
+                  style={{ display:'grid',
+                    gridTemplateColumns:'1.6fr 1.8fr 80px 80px 80px 100px 80px',
+                    gap:0, animationDelay:`${0.05+i*0.06}s`,
+                    animation:`fadeUp 0.4s ease ${0.05+i*0.06}s both` }}>
+                  <div style={{ paddingInline:8 }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:C.primary }}>{tx.buyer}</div>
+                  </div>
+                  <div style={{ paddingInline:8 }}>
+                    <div style={{ fontSize:12.5, color:C.muted }}>{tx.dataset}</div>
+                  </div>
+                  <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:13, color:C.primary }}>
+                    ${tx.gross.toLocaleString()}
+                  </div>
+                  <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:13, color:C.warning }}>
+                    −${tx.fee.toLocaleString()}
+                  </div>
+                  <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:13,
+                    fontWeight:600, color:C.success }}>
+                    ${tx.net.toLocaleString()}
+                  </div>
+                  <div style={{ paddingInline:8, fontSize:12, color:C.muted }}>
+                    {tx.date}
+                  </div>
+                  <div style={{ paddingInline:8 }}>
+                    <StatusBadge status={tx.status}/>
+                  </div>
+                </div>
+              ))}
+
+              {/* Footer totals */}
+              <div style={{ display:'grid',
+                gridTemplateColumns:'1.6fr 1.8fr 80px 80px 80px 100px 80px',
+                gap:0, padding:'12px 0 0', borderTop:`2px solid ${C.border}`, marginTop:4 }}>
+                <div style={{ paddingInline:8, gridColumn:'1/3' }}>
+                  <span style={{ fontSize:12, fontWeight:700, color:C.primary }}>March 2025 Total</span>
+                </div>
+                <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:13, fontWeight:600, color:C.primary }}>
+                  ${TX_HOSPITAL.reduce((s,t)=>s+t.gross,0).toLocaleString()}
+                </div>
+                <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:13, fontWeight:600, color:C.warning }}>
+                  −${TX_HOSPITAL.reduce((s,t)=>s+t.fee,0).toLocaleString()}
+                </div>
+                <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:14, fontWeight:700, color:C.success }}>
+                  ${TX_HOSPITAL.reduce((s,t)=>s+t.net,0).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        ) : (
+
+          /* ════════════ PHARMA VIEW ════════════ */
+          <div style={{ maxWidth:1100, margin:'0 auto' }}>
+
+            {/* Page heading */}
+            <div className="anim-1" style={{ marginBottom:24 }}>
+              <button onClick={() => window.location.href='screen1b_pharma.html'}
+                style={{ display:'inline-flex', alignItems:'center', gap:6, marginBottom:12,
+                  background:'none', border:'none', cursor:'pointer', padding:0,
+                  fontSize:12.5, color:C.muted, fontFamily:'DM Sans', transition:'color 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.color=C.primary}
+                onMouseLeave={e => e.currentTarget.style.color=C.muted}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Back to Browse
+              </button>
+              <h1 style={{ fontFamily:'Playfair Display', fontSize:24, fontWeight:600, color:C.primary }}>
+                Data Spend & Purchases
+              </h1>
+              <p style={{ fontSize:13.5, color:C.muted, marginTop:4 }}>
+                Novo Nordisk · Global Data Science · FY 2024–25
+              </p>
+            </div>
+
+            {/* ── Pharma metric cards ───────────────────────────────────── */}
+            <div className="anim-2" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)',
+              gap:14, marginBottom:24 }}>
+              {[
+                { label:'YTD Spend',        value:p1,   sub:'Across all purchases', icon:'💳', accent:'#0D9488' },
+                { label:'Active Licenses',  value:p2,   sub:'Dataset access rights', icon:'🔑', accent:C.accent },
+                { label:'Expiring Soon',    value:p3,   sub:'Within 90 days',         icon:'⏰', accent:C.warning },
+                { label:'Avg Quality Score',value:'0.91',sub:'Harmonized OMOP CDM',   icon:'⭐', accent:C.success },
+              ].map(card => (
+                <div key={card.label} className="metric-card">
+                  <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between',
+                    marginBottom:10 }}>
+                    <span style={{ fontSize:20 }}>{card.icon}</span>
+                    <div style={{ width:8, height:8, borderRadius:'50%', background:card.accent }}/>
+                  </div>
+                  <div style={{ fontFamily:'DM Mono', fontSize:24, fontWeight:500,
+                    color:C.primary, marginBottom:3 }}>
+                    {card.value}
+                  </div>
+                  <div style={{ fontSize:11.5, fontWeight:600, color:C.primary, marginBottom:2 }}>
+                    {card.label}
+                  </div>
+                  <div style={{ fontSize:11, color:C.subtle }}>{card.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* ── Middle row ─────────────────────────────────────────────── */}
+            <div style={{ display:'grid', gridTemplateColumns:'340px 1fr', gap:18, marginBottom:22 }}>
+
+              {/* Spend donut */}
+              <div className="card anim-3" style={{ padding:20 }}>
+                <h2 style={{ fontSize:14.5, fontWeight:600, color:C.primary, marginBottom:4 }}>
+                  Spend by Disease Area
+                </h2>
+                <p style={{ fontSize:12, color:C.muted, marginBottom:16 }}>FY 2024–25</p>
+                <DonutChart segments={DONUT_SEGMENTS} donutReady={donutReady}/>
+              </div>
+
+              {/* Spend trend (static SVG bars) */}
+              <div className="card anim-3" style={{ padding:20 }}>
+                <h2 style={{ fontSize:14.5, fontWeight:600, color:C.primary, marginBottom:4 }}>
+                  Quarterly Spend
+                </h2>
+                <p style={{ fontSize:12, color:C.muted, marginBottom:16 }}>USD thousands</p>
+                <svg width="100%" viewBox="0 0 360 130">
+                  {[['Q1 FY24',82],['Q2 FY24',105],['Q3 FY24',138],['Q4 FY24',162],['Q1 FY25',190]].map(([q,v],i) => {
+                    const x = 30 + i*64, barW=38, maxH=100;
+                    const h = (v/200)*maxH;
+                    return (
+                      <g key={q}>
+                        <rect x={x} y={14+maxH-h} width={barW} height={h}
+                          fill="#0D9488" fillOpacity={0.15 + i*0.17} rx="4"
+                          style={{
+                            transformOrigin:`${x+barW/2}px ${14+maxH}px`,
+                            animation: donutReady ? `barGrow 0.55s cubic-bezier(0.22,1,0.36,1) ${0.1+i*0.08}s both` : 'none',
+                          }}/>
+                        <text x={x+barW/2} y={10+maxH-h} textAnchor="middle"
+                          style={{ fontSize:9.5, fill:'#0D9488', fontFamily:'DM Mono' }}>
+                          ${v}k
+                        </text>
+                        <text x={x+barW/2} y={125} textAnchor="middle"
+                          style={{ fontSize:9.5, fill:C.muted, fontFamily:'DM Sans' }}>{q}</text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+
+            {/* ── Purchase history ──────────────────────────────────────── */}
+            <div className="card anim-5" style={{ padding:20 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between',
+                marginBottom:16 }}>
+                <h2 style={{ fontSize:14.5, fontWeight:600, color:C.primary }}>
+                  Purchase History
+                </h2>
+                <div style={{ display:'flex', gap:8 }}>
+                  <button className="btn-outline">Export CSV</button>
+                </div>
+              </div>
+
+              {/* Table header */}
+              <div style={{ display:'grid',
+                gridTemplateColumns:'1.4fr 2fr 100px 140px 120px 80px 100px',
+                gap:0, padding:'8px 0', borderBottom:`2px solid ${C.border}`,
+                fontSize:11, fontWeight:700, color:C.muted,
+                textTransform:'uppercase', letterSpacing:'0.07em' }}>
+                {['Institution','Dataset','Spend','Access','Expiry','Prov.','Status'].map(h => (
+                  <div key={h} style={{ paddingInline:8 }}>{h}</div>
+                ))}
+              </div>
+
+              {TX_PHARMA.map((tx, i) => (
+                <div key={i} className="tx-row"
+                  style={{ display:'grid',
+                    gridTemplateColumns:'1.4fr 2fr 100px 140px 120px 80px 100px',
+                    gap:0, animation:`fadeUp 0.4s ease ${0.05+i*0.06}s both` }}>
+                  <div style={{ paddingInline:8 }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:C.primary }}>{tx.seller}</div>
+                  </div>
+                  <div style={{ paddingInline:8 }}>
+                    <div style={{ fontSize:12, color:C.muted }}>{tx.dataset}</div>
+                  </div>
+                  <div style={{ paddingInline:8, fontFamily:'DM Mono', fontSize:13, color:C.primary }}>
+                    ${(tx.spend/1000).toFixed(0)}K
+                  </div>
+                  <div style={{ paddingInline:8, fontSize:12, color:C.muted }}>
+                    Licensed access
+                  </div>
+                  <div style={{ paddingInline:8, fontSize:12,
+                    color: tx.status==='Expired' ? C.error : tx.status==='Expiring' ? C.warning : C.muted }}>
+                    {tx.access}
+                  </div>
+                  <div style={{ paddingInline:8 }}>
+                    {tx.prov ? (
+                      <button style={{ fontSize:11.5, padding:'4px 8px', background:'rgba(13,148,136,0.08)',
+                        border:'1px solid rgba(13,148,136,0.25)', borderRadius:6, color:'#0D9488',
+                        cursor:'pointer', fontFamily:'DM Sans' }}>
+                        ↓ DL
+                      </button>
+                    ) : (
+                      <span style={{ fontSize:11.5, color:C.subtle }}>—</span>
+                    )}
+                  </div>
+                  <div style={{ paddingInline:8 }}>
+                    <StatusBadge status={tx.status}/>
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ marginTop:14, padding:'10px 8px', background:C.surface2,
+                borderRadius:8, fontSize:12, color:C.muted }}>
+                <strong style={{ color:C.primary }}>Provenance reports</strong> include OMOP mapping logs,
+                data quality audit trail, missing modality flags, and GA4GH DUO compliance certificates.
+                Contact <span style={{ color:C.accent, fontFamily:'DM Mono' }}>compliance@bioharmonize.io</span> for custom reports.
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

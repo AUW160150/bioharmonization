@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioHarmonize — Pipeline Orchestration</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; -webkit-font-smoothing: antialiased; overflow: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #D6D3CE; border-radius: 2px; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulseLeft {
+      0%, 100% { box-shadow: inset 3px 0 0 #0D9488, 0 0 0 rgba(13,148,136,0); }
+      50%       { box-shadow: inset 3px 0 0 #0D9488, 0 0 12px rgba(13,148,136,0.2); }
+    }
+    @keyframes slideLog {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fillBar {
+      from { height: 0; }
+      to   { height: var(--target-h); }
+    }
+    @keyframes drawRadar {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes progressFill {
+      from { width: 0%; }
+    }
+
+    .spinner {
+      width: 13px; height: 13px;
+      border: 2px solid rgba(13,148,136,0.2);
+      border-top-color: #0D9488;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    .agent-running { animation: pulseLeft 1.5s ease-in-out infinite; }
+    .log-entry     { animation: slideLog 0.25s ease forwards; }
+
+    .conf-high   { background: rgba(5,150,105,0.1);  color: #059669; border: 1px solid rgba(5,150,105,0.25);  }
+    .conf-good   { background: rgba(13,148,136,0.1); color: #0D9488; border: 1px solid rgba(13,148,136,0.25); }
+    .conf-warn   { background: rgba(217,119,6,0.1);  color: #D97706; border: 1px solid rgba(217,119,6,0.25);  }
+    .conf-low    { background: rgba(220,38,38,0.1);  color: #DC2626; border: 1px solid rgba(220,38,38,0.25);  }
+
+    .panel {
+      background: #FFFFFF;
+      border: 1px solid #E7E5E0;
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid #E7E5E0;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .panel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px; font-weight: 600;
+      color: #1C1917; letter-spacing: -0.1px;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+const C = {
+  bg:'#FAFAF8', surface:'#FFFFFF', s2:'#F5F4F0',
+  primary:'#1C1917', accent:'#0D9488', success:'#059669',
+  warning:'#D97706', error:'#DC2626', muted:'#78716C', border:'#E7E5E0',
+};
+const mono = { fontFamily:"'DM Mono',monospace" };
+const serif = { fontFamily:"'Playfair Display',serif" };
+
+/* ─── Agent definitions ─── */
+const AGENTS = [
+  { key:'ingestion',     label:'Ingestion Agent',         done:'10 patients · 3 formats · 2 languages' },
+  { key:'modality',      label:'Missing Modality Agent',  done:'4 gaps found · avg completeness 0.81' },
+  { key:'harmonization', label:'Harmonization Agent',     done:'216 entities mapped · 18 flagged' },
+  { key:'validation',    label:'Validation Agent',        done:'23 corrections · avg confidence 0.91' },
+  { key:'profiling',     label:'Dataset Profiling Agent', done:'Dataset fingerprint generated' },
+  { key:'matching',      label:'Matching Agent',          done:'3 buyer matches found' },
+  { key:'output',        label:'Output Agent',            done:'4 OMOP tables · 184 KB provenance' },
+];
+
+/* ─── Log event timeline (ms) ─── */
+const LOG_TIMELINE = [
+  // INGESTION
+  { t:650,  k:'info',    txt:'Scanning data/synthetic/ for patient records…' },
+  { t:880,  k:'file',    name:'clinical_note_P001_bengali.txt', fmt:'TXT', lang:'Bengali', flag:'🇧🇩', size:'11.2 KB' },
+  { t:1050, k:'file',    name:'lab_results_P002.csv',           fmt:'CSV', lang:'English', flag:'🇬🇧', size:'8.4 KB'  },
+  { t:1220, k:'file',    name:'clinical_note_P003_hindi.txt',   fmt:'TXT', lang:'Hindi',   flag:'🇮🇳', size:'9.1 KB'  },
+  { t:1390, k:'file',    name:'genomic_variants_P001.vcf',      fmt:'VCF', lang:'—',       flag:null,  size:'34.6 KB' },
+  { t:1560, k:'file',    name:'lab_results_P004.csv',           fmt:'CSV', lang:'English', flag:'🇬🇧', size:'7.8 KB'  },
+  { t:1850, k:'success', txt:'10 patients linked · 3 formats · Bengali + Hindi detected' },
+
+  // MISSING MODALITY
+  { t:2600, k:'info',    txt:'Scoring modality completeness for all 10 patients…' },
+  { t:2900, k:'warning', txt:'⚠  P003: clinical_note ABSENT — Bengali note not found' },
+  { t:3150, k:'warning', txt:'⚠  P006: lab_results ABSENT — quantitative biomarkers unavailable' },
+  { t:3400, k:'warning', txt:'⚠  P007: clinical_note absent — confidence reduced for diagnoses' },
+  { t:3650, k:'warning', txt:'⚠  P009: clinical_note ABSENT — Hindi note missing' },
+  { t:3950, k:'success', txt:'Completeness scored · 4/10 patients incomplete · avg score 0.81' },
+
+  // HARMONIZATION
+  { t:4500, k:'info',    txt:'Processing P001 (Bengali clinical note + labs + VCF)…' },
+  { t:4800, k:'mapping', src:'টাইপ ২ ডায়াবেটিস',           icd:'E11',    omop:'201826',   conf:0.94, lang:'Bengali' },
+  { t:5150, k:'mapping', src:'গ্লাইকোসাইলেটেড হিমোগ্লোবিন', icd:'—',      omop:'3004410',  conf:0.89, lang:'Bengali' },
+  { t:5450, k:'mapping', src:'উচ্চ রক্তচাপ',                icd:'I10',    omop:'316866',   conf:0.91, lang:'Bengali' },
+  { t:5750, k:'info',    txt:'Processing P002 (Hindi note + labs)…' },
+  { t:6050, k:'mapping', src:'टाइप 2 मधुमेह',               icd:'E11',    omop:'201826',   conf:0.92, lang:'Hindi'   },
+  { t:6350, k:'mapping', src:'उपवास_रक्त_शर्करा_mmol: 11.2',icd:'—',      omop:'4144235',  conf:0.87, lang:'Hindi'   },
+  { t:6600, k:'info',    txt:'मरीज_आईडी P003 → person_id: 3 (lab-only record, modality flag applied)' },
+  { t:6900, k:'mapping', src:'PCSK9 rs11591147 GT=0/1',      icd:'—',      omop:'37396683', conf:0.95, lang:'VCF'     },
+  { t:7200, k:'mapping', src:'TCF7L2 rs7903146 GT=1/1',      icd:'—',      omop:'37020763', conf:0.93, lang:'VCF'     },
+  { t:7500, k:'mapping', src:'Metformin 500mg OD',           icd:'A10BA02',omop:'1503297',  conf:0.96, lang:'EN'      },
+  { t:7800, k:'mapping', src:'Atorvastatin 40mg HS',         icd:'C10AA05',omop:'1545958',  conf:0.94, lang:'EN'      },
+  { t:8150, k:'mapping', src:'N18.3 Chronic kidney disease', icd:'N18.3',  omop:'46271022', conf:0.82, lang:'EN', flag:true },
+  { t:8450, k:'mapping', src:'E78.5 Hyperlipidemia NOS',     icd:'E78.5',  omop:'432867',   conf:0.81, lang:'EN', flag:true },
+  { t:8900, k:'success', txt:'216 entities mapped · 18 flagged for validation review (conf < 0.85)' },
+
+  // VALIDATION
+  { t:10100, k:'info',       txt:'Reviewing 18 low-confidence entities with Validation Agent…' },
+  { t:10500, k:'correction', before:'N18.32', after:'N18.31', reason:'eGFR 58 = Stage 3a per KDIGO 2024 guidelines', cb:0.88, ca:0.92 },
+  { t:11000, k:'correction', before:'E78.5',  after:'E78.49', reason:'Mixed hyperlipidemia — more specific code appropriate', cb:0.81, ca:0.91 },
+  { t:11400, k:'confirm',    txt:'I10 ✓  Hypertension — standard mapping confirmed (conf: 0.93)' },
+  { t:11800, k:'correction', before:'I25.10', after:'I25.110',reason:'Atherosclerosis with unstable angina — specific variant', cb:0.79, ca:0.90 },
+  { t:12300, k:'info',       txt:'19 additional corrections applied across P003–P010…' },
+  { t:12800, k:'success',    txt:'23 corrections total · avg confidence 0.88 → 0.91 · audit trail written' },
+
+  // PROFILING
+  { t:13600, k:'info',    txt:'Computing dataset fingerprint across 5 clinical dimensions…' },
+  { t:13950, k:'info',    txt:'Disease diversity: T2DM 80% · CVD 60% · CKD 30% · Dyslipidemia 70%' },
+  { t:14300, k:'info',    txt:'Demographics: South Asian · age 34–72 · 52% male · Kolkata + West Bengal' },
+  { t:14700, k:'info',    txt:'Genomic: 100% VCF coverage · avg 12.4 variants/patient · PCSK9, TCF7L2, APOE' },
+  { t:15200, k:'success', txt:'OMOP completeness 94.2% · Overall quality score 0.88 · Fingerprint saved' },
+
+  // MATCHING
+  { t:16100, k:'info',  txt:'Scoring dataset against 127 active pharma requests in marketplace…' },
+  { t:16500, k:'match', company:'Novo Nordisk',  desc:'T2DM Phase III biomarker trial',      score:0.91 },
+  { t:17000, k:'match', company:'AstraZeneca',   desc:'CVD risk + genomics linkage study',   score:0.84 },
+  { t:17500, k:'match', company:'IQVIA',         desc:'South Asian genomic reference panel', score:0.78 },
+  { t:18200, k:'success', txt:'3 pharma buyers matched · top score 0.91 · notifications queued' },
+
+  // OUTPUT
+  { t:19100, k:'info',    txt:'Writing OMOP CDM v5.4 Parquet tables + provenance…' },
+  { t:19400, k:'file',    name:'person.parquet',               fmt:'PARQUET', size:'2.1 KB',  lang:'—', flag:null },
+  { t:19700, k:'file',    name:'condition_occurrence.parquet', fmt:'PARQUET', size:'18.4 KB', lang:'—', flag:null },
+  { t:20000, k:'file',    name:'drug_exposure.parquet',        fmt:'PARQUET', size:'14.2 KB', lang:'—', flag:null },
+  { t:20300, k:'file',    name:'measurement.parquet',          fmt:'PARQUET', size:'22.8 KB', lang:'—', flag:null },
+  { t:20700, k:'success', txt:'pipeline_provenance.json — 184 KB audit trail written' },
+  { t:21400, k:'complete',txt:'✓  Pipeline complete · 22.4s · 10 patients · 216 entities · 23 corrections' },
+];
+
+/* ─── Agent state transitions ─── */
+const AGENT_EVENTS = [
+  { t:500,   agent:'ingestion',     state:'running' },
+  { t:2000,  agent:'ingestion',     state:'done'    },
+  { t:2200,  agent:'modality',      state:'running' },
+  { t:4050,  agent:'modality',      state:'done'    },
+  { t:4250,  agent:'harmonization', state:'running' },
+  { t:9300,  agent:'harmonization', state:'done'    },
+  { t:9600,  agent:'validation',    state:'running' },
+  { t:13100, agent:'validation',    state:'done'    },
+  { t:13300, agent:'profiling',     state:'running' },
+  { t:15500, agent:'profiling',     state:'done'    },
+  { t:15800, agent:'matching',      state:'running' },
+  { t:18500, agent:'matching',      state:'done'    },
+  { t:18800, agent:'output',        state:'running' },
+  { t:21800, agent:'output',        state:'done'    },
+];
+
+/* ─── Counter keyframes ─── */
+const COUNTER_EVENTS = [
+  { t:2000,  patients:10  },
+  { t:9300,  entities:216 },
+  { t:13100, corrections:23 },
+];
+
+const TOTAL_MS = 22000;
+const DEMO_SPEED = 2.0; // ← adjust on demo day (2.0 = ~44s total, 1.0 = ~22s, 3.0 = ~66s)
+
+/* ─── Helpers ─── */
+const confClass = c => c >= 0.90 ? 'conf-high' : c >= 0.85 ? 'conf-good' : c >= 0.75 ? 'conf-warn' : 'conf-low';
+const fmtConf   = c => c.toFixed(2);
+
+const animCount = (setter, target, ms = 900) => {
+  const start = Date.now();
+  const step = () => {
+    const p = Math.min((Date.now() - start) / ms, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    setter(Math.round(e * target));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+};
+
+/* ─── Mini components ─── */
+const FmtBadge = ({ fmt }) => {
+  const map = {
+    TXT:     { bg:'#F5F4F0', c:'#78716C' },
+    CSV:     { bg:'rgba(13,148,136,0.06)', c:'#0D9488' },
+    VCF:     { bg:'#FFFBEB', c:'#B45309' },
+    PARQUET: { bg:'#F0FFF8', c:'#059669' },
+    JSON:    { bg:'#F5F4F0', c:'#1C1917' },
+  };
+  const s = map[fmt] || map.TXT;
+  return (
+    <span style={{ ...mono, fontSize:'9px', fontWeight:'600', letterSpacing:'0.4px', textTransform:'uppercase',
+                   padding:'1px 6px', borderRadius:'3px', background:s.bg, color:s.c, flexShrink:0 }}>
+      {fmt}
+    </span>
+  );
+};
+
+const LangPill = ({ lang, flag }) => {
+  if (!lang || lang === '—' || lang === 'VCF' || lang === 'EN') return null;
+  const map = {
+    Bengali: { bg:'rgba(13,148,136,0.06)', c:'#0D9488', b:'rgba(13,148,136,0.15)' },
+    Hindi:   { bg:'#FFFBEB', c:'#B45309', b:'#FDE68A' },
+  };
+  const s = map[lang];
+  if (!s) return null;
+  return (
+    <span style={{ fontSize:'10px', fontWeight:'500', padding:'1px 7px', borderRadius:'20px',
+                   background:s.bg, color:s.c, border:`1px solid ${s.b}`, flexShrink:0 }}>
+      {flag} {lang}
+    </span>
+  );
+};
+
+/* ─── Log entry renderer ─── */
+const LogEntry = ({ entry }) => {
+  const base = {
+    padding:'8px 14px', fontSize:'12px', lineHeight:'1.55',
+    borderLeft:'3px solid transparent',
+    borderBottom:`1px solid ${C.border}`,
+    display:'flex', gap:'10px', alignItems:'flex-start',
+    background:C.surface,
+  };
+
+  if (entry.k === 'info') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:'#D6D3CE' }}>
+      <span style={{ color:C.muted, flexShrink:0, marginTop:'1px' }}>›</span>
+      <span style={{ color:C.muted }}>{entry.txt}</span>
+    </div>
+  );
+
+  if (entry.k === 'file') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor: entry.fmt==='PARQUET' ? C.success : C.accent, alignItems:'center', gap:'8px' }}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ flexShrink:0 }}>
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8L14 2z" stroke={C.muted} strokeWidth="1.8"/>
+        <path d="M14 2v6h6" stroke={C.muted} strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
+      <span style={{ ...mono, color:C.primary, flex:1, fontSize:'11.5px' }}>{entry.name}</span>
+      <FmtBadge fmt={entry.fmt}/>
+      {entry.lang && entry.lang !== '—' && <LangPill lang={entry.lang} flag={entry.flag}/>}
+      {entry.size && <span style={{ ...mono, fontSize:'10.5px', color:C.muted, flexShrink:0 }}>{entry.size}</span>}
+    </div>
+  );
+
+  if (entry.k === 'mapping') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor: entry.flag ? C.warning : C.accent, flexDirection:'column', gap:'5px', padding:'8px 14px' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap' }}>
+        <LangPill lang={entry.lang} flag={null}/>
+        <span style={{ ...mono, fontSize:'12px', color:C.primary, fontWeight:'500' }}>{entry.src}</span>
+        {entry.flag && <span style={{ fontSize:'10px', color:C.warning, fontWeight:'600' }}>⚑ flagged</span>}
+      </div>
+      <div style={{ display:'flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}>
+        <span style={{ fontSize:'10.5px', color:C.muted }}>→</span>
+        {entry.icd !== '—' && <>
+          <span style={{ ...mono, fontSize:'10.5px', color:C.primary, background:C.s2, padding:'1px 6px', borderRadius:'3px' }}>ICD-10: {entry.icd}</span>
+          <span style={{ color:C.border }}>·</span>
+        </>}
+        <span style={{ ...mono, fontSize:'10.5px', color:C.primary, background:C.s2, padding:'1px 6px', borderRadius:'3px' }}>OMOP: {entry.omop}</span>
+        <span className={confClass(entry.conf)} style={{ ...mono, fontSize:'10px', fontWeight:'600', padding:'1px 7px', borderRadius:'20px' }}>
+          conf: {fmtConf(entry.conf)}
+        </span>
+      </div>
+    </div>
+  );
+
+  if (entry.k === 'correction') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:C.warning, flexDirection:'column', gap:'4px', background:'rgba(217,119,6,0.02)' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+        <span style={{ fontSize:'9.5px', fontWeight:'700', letterSpacing:'0.5px', textTransform:'uppercase', color:C.warning }}>Correction</span>
+        <div style={{ display:'flex', alignItems:'center', gap:'5px' }}>
+          <span style={{ ...mono, fontSize:'11.5px', color:C.error, textDecoration:'line-through' }}>{entry.before}</span>
+          <span style={{ color:C.muted, fontSize:'12px' }}>→</span>
+          <span style={{ ...mono, fontSize:'11.5px', color:C.success, fontWeight:'600' }}>{entry.after}</span>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:'4px', marginLeft:'4px' }}>
+          <span className="conf-warn" style={{ ...mono, fontSize:'10px', padding:'1px 6px', borderRadius:'20px' }}>{fmtConf(entry.cb)}</span>
+          <span style={{ color:C.muted, fontSize:'11px' }}>→</span>
+          <span className="conf-good" style={{ ...mono, fontSize:'10px', padding:'1px 6px', borderRadius:'20px' }}>{fmtConf(entry.ca)}</span>
+        </div>
+      </div>
+      <div style={{ fontSize:'11px', color:C.muted }}>{entry.reason}</div>
+    </div>
+  );
+
+  if (entry.k === 'confirm') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:C.success }}>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink:0, marginTop:'2px' }}>
+        <circle cx="6" cy="6" r="5" stroke={C.success} strokeWidth="1.3"/>
+        <path d="M3.5 6l1.8 1.8L8.5 4" stroke={C.success} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <span style={{ color:C.primary }}>{entry.txt}</span>
+    </div>
+  );
+
+  if (entry.k === 'warning') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:C.warning, background:'rgba(217,119,6,0.02)' }}>
+      <span style={{ flexShrink:0, fontSize:'12px' }}>⚠</span>
+      <span style={{ color:C.warning, fontWeight:'500' }}>{entry.txt}</span>
+    </div>
+  );
+
+  if (entry.k === 'match') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:C.accent, alignItems:'center' }}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ flexShrink:0 }}>
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke={C.accent} strokeWidth="2" strokeLinecap="round"/>
+        <path d="M22 4L12 14.01l-3-3" stroke={C.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <span style={{ fontWeight:'600', color:C.primary }}>{entry.company}</span>
+      <span style={{ color:C.muted, flex:1 }}>{entry.desc}</span>
+      <span style={{
+        ...mono, fontSize:'11px', fontWeight:'600', padding:'2px 9px', borderRadius:'20px', flexShrink:0,
+        background: entry.score >= 0.88 ? 'rgba(5,150,105,0.1)' : entry.score >= 0.80 ? 'rgba(13,148,136,0.1)' : 'rgba(217,119,6,0.1)',
+        color: entry.score >= 0.88 ? C.success : entry.score >= 0.80 ? C.accent : C.warning,
+      }}>
+        {entry.score.toFixed(2)}
+      </span>
+    </div>
+  );
+
+  if (entry.k === 'success') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:C.success, background:'rgba(5,150,105,0.02)' }}>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink:0, marginTop:'2px' }}>
+        <circle cx="6" cy="6" r="5" fill={C.success}/>
+        <path d="M3.5 6l1.8 1.8L8.5 4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <span style={{ color:C.success, fontWeight:'500' }}>{entry.txt}</span>
+    </div>
+  );
+
+  if (entry.k === 'complete') return (
+    <div className="log-entry" style={{ ...base, borderLeftColor:C.primary, background:C.s2, padding:'12px 14px' }}>
+      <span style={{ fontWeight:'700', color:C.primary, fontSize:'13px' }}>{entry.txt}</span>
+    </div>
+  );
+
+  return null;
+};
+
+/* ─── Agent stepper card ─── */
+const AgentCard = ({ agent, state }) => {
+  const isRunning = state === 'running';
+  const isDone    = state === 'done';
+
+  return (
+    <div style={{
+      padding:'11px 14px',
+      borderLeft: isDone    ? `3px solid ${C.success}` :
+                  isRunning ? `3px solid ${C.accent}`   :
+                              `3px solid transparent`,
+      borderBottom:`1px solid ${C.border}`,
+      background: isRunning ? 'rgba(13,148,136,0.025)' : C.surface,
+      transition:'all 0.3s ease',
+      ...(isRunning && { animation:'pulseLeft 1.5s ease-in-out infinite' }),
+    }}>
+      <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+        {/* Status indicator */}
+        {isDone ? (
+          <div style={{ width:'18px', height:'18px', borderRadius:'50%', background:C.success,
+                        display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M2 5l2 2 4-4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        ) : isRunning ? (
+          <div className="spinner"/>
+        ) : (
+          <div style={{ width:'13px', height:'13px', borderRadius:'50%', border:`1.5px solid ${C.border}`, flexShrink:0 }}/>
+        )}
+
+        {/* Label */}
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{
+            fontSize:'12.5px', fontWeight: isDone || isRunning ? '600' : '400',
+            color: isDone ? C.primary : isRunning ? C.accent : C.muted,
+            lineHeight:'1.3',
+          }}>
+            {agent.label}
+          </div>
+          {isDone && (
+            <div style={{ fontSize:'10.5px', color:C.muted, marginTop:'2px', ...mono }}>
+              {agent.done}
+            </div>
+          )}
+          {isRunning && (
+            <div style={{ fontSize:'10.5px', color:C.accent, marginTop:'2px' }}>
+              Processing…
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Modality coverage chart (3 concentric rings) ─── */
+const ModalityCoverage = ({ progress }) => {
+  const cx = 75, cy = 75;
+  const rings = [
+    { r:52, pct: Math.min(progress * 1.25, 1.0), color:C.success,  label:'Genomics',    val:'100%' },
+    { r:40, pct: Math.min(progress * 1.25, 0.8), color:C.accent,   label:'Clinical',    val:'80%'  },
+    { r:28, pct: Math.min(progress * 1.25, 0.8), color:'#D97706',  label:'Lab Results', val:'80%'  },
+  ];
+
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
+      <svg viewBox="0 0 150 150" width="120" height="120">
+        {rings.map(ring => {
+          const circ = 2 * Math.PI * ring.r;
+          const fill = ring.pct * circ;
+          return (
+            <g key={ring.r}>
+              {/* Track */}
+              <circle cx={cx} cy={cy} r={ring.r}
+                      fill="none" stroke={C.border} strokeWidth="9"
+                      strokeDasharray={`${circ} 0`}
+                      transform={`rotate(-90 ${cx} ${cy})`}/>
+              {/* Fill */}
+              <circle cx={cx} cy={cy} r={ring.r}
+                      fill="none" stroke={ring.color} strokeWidth="9"
+                      strokeLinecap="round" opacity="0.85"
+                      strokeDasharray={`${fill} ${circ - fill}`}
+                      transform={`rotate(-90 ${cx} ${cy})`}
+                      style={{ transition:'stroke-dasharray 0.8s ease' }}/>
+            </g>
+          );
+        })}
+        <text x={cx} y={cy-4}  textAnchor="middle" style={{ ...mono, fontSize:'11px', fill:C.primary, fontWeight:'500' }}>
+          {Math.round((2*0.8+1.0)/3 * 100 * Math.min(progress * 1.3, 1))}%
+        </text>
+        <text x={cx} y={cy+9}  textAnchor="middle" style={{ fontSize:'7px', fill:C.muted }}>coverage</text>
+      </svg>
+      {/* Legend */}
+      <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+        {rings.map(ring => (
+          <div key={ring.r} style={{ display:'flex', alignItems:'center', gap:'7px' }}>
+            <div style={{ width:'8px', height:'8px', borderRadius:'50%', background:ring.color, flexShrink:0 }}/>
+            <span style={{ fontSize:'11px', color:C.muted }}>{ring.label}</span>
+            <span style={{ ...mono, fontSize:'11px', color:C.primary, marginLeft:'auto' }}>{ring.val}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ─── Confidence distribution bar chart ─── */
+const ConfBar = ({ barProgress }) => {
+  const bars = [
+    { label:'≥0.90', count:95,  color:C.success, maxH:100 },
+    { label:'0.85–', count:68,  color:C.accent,  maxH:100 },
+    { label:'0.75–', count:38,  color:C.warning, maxH:100 },
+    { label:'<0.75', count:15,  color:C.error,   maxH:100 },
+  ];
+  const maxCount = 95;
+
+  return (
+    <div>
+      <div style={{ display:'flex', alignItems:'flex-end', gap:'8px', height:'90px', marginBottom:'6px' }}>
+        {bars.map(bar => {
+          const targetH = (bar.count / maxCount) * 82 * barProgress;
+          return (
+            <div key={bar.label} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:'3px', justifyContent:'flex-end', height:'100%' }}>
+              <span style={{ ...mono, fontSize:'9.5px', color:bar.color, fontWeight:'600', opacity: barProgress > 0.1 ? 1 : 0, transition:'opacity 0.3s' }}>
+                {Math.round(bar.count * barProgress)}
+              </span>
+              <div style={{
+                width:'100%', borderRadius:'3px 3px 0 0', background:bar.color, opacity:0.85,
+                height:`${targetH}px`, transition:'height 0.6s ease',
+              }}/>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display:'flex', gap:'8px' }}>
+        {bars.map(bar => (
+          <div key={bar.label} style={{ flex:1, textAlign:'center' }}>
+            <span style={{ ...mono, fontSize:'8.5px', color:C.muted }}>{bar.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ─── Radar chart ─── */
+const RadarChart = ({ visible, progress }) => {
+  const cx = 90, cy = 90, r = 66;
+  const labels = ['Disease\nCoverage', 'Modality\nComplete', 'Demographic\nDiversity', 'Data\nQuality', 'OMOP\nComplete'];
+  const scores  = [0.88, 0.81, 0.79, 0.88, 0.94];
+  const n = labels.length;
+
+  const pts = scores.map((s, i) => {
+    const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+    return {
+      x: cx + s * r * progress * Math.cos(angle),
+      y: cy + s * r * progress * Math.sin(angle),
+      lx: cx + (r + 20) * Math.cos(angle),
+      ly: cy + (r + 20) * Math.sin(angle),
+      score: s,
+    };
+  });
+
+  const gridPts = (frac) => scores.map((_, i) => {
+    const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+    return `${cx + frac * r * Math.cos(angle)},${cy + frac * r * Math.sin(angle)}`;
+  }).join(' ');
+
+  const polyPoints = pts.map(p => `${p.x},${p.y}`).join(' ');
+
+  return (
+    <div style={{ opacity: visible ? 1 : 0, transition:'opacity 0.5s ease' }}>
+      <svg viewBox="0 0 180 180" width="100%" height="160">
+        {/* Grid rings */}
+        {[0.25, 0.5, 0.75, 1.0].map(f => (
+          <polygon key={f} points={gridPts(f)}
+                   fill="none" stroke={C.border} strokeWidth="0.8" opacity="0.7"/>
+        ))}
+        {/* Axes */}
+        {scores.map((_, i) => {
+          const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+          return (
+            <line key={i}
+                  x1={cx} y1={cy}
+                  x2={cx + r * Math.cos(angle)}
+                  y2={cy + r * Math.sin(angle)}
+                  stroke={C.border} strokeWidth="0.8"/>
+          );
+        })}
+        {/* Filled polygon */}
+        <polygon points={polyPoints}
+                 fill={`rgba(13,148,136,0.12)`}
+                 stroke={C.accent} strokeWidth="1.8"
+                 strokeLinejoin="round"
+                 style={{ transition:'all 0.1s ease' }}/>
+        {/* Data points */}
+        {pts.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r="3"
+                  fill={C.accent} stroke="white" strokeWidth="1"/>
+        ))}
+        {/* Score labels on axes */}
+        {pts.map((p, i) => (
+          <text key={i}
+                x={p.lx} y={p.ly}
+                textAnchor="middle" dominantBaseline="middle"
+                style={{ ...mono, fontSize:'7px', fill:C.accent, fontWeight:'500' }}
+          >
+            {progress > 0.8 ? scores[i].toFixed(2) : ''}
+          </text>
+        ))}
+      </svg>
+      {/* Axis labels below */}
+      <div style={{ display:'flex', justifyContent:'space-around', marginTop:'-8px' }}>
+        {['Disease', 'Modality', 'Diversity', 'Quality', 'OMOP'].map(l => (
+          <div key={l} style={{ fontSize:'9px', color:C.muted, textAlign:'center', width:'32px', lineHeight:'1.3' }}>{l}</div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ─── Live counter ─── */
+const Counter = ({ label, value, active }) => (
+  <div style={{
+    flex:1, padding:'10px 12px',
+    background: active ? 'rgba(13,148,136,0.04)' : C.s2,
+    borderRadius:'8px', border:`1px solid ${active ? 'rgba(13,148,136,0.2)' : C.border}`,
+    textAlign:'center', transition:'all 0.3s ease',
+  }}>
+    <div style={{ ...mono, fontSize:'22px', fontWeight:'500', color:C.primary, letterSpacing:'-1px', lineHeight:1 }}>
+      {value}
+    </div>
+    <div style={{ fontSize:'10px', color:C.muted, marginTop:'4px', lineHeight:'1.3' }}>{label}</div>
+  </div>
+);
+
+/* ─── Main Screen ─── */
+/* Build a dynamic log timeline by splicing in real uploaded files */
+function buildTimeline(uploadedFiles) {
+  if (!uploadedFiles || !uploadedFiles.length) return LOG_TIMELINE;
+
+  // Replace the k:'file' entries in the ingestion window (t < 2000) with real files
+  const fileSlots = [880, 1050, 1220, 1390, 1560, 1730];
+  const fileEvents = uploadedFiles.slice(0, fileSlots.length).map((f, i) => ({
+    t: fileSlots[i], k: 'file',
+    name: f.name, fmt: f.fmt || 'TXT',
+    lang: f.lang || '—', flag: f.flag || null, size: f.size || '—'
+  }));
+
+  // Keep all non-file entries from original timeline, plus add real file entries
+  const rest = LOG_TIMELINE.filter(e => !(e.k === 'file' && e.t < 2000));
+  return [...fileEvents, ...rest].sort((a, b) => a.t - b.t);
+}
+
+const Screen2 = ({ onNavigate }) => {
+  // Read sessionStorage on mount
+  const [submissionCtx] = useState(() => {
+    try {
+      const hospital = sessionStorage.getItem('bh_hospital') || 'SSKM Kolkata';
+      const location = sessionStorage.getItem('bh_location') || 'Kolkata, West Bengal 🇮🇳';
+      const filesRaw = sessionStorage.getItem('bh_files');
+      const files    = filesRaw ? JSON.parse(filesRaw) : null;
+      return { hospital, location, files };
+    } catch { return { hospital:'SSKM Kolkata', location:'Kolkata, West Bengal 🇮🇳', files:null }; }
+  });
+
+  const [agentStates, setAgentStates] = useState(
+    Object.fromEntries(AGENTS.map(a => [a.key, 'waiting']))
+  );
+  const [logEntries, setLogEntries]   = useState([]);
+  const [progress, setProgress]       = useState(0);
+  const [timeLeft, setTimeLeft]       = useState(24);
+  const [patients, setPatients]       = useState(0);
+  const [entities, setEntities]       = useState(0);
+  const [corrections, setCorrections] = useState(0);
+  const [barProgress, setBarProgress] = useState(0);
+  const [donutProgress, setDonutProgress] = useState(0);
+  const [showRadar, setShowRadar]     = useState(false);
+  const [radarProgress, setRadarProgress] = useState(0);
+  const [done, setDone]               = useState(false);
+  const [apiMode, setApiMode]         = useState(null); // null | 'live' | 'demo'
+  const [jobId, setJobId]             = useState(null);
+  const logRef = useRef();
+  const timers = useRef([]);
+  const startTime = useRef(null);
+  const activeTimeline = useRef(buildTimeline(submissionCtx.files));
+  const API_BASE = 'http://localhost:8000';
+
+  // Try to start a real API job on mount; fall back to demo mode
+  useEffect(() => {
+    fetch(`${API_BASE}/api/pipeline/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hospital: submissionCtx.hospital,
+        location: submissionCtx.location,
+        files: submissionCtx.files || [],
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        setJobId(data.job_id);
+        sessionStorage.setItem('bh_job_id', data.job_id);
+        setApiMode('live');
+      })
+      .catch(() => setApiMode('demo'));
+  }, []);
+
+  // Poll API status when in live mode
+  useEffect(() => {
+    if (apiMode !== 'live' || !jobId) return;
+    const poll = setInterval(() => {
+      fetch(`${API_BASE}/api/pipeline/status/${jobId}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'complete') clearInterval(poll);
+        })
+        .catch(() => clearInterval(poll));
+    }, 2000);
+    return () => clearInterval(poll);
+  }, [apiMode, jobId]);
+
+  // Auto-scroll log
+  useEffect(() => {
+    if (logRef.current) {
+      logRef.current.scrollTop = logRef.current.scrollHeight;
+    }
+  }, [logEntries]);
+
+  // Animate radar when visible
+  useEffect(() => {
+    if (!showRadar) return;
+    const start = Date.now();
+    const anim = () => {
+      const p = Math.min((Date.now() - start) / 1600, 1);
+      const e = 1 - Math.pow(1 - p, 2.5);
+      setRadarProgress(e);
+      if (p < 1) requestAnimationFrame(anim);
+    };
+    requestAnimationFrame(anim);
+  }, [showRadar]);
+
+  // Main timeline
+  useEffect(() => {
+    startTime.current = Date.now();
+
+    // Progress bar + timer
+    const progInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime.current;
+      const p = Math.min(elapsed / (TOTAL_MS * DEMO_SPEED), 1);
+      setProgress(p);
+      setTimeLeft(Math.max(0, Math.ceil(((TOTAL_MS * DEMO_SPEED) - elapsed) / 1000)));
+      if (elapsed >= TOTAL_MS * DEMO_SPEED) clearInterval(progInterval);
+    }, 80);
+    timers.current.push(progInterval);
+
+    // Schedule log events
+    activeTimeline.current.forEach(ev => {
+      const id = setTimeout(() => {
+        setLogEntries(prev => [...prev, ev]);
+      }, ev.t * DEMO_SPEED);
+      timers.current.push(id);
+    });
+
+    // Schedule agent state changes
+    AGENT_EVENTS.forEach(ev => {
+      const id = setTimeout(() => {
+        setAgentStates(prev => ({ ...prev, [ev.agent]: ev.state }));
+        if (ev.agent === 'output' && ev.state === 'done') {
+          setDone(true);
+          setShowRadar(true);
+        }
+      }, ev.t * DEMO_SPEED);
+      timers.current.push(id);
+    });
+
+    // Counter animations
+    COUNTER_EVENTS.forEach(ev => {
+      const id = setTimeout(() => {
+        if (ev.patients)    animCount(setPatients,    ev.patients);
+        if (ev.entities)    animCount(setEntities,    ev.entities);
+        if (ev.corrections) animCount(setCorrections, ev.corrections);
+      }, ev.t * DEMO_SPEED);
+      timers.current.push(id);
+    });
+
+    // Bar chart fills during harmonization
+    const barStart = setTimeout(() => {
+      const start = Date.now();
+      const barDuration = 5000 * DEMO_SPEED;
+      const barAnim = () => {
+        const p = Math.min((Date.now() - start) / barDuration, 1);
+        setBarProgress(p);
+        if (p < 1) requestAnimationFrame(barAnim);
+      };
+      requestAnimationFrame(barAnim);
+    }, 4500 * DEMO_SPEED);
+    timers.current.push(barStart);
+
+    // Donut fills during modality check
+    const donutStart = setTimeout(() => {
+      const start = Date.now();
+      const dur = 1800 * DEMO_SPEED;
+      const anim = () => {
+        const p = Math.min((Date.now() - start) / dur, 1);
+        setDonutProgress(p);
+        if (p < 1) requestAnimationFrame(anim);
+      };
+      requestAnimationFrame(anim);
+    }, 2200 * DEMO_SPEED);
+    timers.current.push(donutStart);
+
+    return () => timers.current.forEach(id => { clearTimeout(id); clearInterval(id); });
+  }, []);
+
+  const pct = Math.round(progress * 100);
+
+  return (
+    <div style={{ height:'100vh', background:C.bg, fontFamily:"'DM Sans',sans-serif",
+                  display:'flex', flexDirection:'column', overflow:'hidden' }}>
+
+      {/* ── Nav ── */}
+      <nav style={{ height:'56px', background:C.surface, borderBottom:`1px solid ${C.border}`,
+                    display:'flex', alignItems:'center', padding:'0 20px', gap:'0',
+                    boxShadow:'0 1px 0 rgba(28,25,23,0.04)', flexShrink:0 }}>
+        <button onClick={() => onNavigate('hospital')} style={{
+          display:'flex', alignItems:'center', gap:'7px', marginRight:'20px',
+          background:'none', border:'none', cursor:'pointer', padding:'0',
+        }}>
+          <div style={{ width:'26px', height:'26px', background:'linear-gradient(135deg,#0D9488,#059669)',
+                        borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+              <path d="M4 4 Q10 2 16 4 Q10 7 4 9 Q10 11 16 13 Q10 15 4 17" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <span style={{ fontSize:'13px', fontWeight:'700', color:C.primary, letterSpacing:'-0.3px' }}>BioHarmonize</span>
+        </button>
+
+        <div style={{ flex:1, display:'flex', alignItems:'center', gap:'6px' }}>
+          <span style={{ fontSize:'12px', color:C.muted }}>Processing submission from {submissionCtx.hospital}</span>
+          <span style={{ color:C.border }}>/</span>
+          <span style={{ fontSize:'11px', color:C.muted }}>{submissionCtx.location}</span>
+          <span style={{ color:C.border }}>/</span>
+          <span style={{ fontSize:'12px', color:C.primary, fontWeight:'500' }}>Pipeline Run #47</span>
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+          {/* Status chip */}
+          <div style={{ display:'flex', alignItems:'center', gap:'6px', padding:'4px 11px', borderRadius:'20px',
+                        background: done ? 'rgba(5,150,105,0.1)' : 'rgba(13,148,136,0.1)',
+                        border:`1px solid ${done ? 'rgba(5,150,105,0.3)' : 'rgba(13,148,136,0.3)'}` }}>
+            <div style={{ width:'5px', height:'5px', borderRadius:'50%',
+                          background: done ? C.success : C.accent,
+                          animation: done ? 'none' : 'pulse 2s infinite' }}/>
+            <span style={{ fontSize:'11px', fontWeight:'600', color: done ? C.success : C.accent }}>
+              {done ? 'Complete' : 'Running on Modal'}
+            </span>
+          </div>
+          {/* Modal badge */}
+          <div style={{ display:'flex', alignItems:'center', gap:'5px', padding:'4px 10px', borderRadius:'6px',
+                        border:`1px solid ${C.border}`, background:C.s2 }}>
+            <div style={{ width:'14px', height:'14px', background:'#0D9488', borderRadius:'3px',
+                          display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span style={{ fontSize:'8px', color:'white', fontWeight:'800' }}>M</span>
+            </div>
+            <span style={{ fontSize:'11px', color:C.muted, fontWeight:'500' }}>Modal</span>
+            <span style={{ fontSize:'9.5px', color:C.accent, fontWeight:'600', background:'rgba(13,148,136,0.1)',
+                           padding:'1px 5px', borderRadius:'3px', ...mono }}>parallel</span>
+          </div>
+          {/* API mode indicator */}
+          {apiMode && (
+            <div style={{ display:'flex', alignItems:'center', gap:'4px', padding:'3px 8px', borderRadius:'5px',
+                          background: apiMode==='live' ? 'rgba(5,150,105,0.08)' : 'rgba(217,119,6,0.08)',
+                          border:`1px solid ${apiMode==='live' ? 'rgba(5,150,105,0.2)' : 'rgba(217,119,6,0.2)'}` }}>
+              <span style={{ fontSize:'10px', fontWeight:'600',
+                             color: apiMode==='live' ? C.success : C.warning, ...mono }}>
+                {apiMode === 'live' ? '⬡ API live' : '◌ Demo mode · API offline'}
+              </span>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* ── 3-column body ── */}
+      <div style={{ flex:1, display:'flex', gap:'0', overflow:'hidden', padding:'14px 14px 0' }}>
+
+        {/* LEFT — Agent stepper */}
+        <div style={{ width:'220px', flexShrink:0, marginRight:'12px', display:'flex', flexDirection:'column', gap:'0' }}>
+          <div style={{ ...serif, fontSize:'12px', fontWeight:'600', color:C.muted,
+                        letterSpacing:'0.3px', marginBottom:'10px', paddingLeft:'2px' }}>
+            Agent Pipeline
+          </div>
+          <div className="panel" style={{ flex:1, overflow:'hidden' }}>
+            {AGENTS.map(agent => (
+              <AgentCard key={agent.key} agent={agent} state={agentStates[agent.key]}/>
+            ))}
+          </div>
+        </div>
+
+        {/* CENTER — Live log */}
+        <div style={{ flex:'1 1 0', marginRight:'12px', display:'flex', flexDirection:'column', minWidth:0 }}>
+          <div style={{ ...serif, fontSize:'12px', fontWeight:'600', color:C.muted,
+                        letterSpacing:'0.3px', marginBottom:'10px', paddingLeft:'2px' }}>
+            Live Agent Output
+          </div>
+          <div className="panel" style={{ flex:1, overflow:'hidden' }}>
+            <div className="panel-head">
+              <span className="panel-title">Processing Log</span>
+              <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+                <div style={{ ...mono, fontSize:'10px', color:C.muted }}>{logEntries.length} events</div>
+                {!done && <div className="spinner" style={{ width:'11px', height:'11px' }}/>}
+              </div>
+            </div>
+            <div ref={logRef} style={{ flex:1, overflowY:'auto', display:'flex', flexDirection:'column' }}>
+              {logEntries.length === 0 ? (
+                <div style={{ padding:'24px', textAlign:'center', color:C.muted, fontSize:'12px' }}>
+                  Waiting for pipeline to start…
+                </div>
+              ) : logEntries.map((entry, i) => (
+                <LogEntry key={i} entry={entry}/>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT — Visualizations */}
+        <div style={{ width:'240px', flexShrink:0, display:'flex', flexDirection:'column' }}>
+          <div style={{ ...serif, fontSize:'12px', fontWeight:'600', color:C.muted,
+                        letterSpacing:'0.3px', marginBottom:'10px', paddingLeft:'2px' }}>
+            Live Metrics
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:'10px', flex:1, overflowY:'auto' }}>
+
+            {/* Counters */}
+            <div style={{ display:'flex', gap:'6px' }}>
+              <Counter label="Patients" value={patients} active={patients > 0}/>
+              <Counter label="Entities" value={entities} active={entities > 0}/>
+              <Counter label="Corrected" value={corrections} active={corrections > 0}/>
+            </div>
+
+            {/* Modality donut */}
+            <div className="panel" style={{ padding:'14px' }}>
+              <div style={{ fontSize:'11px', fontWeight:'600', color:C.muted, letterSpacing:'0.5px',
+                            textTransform:'uppercase', marginBottom:'12px' }}>Modality Coverage</div>
+              <ModalityCoverage progress={donutProgress}/>
+            </div>
+
+            {/* Confidence bar chart */}
+            <div className="panel" style={{ padding:'14px' }}>
+              <div style={{ fontSize:'11px', fontWeight:'600', color:C.muted, letterSpacing:'0.5px',
+                            textTransform:'uppercase', marginBottom:'10px' }}>
+                Confidence Distribution
+              </div>
+              <ConfBar barProgress={barProgress}/>
+              <div style={{ display:'flex', gap:'8px', marginTop:'8px', flexWrap:'wrap' }}>
+                {[[C.success,'≥0.90'],[C.accent,'0.85+'],[C.warning,'0.75+'],[C.error,'<0.75']].map(([c,l]) => (
+                  <div key={l} style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+                    <div style={{ width:'6px', height:'6px', borderRadius:'1px', background:c }}/>
+                    <span style={{ fontSize:'9px', color:C.muted, ...mono }}>{l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Radar chart */}
+            <div className="panel" style={{ padding:'14px' }}>
+              <div style={{ fontSize:'11px', fontWeight:'600', color:C.muted, letterSpacing:'0.5px',
+                            textTransform:'uppercase', marginBottom:'8px' }}>
+                Dataset Profile
+                {!showRadar && <span style={{ fontSize:'9.5px', fontWeight:'400', marginLeft:'6px', color:C.border }}>(after completion)</span>}
+              </div>
+              {showRadar
+                ? <RadarChart visible={showRadar} progress={radarProgress}/>
+                : (
+                  <div style={{ height:'130px', display:'flex', alignItems:'center', justifyContent:'center',
+                                border:`1px dashed ${C.border}`, borderRadius:'6px', background:C.s2 }}>
+                    <span style={{ fontSize:'11px', color:C.border }}>Awaiting pipeline…</span>
+                  </div>
+                )
+              }
+            </div>
+
+            {/* Modal Cloud scalability callout */}
+            <div className="panel" style={{ padding:'14px', border:'1px solid rgba(13,148,136,0.25)',
+                          background:'rgba(13,148,136,0.04)' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:'7px', marginBottom:'10px' }}>
+                <div style={{ width:'20px', height:'20px', background:'linear-gradient(135deg,#0D9488,#059669)',
+                              borderRadius:'5px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <span style={{ fontSize:'10px', color:'white', fontWeight:'800' }}>M</span>
+                </div>
+                <span style={{ fontSize:'12px', fontWeight:'700', color:C.primary }}>Modal Cloud</span>
+                <span style={{ fontSize:'9.5px', color:C.accent, fontWeight:'600',
+                               background:'rgba(13,148,136,0.1)', padding:'1px 6px',
+                               borderRadius:'3px', ...mono }}>auto-scale</span>
+              </div>
+              {[
+                ['Parallel workers', '8 → 512'],
+                ['Cold start', '< 400 ms'],
+                ['Input formats', 'TXT · CSV · VCF · FHIR · HL7 · DICOM'],
+                ['Scale to', '100 k patients / run'],
+              ].map(([label, val]) => (
+                <div key={label} style={{ display:'flex', justifyContent:'space-between',
+                       alignItems:'baseline', marginBottom:'5px' }}>
+                  <span style={{ fontSize:'11px', color:C.muted }}>{label}</span>
+                  <span style={{ ...mono, fontSize:'10.5px', color:C.primary, fontWeight:'500',
+                                 textAlign:'right', maxWidth:'55%' }}>{val}</span>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* ── Progress bar ── */}
+      <div style={{ padding:'12px 14px 14px', flexShrink:0 }}>
+        <div style={{ background:C.surface, borderRadius:'10px', border:`1px solid ${C.border}`,
+                      padding:'10px 16px', display:'flex', flexDirection:'column', gap:'8px' }}>
+          {/* Top row */}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+              <span style={{ ...mono, fontSize:'13px', fontWeight:'600', color:C.primary }}>{pct}%</span>
+              <span style={{ fontSize:'12px', color:C.muted }}>
+                {done ? 'Pipeline complete' :
+                 pct < 9  ? 'Ingesting patient records' :
+                 pct < 18 ? 'Checking modality coverage' :
+                 pct < 43 ? 'Harmonizing entities (Claude Opus 4.6)' :
+                 pct < 59 ? 'Validating mappings (Claude Sonnet 4.6)' :
+                 pct < 70 ? 'Computing dataset profile' :
+                 pct < 84 ? 'Matching to pharma requests' :
+                            'Writing OMOP output'}
+              </span>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+              {!done && (
+                <span style={{ ...mono, fontSize:'12px', color:C.muted }}>
+                  ~{timeLeft}s remaining
+                </span>
+              )}
+              {done && (
+                <button onClick={() => { window.location.href = 'screen3_results.html'; }} style={{
+                  padding:'6px 16px', background:C.accent, border:'none', borderRadius:'7px',
+                  color:'white', fontSize:'12px', fontWeight:'600', cursor:'pointer',
+                  fontFamily:"'DM Sans',sans-serif", display:'flex', alignItems:'center', gap:'6px',
+                }}>
+                  View Results →
+                </button>
+              )}
+              {/* Modal cloud badge */}
+              <div style={{ display:'flex', alignItems:'center', gap:'5px' }}>
+                <span style={{ fontSize:'10px', color:C.muted }}>Running on</span>
+                <div style={{ width:'12px', height:'12px', background:'#0D9488', borderRadius:'2px',
+                              display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <span style={{ fontSize:'7px', color:'white', fontWeight:'800' }}>M</span>
+                </div>
+                <span style={{ fontSize:'10px', color:'#0D9488', fontWeight:'600' }}>Modal</span>
+              </div>
+            </div>
+          </div>
+          {/* Bar */}
+          <div style={{ height:'5px', background:C.s2, borderRadius:'3px', overflow:'hidden' }}>
+            <div style={{
+              height:'100%', borderRadius:'3px',
+              background: done
+                ? `linear-gradient(to right, ${C.success}, ${C.accent})`
+                : `linear-gradient(to right, ${C.accent}, #0D9488)`,
+              width:`${pct}%`,
+              transition:'width 0.08s linear',
+            }}/>
+          </div>
+          {/* Agent mini-status */}
+          <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
+            {AGENTS.map(agent => (
+              <div key={agent.key} style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+                <div style={{
+                  width:'6px', height:'6px', borderRadius:'50%',
+                  background: agentStates[agent.key] === 'done'    ? C.success :
+                              agentStates[agent.key] === 'running'  ? C.accent  : C.border,
+                  transition:'background 0.3s ease',
+                }}/>
+                <span style={{ fontSize:'9.5px', color:
+                  agentStates[agent.key] === 'done'   ? C.success :
+                  agentStates[agent.key] === 'running' ? C.accent  : C.border,
+                  ...mono, transition:'color 0.3s ease',
+                }}>
+                  {agent.label.replace(' Agent','').split(' ')[0]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── App ─── */
+const App = () => {
+  const [screen, setScreen] = useState('pipeline');
+  if (screen === 'pipeline') return <Screen2 onNavigate={setScreen}/>;
+  return (
+    <div style={{ height:'100vh', background:C.bg, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'DM Sans',sans-serif" }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ ...serif, fontSize:'16px', color:C.primary, marginBottom:'6px', fontWeight:'600' }}>
+          {screen === 'results' ? 'Screen 3 — Packaging Complete' : 'Hospital Dashboard'}
+        </div>
+        <div style={{ fontSize:'13px', color:C.muted, marginBottom:'20px' }}>Coming next</div>
+        <button onClick={() => setScreen('pipeline')} style={{
+          padding:'8px 18px', background:C.accent, border:'none', borderRadius:'7px',
+          color:'white', cursor:'pointer', fontSize:'13px', fontFamily:"'DM Sans',sans-serif",
+        }}>← Back to Pipeline</button>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

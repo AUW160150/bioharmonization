@@ -1,0 +1,348 @@
+{
+  "patient_id": "P005",
+  "language_detected": "hindi",
+  "entities": {
+    "demographics": {
+      "name": {
+        "original_text": "सुरेश वर्मा",
+        "language": "hindi",
+        "standardized_english_term": "Suresh Verma",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.98,
+        "reasoning": "Hindi name transliterated to English. No medical coding applicable.",
+        "flag": null
+      },
+      "age": {
+        "original_text": "67 वर्ष",
+        "language": "hindi",
+        "standardized_english_term": "67 years",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'वर्ष' means 'years' in Hindi. Age is 67 years.",
+        "flag": null
+      },
+      "sex": {
+        "original_text": "पुरुष",
+        "language": "hindi",
+        "standardized_english_term": "Male",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'पुरुष' is the Hindi word for 'Male'.",
+        "flag": null
+      }
+    },
+    "diagnoses": [
+      {
+        "original_text": "टाइप 2 मधुमेह (15 वर्ष, खराब नियंत्रण)",
+        "language": "hindi",
+        "standardized_english_term": "Type 2 Diabetes Mellitus (15 years duration, poorly controlled)",
+        "icd10_code": "E11.65",
+        "omop_concept_id": "201826",
+        "confidence": 0.95,
+        "reasoning": "'टाइप 2 मधुमेह' translates to 'Type 2 Diabetes Mellitus'. Given concurrent CKD Stage 3b, the more specific ICD-10 code E11.65 (Type 2 Diabetes with CKD) is appropriate. HbA1c of 10.2% confirms poor control.",
+        "flag": null
+      },
+      {
+        "original_text": "कोरोनरी आर्टरी डिजीज",
+        "language": "hindi",
+        "standardized_english_term": "Coronary Artery Disease",
+        "icd10_code": "I25.10",
+        "omop_concept_id": "317576",
+        "confidence": 0.98,
+        "reasoning": "'कोरोनरी आर्टरी डिजीज' is a direct Hindi transliteration of 'Coronary Artery Disease'. Unambiguous mapping.",
+        "flag": null
+      },
+      {
+        "original_text": "क्रोनिक किडनी रोग (Stage 3b)",
+        "language": "mixed",
+        "standardized_english_term": "Chronic Kidney Disease Stage 3b",
+        "icd10_code": "N18.32",
+        "omop_concept_id": "443601",
+        "confidence": 0.97,
+        "reasoning": "'क्रोनिक किडनी रोग' translates to 'Chronic Kidney Disease', with 'Stage 3b' in English. eGFR of 32 mL/min/1.73m² is consistent with CKD Stage 3b (30-44).",
+        "flag": null
+      },
+      {
+        "original_text": "रक्तचाप: 142/86 mmHg",
+        "language": "hindi",
+        "standardized_english_term": "Hypertension",
+        "icd10_code": "I10",
+        "omop_concept_id": "320128",
+        "confidence": 0.82,
+        "reasoning": "Blood pressure reading 142/86 mmHg exceeds hypertension thresholds (≥140/90 systolic). While not explicitly listed as a diagnosis, the elevated BP in a 67-year-old with CKD and CAD strongly suggests hypertension. Confidence slightly reduced as it is inferred from vitals rather than explicitly stated.",
+        "flag": null
+      }
+    ],
+    "medications": [
+      {
+        "original_text": "इंसुलिन ग्लार्जिन 30 यूनिट — रात को",
+        "language": "hindi",
+        "standardized_english_term": "Insulin Glargine 30 units at bedtime",
+        "icd10_code": null,
+        "omop_concept_id": "40239216",
+        "dose": "30 units",
+        "frequency": "Once daily at bedtime",
+        "confidence": 0.98,
+        "reasoning": "'इंसुलिन ग्लार्जिन' is a Hindi transliteration of 'Insulin Glargine'. 'रात को' means 'at night/bedtime'. Basal insulin for poorly controlled T2DM.",
+        "flag": null
+      },
+      {
+        "original_text": "इंसुलिन लिस्प्रो — भोजन के साथ (8-10 यूनिट)",
+        "language": "hindi",
+        "standardized_english_term": "Insulin Lispro 8-10 units with meals",
+        "icd10_code": null,
+        "omop_concept_id": "1516023",
+        "dose": "8-10 units",
+        "frequency": "With meals (prandial)",
+        "confidence": 0.98,
+        "reasoning": "'इंसुलिन लिस्प्रो' is Hindi transliteration of 'Insulin Lispro'. 'भोजन के साथ' means 'with meals'. Rapid-acting insulin for prandial coverage.",
+        "flag": null
+      },
+      {
+        "original_text": "एम्पाग्लिफ्लोज़िन 10 मिग्रा — सुबह (eGFR >30 होने पर)",
+        "language": "mixed",
+        "standardized_english_term": "Empagliflozin 10 mg in the morning (if eGFR >30)",
+        "icd10_code": null,
+        "omop_concept_id": "45774751",
+        "dose": "10 mg",
+        "frequency": "Once daily in the morning",
+        "confidence": 0.95,
+        "reasoning": "'एम्पाग्लिफ्लोज़िन' is Hindi transliteration of 'Empagliflozin'. Note documents conditional use based on eGFR >30; patient's eGFR is 32, so just above threshold — requires monitoring.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "एटोरवास्टेटिन 20 मिग्रा — रात को (खुराक कम — CKD)",
+        "language": "mixed",
+        "standardized_english_term": "Atorvastatin 20 mg at bedtime (dose reduced for CKD)",
+        "icd10_code": null,
+        "omop_concept_id": "1545958",
+        "dose": "20 mg",
+        "frequency": "Once daily at bedtime",
+        "confidence": 0.98,
+        "reasoning": "'एटोरवास्टेटिन' is Hindi transliteration of 'Atorvastatin'. Note indicates dose reduction due to CKD. 'रात को' means 'at night'.",
+        "flag": null
+      },
+      {
+        "original_text": "एस्पिरिन 75 मिग्रा — प्रतिदिन",
+        "language": "hindi",
+        "standardized_english_term": "Aspirin 75 mg daily",
+        "icd10_code": null,
+        "omop_concept_id": "1112807",
+        "dose": "75 mg",
+        "frequency": "Once daily",
+        "confidence": 0.99,
+        "reasoning": "'एस्पिरिन' is Hindi transliteration of 'Aspirin'. 'प्रतिदिन' means 'daily'. Standard antiplatelet dose for CAD.",
+        "flag": null
+      },
+      {
+        "original_text": "ओमेप्राज़ोल 20 मिग्रा — सुबह (गैस्ट्रो-सुरक्षा)",
+        "language": "hindi",
+        "standardized_english_term": "Omeprazole 20 mg in the morning (gastroprotection)",
+        "icd10_code": null,
+        "omop_concept_id": "923645",
+        "dose": "20 mg",
+        "frequency": "Once daily in the morning",
+        "confidence": 0.98,
+        "reasoning": "'ओमेप्राज़ोल' is Hindi transliteration of 'Omeprazole'. 'गैस्ट्रो-सुरक्षा' means 'gastroprotection', indicating use for GI protection concurrent with aspirin therapy.",
+        "flag": null
+      }
+    ],
+    "vitals": [
+      {
+        "original_text": "रक्तचाप: 142/86 mmHg",
+        "language": "hindi",
+        "standardized_english_term": "Systolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3004249",
+        "loinc_code": "8480-6",
+        "value": 142,
+        "unit": "mmHg",
+        "reference_range": "<140",
+        "interpretation": "Above normal (hypertensive range)",
+        "confidence": 0.99,
+        "reasoning": "'रक्तचाप' means 'blood pressure'. Systolic component 142 mmHg is above the 140 mmHg threshold for hypertension.",
+        "flag": null
+      },
+      {
+        "original_text": "रक्तचाप: 142/86 mmHg",
+        "language": "hindi",
+        "standardized_english_term": "Diastolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3012888",
+        "loinc_code": "8462-4",
+        "value": 86,
+        "unit": "mmHg",
+        "reference_range": "<90",
+        "interpretation": "Within normal range but elevated",
+        "confidence": 0.99,
+        "reasoning": "Diastolic component from the same blood pressure reading. 86 mmHg is below 90 threshold but elevated.",
+        "flag": null
+      },
+      {
+        "original_text": "वजन: 71 किग्रा",
+        "language": "hindi",
+        "standardized_english_term": "Body Weight",
+        "icd10_code": null,
+        "omop_concept_id": "3025315",
+        "loinc_code": "29463-7",
+        "value": 71,
+        "unit": "kg",
+        "reference_range": null,
+        "interpretation": "Recorded",
+        "confidence": 0.99,
+        "reasoning": "'वजन' means 'weight' and 'किग्रा' means 'kilograms' in Hindi.",
+        "flag": null
+      }
+    ],
+    "lab_values": [
+      {
+        "original_text": "HbA1c: 10.2% (बहुत खराब)",
+        "language": "mixed",
+        "standardized_english_term": "HbA1c",
+        "icd10_code": null,
+        "omop_concept_id": "3004410",
+        "loinc_code": "4548-4",
+        "value": 10.2,
+        "unit": "%",
+        "reference_range": "<7.0%",
+        "interpretation": "Critically above target; 'बहुत खराब' means 'very poor'. Indicates severely uncontrolled diabetes.",
+        "confidence": 1.0,
+        "reasoning": "HbA1c is in English. Value of 10.2% is far above the <7.0% target, consistent with the clinical note stating poorly controlled diabetes for 15 years.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "उपवास रक्त शर्करा: 13.8 mmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Fasting Blood Glucose",
+        "icd10_code": null,
+        "omop_concept_id": "3004501",
+        "loinc_code": "76629-5",
+        "value": 13.8,
+        "unit": "mmol/L",
+        "reference_range": "3.9-5.5 mmol/L",
+        "interpretation": "Critically above normal (approximately 248 mg/dL). Severely elevated.",
+        "confidence": 0.98,
+        "reasoning": "'उपवास रक्त शर्करा' translates to 'fasting blood sugar/glucose'. 13.8 mmol/L is approximately 2.5 times the upper limit of normal.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "क्रिएटिनिन: 198 µmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Serum Creatinine",
+        "icd10_code": null,
+        "omop_concept_id": "3016723",
+        "loinc_code": "2160-0",
+        "value": 198,
+        "unit": "µmol/L",
+        "reference_range": "62-106 µmol/L",
+        "interpretation": "Significantly elevated (approximately 2.24 mg/dL). Consistent with CKD Stage 3b.",
+        "confidence": 0.98,
+        "reasoning": "'क्रिएटिनिन' is Hindi transliteration of 'Creatinine'. Value nearly double the upper reference limit, consistent with the documented CKD Stage 3b.",
+        "flag": null
+      },
+      {
+        "original_text": "eGFR: 32 mL/min/1.73m²",
+        "language": "mixed",
+        "standardized_english_term": "Estimated Glomerular Filtration Rate (eGFR)",
+        "icd10_code": null,
+        "omop_concept_id": "3049187",
+        "loinc_code": "62238-1",
+        "value": 32,
+        "unit": "mL/min/1.73m²",
+        "reference_range": ">60 mL/min/1.73m²",
+        "interpretation": "Below normal. Consistent with CKD Stage 3b (30-44 mL/min). Borderline for empagliflozin use (>30 required).",
+        "confidence": 0.99,
+        "reasoning": "eGFR is in English. Value of 32 falls within the CKD Stage 3b range (30-44). Critically close to the threshold for continuing empagliflozin.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "पोटेशियम: 5.4 mEq/L (सावधानी)",
+        "language": "hindi",
+        "standardized_english_term": "Serum Potassium",
+        "icd10_code": null,
+        "omop_concept_id": "3023103",
+        "loinc_code": "2823-3",
+        "value": 5.4,
+        "unit": "mEq/L",
+        "reference_range": "3.5-5.0 mEq/L",
+        "interpretation": "Elevated (hyperkalemia). 'सावधानी' means 'caution'. Clinically significant in setting of CKD — risk of cardiac arrhythmia.",
+        "confidence": 0.98,
+        "reasoning": "'पोटेशियम' is Hindi transliteration of 'Potassium'. Value 5.4 mEq/L exceeds the upper reference of 5.0. Hyperkalemia in CKD context requires attention.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "मूत्र में प्रोटीन: ++ (एल्बुमिनूरिया)",
+        "language": "hindi",
+        "standardized_english_term": "Urine Albumin-to-Creatinine Ratio (Urine ACR)",
+        "icd10_code": null,
+        "omop_concept_id": "3029683",
+        "loinc_code": "9318-7",
+        "value": 68,
+        "unit": "mg/mmol",
+        "reference_range": "<3.0 mg/mmol",
+        "interpretation": "Severely elevated (>22.6x upper limit). Indicates significant albuminuria consistent with diabetic nephropathy and CKD progression.",
+        "confidence": 0.92,
+        "reasoning": "'मूत्र में प्रोटीन' means 'protein in urine'. The clinical note mentions '++ albuminuria' and the lab CSV provides the quantitative Urine ACR of 68 mg/mmol. These are correlated findings mapped to the same standard measurement.",
+        "flag": null
+      },
+      {
+        "original_text": "एल्ब्यूमिन_g_dL: 3.6",
+        "language": "hindi",
+        "standardized_english_term": "Serum Albumin",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "loinc_code": "1751-7",
+        "value": 3.6,
+        "unit": "g/dL",
+        "reference_range": "3.5-5.0 g/dL",
+        "interpretation": "Low-normal. Borderline in the context of CKD (may indicate early protein wasting).",
+        "confidence": 0.9,
+        "reasoning": "'एल्ब्यूमिन' is Hindi transliteration of 'Albumin'. Value is within reference range but at the lower boundary. Not in the OMOP reference table provided; OMOP concept ID set to null.",
+        "flag": "no_standard_code"
+      },
+      {
+        "original_text": "Hb_g_dL: 10.8",
+        "language": "mixed",
+        "standardized_english_term": "Haemoglobin",
+        "icd10_code": null,
+        "omop_concept_id": "3000963",
+        "loinc_code": "718-7",
+        "value": 10.8,
+        "unit": "g/dL",
+        "reference_range": "13-17 g/dL (Male)",
+        "interpretation": "Below normal. Anaemia, likely renal anaemia secondary to CKD Stage 3b (reduced erythropoietin production).",
+        "confidence": 0.97,
+        "reasoning": "Hb is an abbreviation for Haemoglobin. Value of 10.8 g/dL is well below the male reference range of 13-17 g/dL, indicating moderate anaemia consistent with CKD.",
+        "flag": "needs_review"
+      }
+    ],
+    "variants": []
+  },
+  "flags": [
+    "CRITICAL: HbA1c 10.2% indicates severely uncontrolled type 2 diabetes despite insulin therapy — urgent therapeutic escalation needed",
+    "CRITICAL: Hyperkalemia (K+ 5.4 mEq/L) in CKD patient — cardiac monitoring required; avoid potassium-sparing agents",
+    "WARNING: eGFR 32 mL/min is borderline for empagliflozin use (threshold >30) — close monitoring required; consider discontinuation if eGFR declines further",
+    "WARNING: Significant albuminuria (Urine ACR 68 mg/mmol) suggests progressive diabetic nephropathy — consider ACEi/ARB if not contraindicated by hyperkalemia",
+    "WARNING: Moderate anaemia (Hb 10.8 g/dL) likely renal anaemia secondary to CKD — consider erythropoiesis-stimulating agent evaluation",
+    "WARNING: Systolic BP 142 mmHg above target for CKD/diabetic patient — antihypertensive therapy not currently prescribed; consider adding ACEi/ARB (with K+ monitoring) or calcium channel blocker",
+    "NOTE: No ACEi/ARB in medication list despite CKD with albuminuria and CAD — may be omitted due to hyperkalemia risk; needs clinical review",
+    "NOTE: Fasting glucose 13.8 mmol/L (≈248 mg/dL) corroborates poor glycaemic control"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "clinical_note_P005_hindi.txt",
+      "lab_results_P005.csv"
+    ],
+    "total_entities": 21,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "needs_review_count": 6,
+    "timestamp": "2026-03-09T00:49:50.991090Z",
+    "input_tokens": 3106,
+    "output_tokens": 5573
+  }
+}

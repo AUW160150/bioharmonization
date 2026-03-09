@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioHarmonize — Packaging Complete</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #D6D3CE; border-radius: 3px; }
+
+    @keyframes fadeUp    { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+    @keyframes countAnim { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes scoreBar  { from { width:0; } to { width:var(--w); } }
+    @keyframes radarIn   { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+    @keyframes stampIn   {
+      0%   { opacity:0; transform:scale(1.15) rotate(-2deg); }
+      60%  { transform:scale(0.96) rotate(0.5deg); }
+      100% { opacity:1; transform:scale(1) rotate(0deg); }
+    }
+    @keyframes pulse { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.12);} }
+
+    .anim-1  { animation: fadeUp 0.55s ease forwards; }
+    .anim-2  { animation: fadeUp 0.55s ease 0.08s forwards; opacity:0; }
+    .anim-3  { animation: fadeUp 0.55s ease 0.16s forwards; opacity:0; }
+    .anim-4  { animation: fadeUp 0.55s ease 0.24s forwards; opacity:0; }
+    .anim-5  { animation: fadeUp 0.55s ease 0.32s forwards; opacity:0; }
+    .anim-6  { animation: fadeUp 0.55s ease 0.40s forwards; opacity:0; }
+    .radar-in{ animation: radarIn 0.8s ease 0.5s forwards; opacity:0; }
+    .stamp-in{ animation: stampIn 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.2s forwards; opacity:0; }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E7E5E0;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(28,25,23,0.04);
+    }
+
+    .buyer-row {
+      background: #FFFFFF;
+      border: 1px solid #E7E5E0;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(28,25,23,0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      cursor: default;
+    }
+    .buyer-row:hover {
+      border-color: #0D9488;
+      box-shadow: 0 4px 20px rgba(13,148,136,0.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      padding: 8px 16px; border-radius: 7px;
+      border: 1px solid #E7E5E0; background: transparent;
+      font-size: 12px; font-weight: 500; color: #78716C;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-outline:hover { border-color: #0D9488; color: #0D9488; }
+
+    .btn-filled {
+      padding: 8px 16px; border-radius: 7px;
+      border: none; background: #0D9488;
+      font-size: 12px; font-weight: 600; color: white;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: filter 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .btn-filled:hover { filter: brightness(1.07); box-shadow: 0 3px 12px rgba(13,148,136,0.3); }
+
+    .dim-pill {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 600;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .section-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.7px;
+      text-transform: uppercase; color: #78716C;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const C = {
+  bg:'#FAFAF8', surface:'#FFFFFF', s2:'#F5F4F0',
+  primary:'#1C1917', accent:'#0D9488', success:'#059669',
+  warning:'#D97706', error:'#DC2626', muted:'#78716C', border:'#E7E5E0',
+};
+const mono  = { fontFamily:"'DM Mono',monospace" };
+const serif = { fontFamily:"'Playfair Display',serif" };
+
+/* ─── Data ─── */
+const RADAR_DIMS = [
+  { label:'Disease\nCoverage',     score:0.88 },
+  { label:'Modality\nComplete',    score:0.81 },
+  { label:'Demographic\nDiversity',score:0.79 },
+  { label:'Data\nQuality',         score:0.91 },
+  { label:'OMOP\nComplete',        score:0.94 },
+];
+
+const BUYERS = [
+  {
+    rank:'01', company:'Novo Nordisk', hq:'Copenhagen, DK', type:'Big Pharma',
+    score:94, scoreColor:'#059669',
+    dims:{ disease:0.96, modality:0.91, population:0.95, quality:0.92, protocol:0.93 },
+    seeking:'South Asian T2DM cohort with genomic variants + longitudinal HbA1c for Phase III biomarker trial',
+    budget:'$180K–$240K / yr', compatible:true,
+    detail:'IRB-ready · NCT pre-registration · GA4GH DUO match: HMB-GSO',
+  },
+  {
+    rank:'02', company:'AstraZeneca', hq:'Cambridge, UK', type:'Big Pharma',
+    score:87, scoreColor:'#0D9488',
+    dims:{ disease:0.88, modality:0.85, population:0.83, quality:0.90, protocol:0.82 },
+    seeking:'Cardiovascular + metabolic syndrome cohort, South Asian ancestry, lipid panel + statin response data',
+    budget:'$120K–$160K / yr', compatible:true,
+    detail:'Observational study · data access 24 months · co-publication option',
+  },
+  {
+    rank:'03', company:'IQVIA', hq:'Durham, NC', type:'CRO',
+    score:81, scoreColor:'#D97706',
+    dims:{ disease:0.82, modality:0.78, population:0.85, quality:0.79, protocol:0.79 },
+    seeking:'Real-world evidence for South Asian T2DM + CVD comorbidity patterns, multi-site aggregation',
+    budget:'$80K–$110K / yr', compatible:false,
+    detail:'Commercial use required — enable in protocol to unlock',
+  },
+];
+
+const MODALITIES = [
+  {
+    key:'clinical', label:'Clinical Notes', icon:'📋',
+    count:8, total:10, pct:80, color:C.accent,
+    missing:['P003','P007','P009'],
+    note:'P003, P007, P009 — notes absent (Bengali/Hindi)',
+  },
+  {
+    key:'labs', label:'Lab Results', icon:'🧪',
+    count:8, total:10, pct:80, color:C.accent,
+    missing:['P006','P010'],
+    note:'P006, P010 — quantitative biomarkers unavailable',
+  },
+  {
+    key:'genomics', label:'Genomic Variants', icon:'🧬',
+    count:10, total:10, pct:100, color:C.success,
+    missing:[],
+    note:'All 10 patients have VCF data',
+  },
+];
+
+/* ─── Helpers ─── */
+const animCount = (setter, target, ms=1000) => {
+  const start = Date.now();
+  const step = () => {
+    const p = Math.min((Date.now()-start)/ms, 1);
+    const e = 1 - Math.pow(1-p, 3);
+    setter(typeof target === 'number' ? Math.round(e * target) : parseFloat((e * target).toFixed(2)));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+};
+
+const dimColor = v => v >= 0.90 ? C.success : v >= 0.80 ? C.accent : v >= 0.70 ? C.warning : C.error;
+const dimBg    = v => v >= 0.90 ? 'rgba(5,150,105,0.1)' : v >= 0.80 ? 'rgba(13,148,136,0.1)' : v >= 0.70 ? 'rgba(217,119,6,0.1)' : 'rgba(220,38,38,0.1)';
+
+/* ─── Radar SVG ─── */
+const RadarChart = ({ progress }) => {
+  const cx=145, cy=130, r=88;
+  const n = RADAR_DIMS.length;
+
+  const pt = (idx, frac, score=1) => {
+    const angle = (idx * 2 * Math.PI / n) - Math.PI/2;
+    return {
+      x: cx + frac * score * r * Math.cos(angle),
+      y: cy + frac * score * r * Math.sin(angle),
+    };
+  };
+
+  const gridPoly = frac => Array.from({length:n}, (_,i) => {
+    const p = pt(i, frac);
+    return `${p.x},${p.y}`;
+  }).join(' ');
+
+  const dataPoly = RADAR_DIMS.map((d,i) => {
+    const p = pt(i, progress, d.score);
+    return `${p.x},${p.y}`;
+  }).join(' ');
+
+  const labelPos = RADAR_DIMS.map((d,i) => {
+    const angle = (i * 2 * Math.PI / n) - Math.PI/2;
+    const dist  = r + 26;
+    return {
+      x: cx + dist * Math.cos(angle),
+      y: cy + dist * Math.sin(angle),
+      lines: d.label.split('\n'),
+      score: d.score,
+    };
+  });
+
+  return (
+    <svg viewBox="0 0 290 265" width="100%" height="100%" style={{ overflow:'visible' }}>
+      {/* Grid rings */}
+      {[0.25,0.5,0.75,1.0].map(f => (
+        <polygon key={f} points={gridPoly(f)}
+                 fill="none" stroke={f===1.0 ? '#D6D3CE' : C.border}
+                 strokeWidth={f===1.0 ? '1' : '0.7'} opacity="0.8"/>
+      ))}
+      {/* Grid labels at 0.5 and 1.0 */}
+      {[0.5, 1.0].map(f => {
+        const p = pt(0, f);
+        return (
+          <text key={f} x={p.x+4} y={p.y}
+                style={{ ...mono, fontSize:'6.5px', fill:C.muted }}>
+            {f.toFixed(1)}
+          </text>
+        );
+      })}
+      {/* Axes */}
+      {RADAR_DIMS.map((_,i) => {
+        const p = pt(i, 1);
+        return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y}
+                     stroke={C.border} strokeWidth="0.8"/>;
+      })}
+      {/* Filled polygon */}
+      <polygon points={dataPoly}
+               fill="rgba(13,148,136,0.12)" stroke={C.accent}
+               strokeWidth="2" strokeLinejoin="round"
+               style={{ transition:'all 0.05s ease' }}/>
+      {/* Data dots */}
+      {RADAR_DIMS.map((d,i) => {
+        const p = pt(i, progress, d.score);
+        return (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="4.5" fill={C.accent} stroke="white" strokeWidth="1.5"/>
+          </g>
+        );
+      })}
+      {/* Axis labels */}
+      {labelPos.map((lp, i) => (
+        <g key={i}>
+          {lp.lines.map((line, li) => (
+            <text key={li}
+                  x={lp.x} y={lp.y + li * 10}
+                  textAnchor="middle" dominantBaseline="middle"
+                  style={{ fontSize:'8.5px', fill:C.muted, fontFamily:"'DM Sans',sans-serif" }}>
+              {line}
+            </text>
+          ))}
+          {progress > 0.8 && (
+            <text x={lp.x} y={lp.y + lp.lines.length * 10 + 4}
+                  textAnchor="middle"
+                  style={{ ...mono, fontSize:'8px', fill:dimColor(lp.score), fontWeight:'600' }}>
+              {lp.score.toFixed(2)}
+            </text>
+          )}
+        </g>
+      ))}
+    </svg>
+  );
+};
+
+/* ─── Score fill bar (animated) ─── */
+const ScoreBar = ({ score, color, delay=0 }) => {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const start = Date.now();
+      const anim = () => {
+        const p = Math.min((Date.now()-start)/900, 1);
+        const e = 1 - Math.pow(1-p, 3);
+        setWidth(e * score);
+        if (p < 1) requestAnimationFrame(anim);
+      };
+      requestAnimationFrame(anim);
+    }, delay);
+    return () => clearTimeout(t);
+  }, [score, delay]);
+
+  return (
+    <div style={{ height:'4px', background:C.s2, borderRadius:'2px', overflow:'hidden', flex:1 }}>
+      <div style={{
+        height:'100%', borderRadius:'2px',
+        background:`linear-gradient(to right, ${color}, ${color}cc)`,
+        width:`${width}%`, transition:'width 0.03s linear',
+      }}/>
+    </div>
+  );
+};
+
+/* ─── Dim pill ─── */
+const DimPill = ({ label, value }) => (
+  <span className="dim-pill" style={{ background:dimBg(value), color:dimColor(value) }}>
+    <span style={{ fontSize:'9px', fontWeight:'500', opacity:0.75 }}>{label}</span>
+    {value.toFixed(2)}
+  </span>
+);
+
+/* ─── Buyer row ─── */
+const BuyerRow = ({ buyer, delay, sent, onSend }) => {
+  const [barW, setBarW] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const start = Date.now();
+      const anim = () => {
+        const p = Math.min((Date.now()-start)/1000, 1);
+        const e = 1 - Math.pow(1-p, 3);
+        setBarW(e * buyer.score);
+        if (p < 1) requestAnimationFrame(anim);
+      };
+      requestAnimationFrame(anim);
+    }, delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+
+  return (
+    <div className="buyer-row" style={{ padding:'20px 24px', display:'flex', gap:'20px', alignItems:'flex-start' }}>
+
+      {/* Rank */}
+      <div style={{ flexShrink:0, paddingTop:'3px' }}>
+        <div style={{ ...mono, fontSize:'28px', fontWeight:'500', color:C.border, lineHeight:1, letterSpacing:'-1px' }}>
+          {buyer.rank}
+        </div>
+      </div>
+
+      {/* Company */}
+      <div style={{ width:'160px', flexShrink:0 }}>
+        <div style={{ fontSize:'15px', fontWeight:'700', color:C.primary, marginBottom:'3px', letterSpacing:'-0.2px' }}>
+          {buyer.company}
+        </div>
+        <div style={{ fontSize:'11px', color:C.muted, marginBottom:'8px' }}>{buyer.hq}</div>
+        <div style={{ display:'inline-flex', alignItems:'center', gap:'5px',
+                      padding:'2px 9px', borderRadius:'20px',
+                      background:C.s2, border:`1px solid ${C.border}`,
+                      fontSize:'10px', fontWeight:'600', color:C.muted }}>
+          {buyer.type}
+        </div>
+        {/* Protocol compat */}
+        <div style={{ marginTop:'10px', display:'flex', alignItems:'center', gap:'5px' }}>
+          {buyer.compatible ? (
+            <>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="6" r="5" fill={C.success}/>
+                <path d="M3.5 6l1.8 1.8L8.5 4" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{ fontSize:'10.5px', color:C.success, fontWeight:'500' }}>Protocol compatible</span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize:'12px' }}>⚠</span>
+              <span style={{ fontSize:'10.5px', color:C.warning, fontWeight:'500' }}>Partial match</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Score + bar */}
+      <div style={{ width:'120px', flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'baseline', gap:'3px', marginBottom:'8px' }}>
+          <span style={{ ...mono, fontSize:'38px', fontWeight:'500', color:buyer.scoreColor, letterSpacing:'-2px', lineHeight:1 }}>
+            {buyer.score}
+          </span>
+          <span style={{ fontSize:'13px', color:C.muted }}>/100</span>
+        </div>
+        <ScoreBar score={buyer.score} color={buyer.scoreColor} delay={delay}/>
+        <div style={{ fontSize:'10px', color:C.muted, marginTop:'5px' }}>match score</div>
+      </div>
+
+      {/* Dimensions */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', gap:'10px' }}>
+        {/* Dim pills */}
+        <div style={{ display:'flex', gap:'5px', flexWrap:'wrap' }}>
+          <DimPill label="Disease "   value={buyer.dims.disease}/>
+          <DimPill label="Modality "  value={buyer.dims.modality}/>
+          <DimPill label="Population " value={buyer.dims.population}/>
+          <DimPill label="Quality "   value={buyer.dims.quality}/>
+          <DimPill label="Protocol "  value={buyer.dims.protocol}/>
+        </div>
+        {/* What they seek */}
+        <p style={{ fontSize:'12.5px', color:C.primary, lineHeight:'1.55', maxWidth:'480px' }}>
+          {buyer.seeking}
+        </p>
+        {/* Detail note */}
+        <div style={{ fontSize:'11px', color:C.muted, fontStyle:'italic' }}>{buyer.detail}</div>
+      </div>
+
+      {/* Budget + CTAs */}
+      <div style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'12px' }}>
+        <div style={{ textAlign:'right' }}>
+          <div style={{ fontSize:'10px', color:C.muted, textTransform:'uppercase', letterSpacing:'0.4px', marginBottom:'3px' }}>Budget</div>
+          <div style={{ ...mono, fontSize:'14px', fontWeight:'500', color:C.primary }}>{buyer.budget}</div>
+        </div>
+        <div style={{ display:'flex', gap:'8px' }}>
+          <button className="btn-outline">View Request</button>
+          {sent ? (
+            <button className="btn-filled" style={{ background:'#059669', cursor:'default' }}>
+              Interest sent ✓
+            </button>
+          ) : (
+            <button className="btn-filled" onClick={onSend}>
+              Express Interest
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Provenance Modal ─── */
+const PROV_SUMMARY = [
+  { patient:'P001', lang:'Hindi',   entities:25, corrections:2, flags:3, confidence:0.97 },
+  { patient:'P002', lang:'Bengali', entities:18, corrections:1, flags:2, confidence:0.94 },
+  { patient:'P003', lang:'Hindi',   entities:22, corrections:3, flags:4, confidence:0.92 },
+  { patient:'P004', lang:'Bengali', entities:20, corrections:2, flags:2, confidence:0.95 },
+  { patient:'P005', lang:'English', entities:16, corrections:1, flags:1, confidence:0.98 },
+  { patient:'P006', lang:'Bengali', entities:24, corrections:4, flags:3, confidence:0.91 },
+  { patient:'P007', lang:'Bengali', entities:14, corrections:2, flags:5, confidence:0.79, warn:true },
+  { patient:'P008', lang:'English', entities:19, corrections:3, flags:2, confidence:0.96 },
+  { patient:'P009', lang:'Hindi',   entities:21, corrections:2, flags:2, confidence:0.95 },
+  { patient:'P010', lang:'Bengali', entities:17, corrections:3, flags:1, confidence:0.93 },
+];
+
+const CORRECTIONS_SAMPLE = [
+  { from:'N18.32', to:'N18.31', reason:'eGFR 58 = Stage 3a per KDIGO 2024' },
+  { from:'E78.5',  to:'E78.49', reason:'Mixed hyperlipidemia — more specific code' },
+  { from:'I10',    to:'I10',    reason:'Confirmed — consistent with Ramipril therapy' },
+  { from:'E11.9',  to:'E11.65', reason:'HbA1c 9.8% → uncontrolled T2DM subtype added' },
+];
+
+function ProvenanceModal({ onClose }) {
+  const total   = PROV_SUMMARY.reduce((s,p) => s + p.entities, 0);
+  const corrs   = PROV_SUMMARY.reduce((s,p) => s + p.corrections, 0);
+  const avgConf = (PROV_SUMMARY.reduce((s,p) => s + p.confidence, 0) / PROV_SUMMARY.length).toFixed(2);
+
+  return (
+    <div onClick={onClose} style={{
+      position:'fixed', inset:0, background:'rgba(28,25,23,0.5)',
+      backdropFilter:'blur(5px)', display:'flex', alignItems:'center',
+      justifyContent:'center', zIndex:200, animation:'fadeIn 0.2s ease',
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background:C.surface, borderRadius:14, width:'min(720px, calc(100vw - 32px))',
+        maxHeight:'85vh', display:'flex', flexDirection:'column',
+        border:`1px solid ${C.border}`,
+        boxShadow:'0 24px 60px rgba(28,25,23,0.18)',
+        animation:'fadeUp 0.3s ease',
+      }}>
+        {/* Header */}
+        <div style={{ padding:'20px 24px 16px', borderBottom:`1px solid ${C.border}`,
+          display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+          <div>
+            <h2 style={{ fontFamily:'Playfair Display', fontSize:18, fontWeight:600,
+              color:C.primary, marginBottom:3 }}>Pipeline Provenance Report</h2>
+            <p style={{ fontSize:12.5, color:C.muted }}>
+              Run: 2026-03-08T21:52 UTC · Model: claude-opus-4-6 · 10 patients
+            </p>
+          </div>
+          <button onClick={onClose} style={{ background:'none', border:'none',
+            fontSize:20, color:C.muted, cursor:'pointer', lineHeight:1, padding:'2px 4px' }}>×</button>
+        </div>
+
+        <div style={{ overflowY:'auto', padding:'20px 24px', display:'flex', flexDirection:'column', gap:18 }}>
+          {/* Summary stats */}
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10 }}>
+            {[
+              { label:'Total Entities', val:total,   color:C.accent },
+              { label:'AI Corrections', val:corrs,   color:C.warning },
+              { label:'Avg Confidence', val:avgConf, color:C.success },
+              { label:'Patients',       val:10,      color:C.primary },
+            ].map(s => (
+              <div key={s.label} style={{ background:C.surface2, borderRadius:9,
+                padding:'12px 14px', border:`1px solid ${C.border}` }}>
+                <div style={{ fontFamily:'DM Mono', fontSize:20, fontWeight:500,
+                  color:s.color }}>{s.val}</div>
+                <div style={{ fontSize:11.5, color:C.muted, marginTop:3 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Per-patient table */}
+          <div>
+            <h3 style={{ fontSize:13, fontWeight:700, color:C.primary, marginBottom:10,
+              textTransform:'uppercase', letterSpacing:'0.07em' }}>Patient Audit Trail</h3>
+            <div style={{ border:`1px solid ${C.border}`, borderRadius:9, overflow:'hidden' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'70px 90px 1fr 80px 70px 90px',
+                padding:'8px 14px', background:C.surface2,
+                fontSize:11, fontWeight:700, color:C.muted,
+                textTransform:'uppercase', letterSpacing:'0.07em' }}>
+                {['Patient','Language','Flags','Entities','Correc.','Conf.'].map(h => (
+                  <span key={h}>{h}</span>
+                ))}
+              </div>
+              {PROV_SUMMARY.map((p, i) => (
+                <div key={p.patient} style={{
+                  display:'grid', gridTemplateColumns:'70px 90px 1fr 80px 70px 90px',
+                  padding:'9px 14px', alignItems:'center',
+                  borderTop:`1px solid ${C.border}`,
+                  background: p.warn ? 'rgba(217,119,6,0.04)' : 'transparent',
+                }}>
+                  <span style={{ fontFamily:'DM Mono', fontSize:12.5, fontWeight:600,
+                    color: p.warn ? C.warning : C.primary }}>{p.patient}</span>
+                  <span style={{ fontSize:12, color:C.muted }}>{p.lang}</span>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>
+                    {p.warn && (
+                      <span style={{ fontSize:11, padding:'1px 7px', borderRadius:4,
+                        background:'#FFFBEB', border:'1px solid #FDE68A', color:'#D97706' }}>
+                        ⚠ clinical_note absent
+                      </span>
+                    )}
+                    <span style={{ fontSize:11, color:C.subtle }}>{p.flags} flag{p.flags!==1?'s':''}</span>
+                  </div>
+                  <span style={{ fontFamily:'DM Mono', fontSize:12, color:C.muted }}>{p.entities}</span>
+                  <span style={{ fontFamily:'DM Mono', fontSize:12, color:C.warning }}>{p.corrections}</span>
+                  <span style={{ fontFamily:'DM Mono', fontSize:12,
+                    color: p.confidence >= 0.95 ? C.success : p.confidence >= 0.90 ? C.accent : C.warning }}>
+                    {p.confidence.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sample corrections */}
+          <div>
+            <h3 style={{ fontSize:13, fontWeight:700, color:C.primary, marginBottom:10,
+              textTransform:'uppercase', letterSpacing:'0.07em' }}>Sample ICD-10 Corrections</h3>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {CORRECTIONS_SAMPLE.map((c, i) => (
+                <div key={i} style={{ display:'flex', alignItems:'center', gap:12,
+                  padding:'10px 14px', background:C.surface2, borderRadius:8,
+                  border:`1px solid ${C.border}` }}>
+                  <span style={{ fontFamily:'DM Mono', fontSize:12.5, color:C.error,
+                    textDecoration:'line-through', flexShrink:0 }}>{c.from}</span>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                    <path d="M1 5h12M8 1l4 4-4 4" stroke={C.accent} strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  <span style={{ fontFamily:'DM Mono', fontSize:12.5, color:C.success,
+                    flexShrink:0 }}>{c.to}</span>
+                  <span style={{ fontSize:12, color:C.muted, flex:1 }}>{c.reason}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ padding:'12px 14px', background:'rgba(13,148,136,0.08)',
+            border:'1px solid rgba(13,148,136,0.25)', borderRadius:8, fontSize:12, color:'#0D9488' }}>
+            <strong>OMOP CDM v5.4</strong> · GA4GH DUO compliant ·{' '}
+            <span style={{ fontFamily:'DM Mono' }}>pipeline_provenance.json</span> available for download
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const API_BASE = 'http://localhost:8000';
+
+/* ─── Main Screen ─── */
+const Screen3 = () => {
+  const [patients,    setPatients]    = useState(0);
+  const [entities,    setEntities]    = useState(0);
+  const [corrections, setCorrections] = useState(0);
+  const [quality,     setQuality]     = useState(0);
+  const [radarProg,   setRadarProg]   = useState(0);
+  const [interestSent, setInterestSent] = useState({});
+  const [showProvenance, setShowProvenance] = useState(false);
+  const [apiOffline, setApiOffline]   = useState(false);
+
+  // Try to fetch real results from API (job_id from sessionStorage)
+  useEffect(() => {
+    const jobId = sessionStorage.getItem('bh_job_id');
+    if (jobId) {
+      fetch(`${API_BASE}/api/results/${jobId}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.job) {
+            const j = data.job;
+            animCount(setPatients,    j.patients    || 10,   800);
+            animCount(setEntities,    j.entities    || 216,  1000);
+            animCount(setCorrections, j.corrections || 23,   800);
+            animCount(setQuality,     data.provenance?.overall_quality || 0.91, 900);
+            return;
+          }
+          throw new Error('no data');
+        })
+        .catch(() => {
+          setApiOffline(true);
+          // Fall back to mock animations
+          const t1 = setTimeout(() => animCount(setPatients, 10, 800), 200);
+          const t2 = setTimeout(() => animCount(setEntities, 216, 1000), 350);
+          const t3 = setTimeout(() => animCount(setCorrections, 23, 800), 500);
+          const t4 = setTimeout(() => animCount(setQuality, 0.91, 900), 650);
+          return () => [t1,t2,t3,t4].forEach(clearTimeout);
+        });
+    } else {
+      setApiOffline(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Stagger counter animations (only if not yet triggered by API)
+    if (!sessionStorage.getItem('bh_job_id')) {
+      const t1 = setTimeout(() => animCount(setPatients, 10, 800), 200);
+      const t2 = setTimeout(() => animCount(setEntities, 216, 1000), 350);
+      const t3 = setTimeout(() => animCount(setCorrections, 23, 800), 500);
+      const t4 = setTimeout(() => animCount(setQuality, 0.91, 900), 650);
+      return () => [t1,t2,t3,t4].forEach(clearTimeout);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Radar draws in
+    const t5 = setTimeout(() => {
+      const start = Date.now();
+      const anim = () => {
+        const p = Math.min((Date.now()-start)/1400, 1);
+        const e = 1 - Math.pow(1-p, 2.5);
+        setRadarProg(e);
+        if (p < 1) requestAnimationFrame(anim);
+      };
+      requestAnimationFrame(anim);
+    }, 600);
+    return () => clearTimeout(t5);
+  }, []);
+
+  const metrics = [
+    { val:patients,    target:10,   label:'Patients Packaged', fmt:n=>n, color:C.primary,  bg:'#F5F4F0' },
+    { val:entities,    target:216,  label:'Entities Mapped',   fmt:n=>n, color:C.accent,   bg:'rgba(13,148,136,0.06)' },
+    { val:corrections, target:23,   label:'AI Corrections',    fmt:n=>n, color:C.warning,  bg:'rgba(217,119,6,0.06)'  },
+    { val:quality,     target:0.91, label:'Quality Score',     fmt:n=>n.toFixed(2), color:C.success, bg:'rgba(5,150,105,0.06)' },
+  ];
+
+  return (
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'DM Sans',sans-serif" }}>
+
+      {/* ── Nav ── */}
+      <nav style={{
+        height:'56px', background:C.surface, borderBottom:`1px solid ${C.border}`,
+        display:'flex', alignItems:'center', padding:'0 28px',
+        boxShadow:'0 1px 0 rgba(28,25,23,0.04)', position:'sticky', top:0, zIndex:100,
+      }}>
+        <button onClick={() => window.location.href='screen0_landing.html'} style={{
+          display:'flex', alignItems:'center', gap:'8px', marginRight:'28px',
+          background:'none', border:'none', cursor:'pointer', padding:'0',
+        }}>
+          <div style={{ width:'26px', height:'26px', background:'linear-gradient(135deg,#0D9488,#059669)',
+                        borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+              <path d="M4 4 Q10 2 16 4 Q10 7 4 9 Q10 11 16 13 Q10 15 4 17" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <span style={{ fontSize:'13px', fontWeight:'700', color:C.primary, letterSpacing:'-0.3px' }}>BioHarmonize</span>
+        </button>
+
+        <div style={{ display:'flex', gap:'2px', flex:1 }}>
+          {[
+            { l:'Dashboard',  href:'screen1a_hospital.html' },
+            { l:'My Datasets',href:'#' },
+            { l:'Earnings',   href:'screen4_earnings.html' },
+            { l:'Settings',   href:'#' },
+          ].map(item => (
+            <button key={item.l} onClick={() => { if (item.href !== '#') window.location.href = item.href; }}
+              style={{ padding:'5px 11px', borderRadius:'6px', border:'none', cursor:'pointer',
+                       background:'transparent', color:C.muted, fontSize:'13px',
+                       fontFamily:"'DM Sans',sans-serif", transition:'background 0.15s' }}
+              onMouseEnter={e => e.target.style.background=C.s2}
+              onMouseLeave={e => e.target.style.background='transparent'}
+            >{item.l}</button>
+          ))}
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+          <button onClick={() => window.location.href='screen2_pipeline.html'} style={{
+            padding:'5px 12px', borderRadius:'7px', border:`1px solid ${C.border}`,
+            background:C.s2, fontSize:'12px', color:C.muted, cursor:'pointer',
+            fontFamily:"'DM Sans',sans-serif", display:'flex', alignItems:'center', gap:'5px',
+          }}>
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M9 2L4 7l5 5" stroke={C.muted} strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            Pipeline
+          </button>
+          {apiOffline && (
+            <div style={{ display:'flex', alignItems:'center', gap:'4px', padding:'4px 9px', borderRadius:'5px',
+                          background:'rgba(217,119,6,0.08)', border:'1px solid rgba(217,119,6,0.2)' }}>
+              <span style={{ fontSize:'10px', fontWeight:'600', color:C.warning, fontFamily:'DM Mono' }}>
+                Demo mode · API offline
+              </span>
+            </div>
+          )}
+          <div style={{ display:'flex', alignItems:'center', gap:'7px', padding:'5px 10px', borderRadius:'7px',
+                        border:`1px solid ${C.border}`, background:C.s2 }}>
+            <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:C.accent,
+                          display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span style={{ fontSize:'10px', color:'white', fontWeight:'700' }}>A</span>
+            </div>
+            <span style={{ fontSize:'12px', fontWeight:'500', color:C.primary }}>SSKM Kolkata</span>
+          </div>
+        </div>
+      </nav>
+
+      <div style={{ padding:'32px 36px 48px', maxWidth:'1200px', margin:'0 auto' }}>
+
+        {/* ── Page header ── */}
+        <div className="anim-1" style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'28px' }}>
+          <div>
+            <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'8px' }}>
+              <div style={{ width:'28px', height:'28px', background:'rgba(5,150,105,0.1)', borderRadius:'8px',
+                            display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke={C.success} strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M22 4L12 14.01l-3-3" stroke={C.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h1 style={{ ...serif, fontSize:'22px', fontWeight:'600', color:C.primary, letterSpacing:'-0.4px' }}>
+                Packaging Complete
+              </h1>
+            </div>
+            <p style={{ fontSize:'13px', color:C.muted }}>
+              SSKM Kolkata, West Bengal 🇮🇳 · Run #47 · <span style={{ ...mono, fontSize:'13px' }}>DS-2024-003</span>
+            </p>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+            <div style={{ padding:'6px 14px', borderRadius:'20px', background:'rgba(5,150,105,0.08)',
+                          border:'1px solid rgba(5,150,105,0.25)', fontSize:'12px', fontWeight:'600', color:C.success }}>
+              ● Listed on Marketplace
+            </div>
+            <button style={{ padding:'8px 16px', borderRadius:'8px', border:`1px solid ${C.border}`,
+                             background:C.surface, fontSize:'13px', color:C.muted, cursor:'pointer',
+                             fontFamily:"'DM Sans',sans-serif" }}>
+              Download Report
+            </button>
+          </div>
+        </div>
+
+        {/* ── Metric cards ── */}
+        <div className="anim-2" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'14px', marginBottom:'24px' }}>
+          {metrics.map((m, i) => (
+            <div key={i} className="card" style={{ padding:'20px 22px', background: m.bg, border:`1px solid ${C.border}` }}>
+              <div style={{ fontSize:'10.5px', fontWeight:'600', letterSpacing:'0.5px', textTransform:'uppercase',
+                            color:C.muted, marginBottom:'10px' }}>
+                {m.label}
+              </div>
+              <div style={{ ...mono, fontSize:'36px', fontWeight:'500', color:m.color, letterSpacing:'-2px', lineHeight:1 }}>
+                {m.fmt(m.val)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Middle: Radar + Modality ── */}
+        <div className="anim-3" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px', marginBottom:'24px' }}>
+
+          {/* Left: Radar */}
+          <div className="card" style={{ padding:'22px 24px' }}>
+            <div style={{ marginBottom:'16px' }}>
+              <h3 style={{ ...serif, fontSize:'15px', fontWeight:'600', color:C.primary, marginBottom:'3px' }}>
+                Dataset Fingerprint
+              </h3>
+              <p style={{ fontSize:'12px', color:C.muted }}>5-dimension clinical quality profile</p>
+            </div>
+            <div className="radar-in" style={{ height:'260px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <RadarChart progress={radarProg}/>
+            </div>
+            {/* Dim summary row */}
+            <div style={{ display:'flex', gap:'6px', marginTop:'4px', flexWrap:'wrap' }}>
+              {RADAR_DIMS.map((d, i) => (
+                <div key={i} style={{ flex:1, minWidth:'80px', padding:'7px 8px', borderRadius:'6px',
+                                      background:C.s2, textAlign:'center' }}>
+                  <div style={{ ...mono, fontSize:'13px', fontWeight:'500', color:dimColor(d.score) }}>
+                    {d.score.toFixed(2)}
+                  </div>
+                  <div style={{ fontSize:'9px', color:C.muted, marginTop:'2px', lineHeight:'1.3' }}>
+                    {d.label.replace('\n',' ')}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Modality breakdown */}
+          <div className="card" style={{ padding:'22px 24px' }}>
+            <div style={{ marginBottom:'18px' }}>
+              <h3 style={{ ...serif, fontSize:'15px', fontWeight:'600', color:C.primary, marginBottom:'3px' }}>
+                Modality Coverage
+              </h3>
+              <p style={{ fontSize:'12px', color:C.muted }}>Per-patient data completeness across 3 modalities</p>
+            </div>
+
+            <div style={{ display:'flex', flexDirection:'column', gap:'18px' }}>
+              {MODALITIES.map(mod => (
+                <div key={mod.key}>
+                  {/* Row header */}
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'8px' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+                      <span style={{ fontSize:'16px' }}>{mod.icon}</span>
+                      <span style={{ fontSize:'13.5px', fontWeight:'600', color:C.primary }}>{mod.label}</span>
+                    </div>
+                    <span style={{ ...mono, fontSize:'12px', color:mod.pct===100?C.success:C.accent, fontWeight:'500' }}>
+                      {mod.count}/{mod.total} patients
+                    </span>
+                  </div>
+
+                  {/* Coverage bar */}
+                  <div style={{ height:'6px', background:C.s2, borderRadius:'3px', overflow:'hidden', marginBottom:'8px' }}>
+                    <div style={{ height:'100%', borderRadius:'3px', background: mod.pct===100 ? C.success : C.accent,
+                                  width:`${mod.pct}%`, transition:'width 1s ease' }}/>
+                  </div>
+
+                  {/* Patient dots */}
+                  <div style={{ display:'flex', gap:'5px', alignItems:'center', marginBottom:'6px' }}>
+                    {Array.from({length:10},(_,i) => {
+                      const pid = `P${String(i+1).padStart(3,'0')}`;
+                      const absent = mod.missing.includes(pid);
+                      const special = pid === 'P007' && mod.key === 'clinical';
+                      return (
+                        <div key={i} style={{
+                          width:'20px', height:'20px', borderRadius:'5px', flexShrink:0,
+                          display:'flex', alignItems:'center', justifyContent:'center',
+                          background: absent ? (special ? 'rgba(217,119,6,0.12)' : 'rgba(220,38,38,0.08)') : 'rgba(5,150,105,0.08)',
+                          border: `1px solid ${absent ? (special ? 'rgba(217,119,6,0.3)' : 'rgba(220,38,38,0.25)') : 'rgba(5,150,105,0.2)'}`,
+                        }}>
+                          <span style={{ ...mono, fontSize:'7.5px', fontWeight:'600',
+                                         color: absent ? (special ? C.warning : C.error) : C.success }}>
+                            {i+1}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Note */}
+                  <div style={{ fontSize:'11px', color: mod.missing.length>0 ? C.warning : C.muted, fontStyle:'italic' }}>
+                    {mod.note}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Avg completeness */}
+            <div style={{ marginTop:'18px', padding:'12px 14px', borderRadius:'8px',
+                          background:'rgba(13,148,136,0.05)', border:'1px solid rgba(13,148,136,0.15)' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <span style={{ fontSize:'12px', color:C.muted }}>Average completeness score</span>
+                <span style={{ ...mono, fontSize:'16px', fontWeight:'500', color:C.accent }}>0.81</span>
+              </div>
+              <div style={{ marginTop:'6px', height:'4px', background:C.border, borderRadius:'2px', overflow:'hidden' }}>
+                <div style={{ width:'81%', height:'100%', background:C.accent, borderRadius:'2px' }}/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Buyer Recommendations ── */}
+        <div className="anim-4">
+          <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:'16px' }}>
+            <div>
+              <h2 style={{ ...serif, fontSize:'18px', fontWeight:'600', color:C.primary, letterSpacing:'-0.3px', marginBottom:'3px' }}>
+                Recommended Buyers
+              </h2>
+              <p style={{ fontSize:'12.5px', color:C.muted }}>
+                Matched against 847 active pharma requests · Ranked by dataset–request fit score
+              </p>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:'5px', fontSize:'11px', color:C.muted }}>
+              <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:C.accent, animation:'pulse 2s infinite' }}/>
+              Live marketplace
+            </div>
+          </div>
+
+          <div style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+            {BUYERS.map((buyer, i) => (
+              <div key={i} className="anim-4" style={{ animationDelay:`${0.1*i}s`, opacity:0 }}>
+                <BuyerRow buyer={buyer} delay={600 + i*200}
+                  sent={interestSent[buyer.company]}
+                  onSend={() => setInterestSent(s => ({ ...s, [buyer.company]: true }))}/>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Evaluation Results ── */}
+        <div className="anim-5" style={{ marginTop:'24px', marginBottom:'0' }}>
+          <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:'14px' }}>
+            <div>
+              <h2 style={{ ...serif, fontSize:'18px', fontWeight:'600', color:C.primary, letterSpacing:'-0.3px', marginBottom:'3px' }}>
+                NLP Evaluation Results
+              </h2>
+              <p style={{ fontSize:'12.5px', color:C.muted }}>
+                Benchmarked on 10-concept multilingual glossary (EN · Bengali · Hindi) · claude-opus-4-6
+              </p>
+            </div>
+            <button
+              style={{ padding:'7px 14px', borderRadius:'7px', border:`1px solid ${C.border}`,
+                       background:C.surface, fontSize:'12px', color:C.muted, cursor:'pointer',
+                       fontFamily:"'DM Sans',sans-serif", display:'flex', alignItems:'center', gap:'5px' }}
+              onClick={() => window.open('evaluation/evaluation_results.json', '_blank')}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8L14 2z"
+                  stroke={C.muted} strokeWidth="1.8"/>
+              </svg>
+              View Full Evaluation Report
+            </button>
+          </div>
+
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px' }}>
+            {[
+              { label:'ICD-10 Accuracy',     val:'94.4%', sub:'EN·BN·HI·VCF',  color:C.success,  bg:'rgba(5,150,105,0.05)' },
+              { label:'Self-Consistency',     val:'100%',  sub:'3 runs/concept', color:C.accent,   bg:'rgba(13,148,136,0.05)' },
+              { label:'Cross-Lingual OMOP',  val:'100%',  sub:'BN ↔ HI match', color:C.accent,   bg:'rgba(13,148,136,0.05)' },
+              { label:'Validation Uplift',    val:'+12.3%',sub:'conf 0.81→0.91', color:C.warning,  bg:'rgba(217,119,6,0.05)' },
+            ].map((m, i) => (
+              <div key={i} className="card" style={{ padding:'16px 18px', background:m.bg, border:`1px solid ${C.border}` }}>
+                <div style={{ fontSize:'10px', fontWeight:'600', letterSpacing:'0.5px',
+                              textTransform:'uppercase', color:C.muted, marginBottom:'8px' }}>
+                  {m.label}
+                </div>
+                <div style={{ ...mono, fontSize:'28px', fontWeight:'500', color:m.color,
+                              letterSpacing:'-1px', lineHeight:1, marginBottom:'4px' }}>
+                  {m.val}
+                </div>
+                <div style={{ fontSize:'10.5px', color:C.muted }}>{m.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Footer stamp ── */}
+        <div className="anim-5" style={{ marginTop:'32px', display:'flex', alignItems:'center', justifyContent:'space-between',
+                                          padding:'20px 28px', borderRadius:'12px',
+                                          background:C.surface, border:`1px solid ${C.border}` }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
+            {/* Stamp */}
+            <div className="stamp-in" style={{
+              padding:'8px 16px', borderRadius:'8px',
+              border:`2px solid ${C.success}`, color:C.success,
+              display:'flex', alignItems:'center', gap:'8px',
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke={C.success} strokeWidth="2"/>
+                <path d="M9 12l2 2 4-4" stroke={C.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{ ...mono, fontSize:'11.5px', fontWeight:'600', letterSpacing:'0.3px' }}>
+                LISTED ON MARKETPLACE
+              </span>
+            </div>
+
+            {/* Reproducibility badge */}
+            <div style={{ display:'flex', alignItems:'center', gap:'6px', padding:'7px 13px', borderRadius:'8px',
+                          background:'rgba(13,148,136,0.06)', border:'1px solid rgba(13,148,136,0.2)' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                  stroke={C.accent} strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              <div>
+                <div style={{ fontSize:'9.5px', fontWeight:'700', color:C.accent, letterSpacing:'0.4px',
+                               textTransform:'uppercase' }}>Reproducible</div>
+                <div style={{ fontSize:'9px', color:C.muted, lineHeight:'1.3' }}>
+                  Locked model · seed · schema version
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style={{ fontSize:'13px', fontWeight:'500', color:C.primary, marginBottom:'2px' }}>
+                Dataset published and discoverable
+              </div>
+              <div style={{ fontSize:'12px', color:C.muted }}>
+                Estimated first inquiry within 48 hours · SSKM Kolkata, West Bengal 🇮🇳
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display:'flex', gap:'10px', alignItems:'center' }}>
+            <button style={{
+              padding:'9px 18px', borderRadius:'8px', border:`1px solid ${C.border}`,
+              background:C.surface, fontSize:'13px', color:C.primary, cursor:'pointer',
+              fontFamily:"'DM Sans',sans-serif", fontWeight:'500',
+              display:'flex', alignItems:'center', gap:'6px',
+              transition:'border-color 0.15s ease',
+            }}
+              onMouseEnter={e => e.currentTarget.style.borderColor=C.accent}
+              onMouseLeave={e => e.currentTarget.style.borderColor=C.border}
+              onClick={() => setShowProvenance(true)}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8L14 2z" stroke={C.muted} strokeWidth="1.8"/>
+                <path d="M14 2v6h6" stroke={C.muted} strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+              View Full Provenance Report
+            </button>
+            <button style={{
+              padding:'9px 18px', borderRadius:'8px', border:'none',
+              background:C.accent, fontSize:'13px', color:'white', cursor:'pointer',
+              fontFamily:"'DM Sans',sans-serif", fontWeight:'600',
+              display:'flex', alignItems:'center', gap:'6px',
+              boxShadow:'0 2px 10px rgba(13,148,136,0.25)',
+            }} onClick={() => window.location.href='screen4_earnings.html'}>
+              View Earnings →
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      {showProvenance && <ProvenanceModal onClose={() => setShowProvenance(false)}/>}
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Screen3/>);
+</script>
+</body>
+</html>

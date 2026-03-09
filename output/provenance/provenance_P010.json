@@ -1,0 +1,257 @@
+{
+  "patient_id": "P010",
+  "language_detected": "hindi",
+  "entities": {
+    "demographics": {
+      "name": {
+        "original_text": "मीना शर्मा",
+        "language": "hindi",
+        "standardized_english_term": "Meena Sharma",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.98,
+        "reasoning": "Hindi name transliterated to English. 'मीना शर्मा' is a common Hindi female name.",
+        "flag": null
+      },
+      "age": {
+        "original_text": "44 वर्ष",
+        "language": "hindi",
+        "standardized_english_term": "44 years",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'वर्ष' means 'years' in Hindi. Age is 44 years.",
+        "flag": null
+      },
+      "sex": {
+        "original_text": "महिला",
+        "language": "hindi",
+        "standardized_english_term": "Female",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 1.0,
+        "reasoning": "'महिला' is the Hindi term for 'female/woman'.",
+        "flag": null
+      }
+    },
+    "diagnoses": [
+      {
+        "original_text": "टाइप 2 मधुमेह मेलिटस (नया निदान)",
+        "language": "hindi",
+        "standardized_english_term": "Type 2 Diabetes Mellitus (newly diagnosed)",
+        "icd10_code": "E11.9",
+        "omop_concept_id": "201826",
+        "confidence": 0.98,
+        "reasoning": "'टाइप 2 मधुमेह मेलिटस' is a direct Hindi transliteration of 'Type 2 Diabetes Mellitus'. 'नया निदान' means 'new diagnosis'. Maps clearly to ICD-10 E11.9 and OMOP 201826.",
+        "flag": null
+      },
+      {
+        "original_text": "पूर्व-उच्च रक्तचाप",
+        "language": "hindi",
+        "standardized_english_term": "Pre-hypertension",
+        "icd10_code": "R03.0",
+        "omop_concept_id": "320128",
+        "confidence": 0.95,
+        "reasoning": "'पूर्व-उच्च रक्तचाप' translates to 'pre-hypertension'. 'पूर्व' = pre, 'उच्च रक्तचाप' = high blood pressure/hypertension. BP reading of 134/84 mmHg supports this diagnosis. Mapped to ICD-10 R03.0 and OMOP 320128 per reference table.",
+        "flag": null
+      },
+      {
+        "original_text": "BMI: 28.1",
+        "language": "mixed",
+        "standardized_english_term": "Obesity",
+        "icd10_code": "E66.9",
+        "omop_concept_id": "433736",
+        "confidence": 0.75,
+        "reasoning": "BMI of 28.1 is in the overweight range (25-29.9) by WHO international standards, but for South Asian populations a BMI ≥27.5 is often classified as obese. Not explicitly diagnosed but clinically relevant. Flagging as it is borderline and not explicitly stated as a diagnosis.",
+        "flag": "needs_review"
+      }
+    ],
+    "medications": [
+      {
+        "original_text": "मेटफॉर्मिन 500 मिग्रा — सुबह खाने के साथ (2 सप्ताह बाद खुराक बढ़ाएं)",
+        "language": "hindi",
+        "standardized_english_term": "Metformin 500 mg — with morning meal (increase dose after 2 weeks)",
+        "icd10_code": null,
+        "omop_concept_id": "1503297",
+        "confidence": 0.99,
+        "reasoning": "'मेटफॉर्मिन' is the Hindi transliteration of 'Metformin'. '500 मिग्रा' = 500 mg. 'सुबह खाने के साथ' = with morning meal. '2 सप्ताह बाद खुराक बढ़ाएं' = increase dose after 2 weeks. Dose: 500 mg, Frequency: once daily with breakfast, with planned titration.",
+        "flag": null
+      }
+    ],
+    "vitals": [
+      {
+        "original_text": "रक्तचाप: 134/84 mmHg",
+        "language": "hindi",
+        "standardized_english_term": "Systolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3004249",
+        "loinc_code": "8480-6",
+        "value": 134,
+        "unit": "mmHg",
+        "reference_range": "<130",
+        "interpretation": "above_reference_range",
+        "confidence": 1.0,
+        "reasoning": "'रक्तचाप' means 'blood pressure'. Systolic component is 134 mmHg, which is above the reference of <130 mmHg, consistent with pre-hypertension diagnosis.",
+        "flag": null
+      },
+      {
+        "original_text": "रक्तचाप: 134/84 mmHg",
+        "language": "hindi",
+        "standardized_english_term": "Diastolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3012888",
+        "loinc_code": "8462-4",
+        "value": 84,
+        "unit": "mmHg",
+        "reference_range": "<80",
+        "interpretation": "above_reference_range",
+        "confidence": 1.0,
+        "reasoning": "Diastolic component of blood pressure is 84 mmHg, above the reference range of <80 mmHg.",
+        "flag": null
+      },
+      {
+        "original_text": "वजन: 72 किग्रा",
+        "language": "hindi",
+        "standardized_english_term": "Body Weight",
+        "icd10_code": null,
+        "omop_concept_id": "3025315",
+        "loinc_code": "29463-7",
+        "value": 72,
+        "unit": "kg",
+        "reference_range": null,
+        "interpretation": null,
+        "confidence": 1.0,
+        "reasoning": "'वजन' means 'weight' and 'किग्रा' means 'kg'. Body weight is 72 kg.",
+        "flag": null
+      },
+      {
+        "original_text": "BMI: 28.1",
+        "language": "mixed",
+        "standardized_english_term": "BMI",
+        "icd10_code": null,
+        "omop_concept_id": "3038553",
+        "loinc_code": "39156-5",
+        "value": 28.1,
+        "unit": "kg/m2",
+        "reference_range": "18.5-24.9",
+        "interpretation": "above_reference_range",
+        "confidence": 1.0,
+        "reasoning": "BMI of 28.1 kg/m² calculated from weight 72 kg and height 160 cm. Above normal range, classified as overweight (or obese by South Asian criteria ≥27.5).",
+        "flag": null
+      }
+    ],
+    "lab_values": [
+      {
+        "original_text": "उपवास रक्त शर्करा: 10.6 mmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Fasting Blood Glucose",
+        "icd10_code": null,
+        "omop_concept_id": "3004501",
+        "loinc_code": "76629-5",
+        "value": 10.6,
+        "unit": "mmol/L",
+        "reference_range": "3.9-5.5",
+        "interpretation": "above_reference_range",
+        "confidence": 0.99,
+        "reasoning": "'उपवास रक्त शर्करा' translates to 'fasting blood glucose'. 'उपवास' = fasting, 'रक्त' = blood, 'शर्करा' = sugar/glucose. Value of 10.6 mmol/L is significantly above the reference range of 3.9-5.5 mmol/L, consistent with diabetes diagnosis.",
+        "flag": null
+      },
+      {
+        "original_text": "HbA1c: 8.1%",
+        "language": "mixed",
+        "standardized_english_term": "HbA1c",
+        "icd10_code": null,
+        "omop_concept_id": "3004410",
+        "loinc_code": "4548-4",
+        "value": 8.1,
+        "unit": "%",
+        "reference_range": "<7.0",
+        "interpretation": "above_reference_range",
+        "confidence": 1.0,
+        "reasoning": "HbA1c is already in English notation. Value of 8.1% is above the diabetic target of <7.0%, confirming newly diagnosed Type 2 diabetes with suboptimal glycemic control.",
+        "flag": null
+      },
+      {
+        "original_text": "कुल कोलेस्ट्रॉल: 4.8 mmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Total Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3019900",
+        "loinc_code": "2093-3",
+        "value": 4.8,
+        "unit": "mmol/L",
+        "reference_range": "<5.2",
+        "interpretation": "within_reference_range",
+        "confidence": 0.99,
+        "reasoning": "'कुल कोलेस्ट्रॉल' translates to 'total cholesterol'. 'कुल' = total, 'कोलेस्ट्रॉल' = cholesterol (transliteration). Value of 4.8 mmol/L is within the reference range of <5.2 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "LDL: 3.1 mmol/L",
+        "language": "mixed",
+        "standardized_english_term": "LDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3028437",
+        "loinc_code": "2089-1",
+        "value": 3.1,
+        "unit": "mmol/L",
+        "reference_range": "<2.6",
+        "interpretation": "above_reference_range",
+        "confidence": 1.0,
+        "reasoning": "LDL cholesterol of 3.1 mmol/L exceeds the reference range of <2.6 mmol/L. This is clinically significant in a newly diagnosed diabetic patient, particularly with family history of MI.",
+        "flag": null
+      },
+      {
+        "original_text": "HDL: 1.1 mmol/L",
+        "language": "mixed",
+        "standardized_english_term": "HDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3007070",
+        "loinc_code": "2085-9",
+        "value": 1.1,
+        "unit": "mmol/L",
+        "reference_range": ">1.2 (Female)",
+        "interpretation": "below_reference_range",
+        "confidence": 1.0,
+        "reasoning": "HDL cholesterol of 1.1 mmol/L is below the female reference of >1.2 mmol/L, indicating suboptimal cardiovascular protective cholesterol.",
+        "flag": null
+      },
+      {
+        "original_text": "ट्राइग्लिसराइड: 2.1 mmol/L",
+        "language": "hindi",
+        "standardized_english_term": "Triglycerides",
+        "icd10_code": null,
+        "omop_concept_id": "3022192",
+        "loinc_code": "2571-8",
+        "value": 2.1,
+        "unit": "mmol/L",
+        "reference_range": "<1.7",
+        "interpretation": "above_reference_range",
+        "confidence": 0.99,
+        "reasoning": "'ट्राइग्लिसराइड' is the Hindi transliteration of 'triglyceride'. Value of 2.1 mmol/L exceeds the reference range of <1.7 mmol/L, indicating hypertriglyceridemia.",
+        "flag": null
+      }
+    ],
+    "variants": []
+  },
+  "flags": [
+    "Newly diagnosed Type 2 Diabetes with HbA1c 8.1% — only started on Metformin 500 mg; may need dose escalation or combination therapy",
+    "Dyslipidemia pattern noted: elevated LDL (3.1 mmol/L), low HDL (1.1 mmol/L), elevated TG (2.1 mmol/L) — no lipid-lowering medication prescribed; consider statin given diabetic status and family history of MI",
+    "Pre-hypertension with BP 134/84 mmHg — both systolic and diastolic above targets; monitor closely",
+    "BMI 28.1 — overweight/obese by South Asian criteria; lifestyle modification advised",
+    "Strong family history: mother with T2DM, father with hypertension + MI at age 62 — elevated cardiovascular risk"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "clinical_note_P010_hindi.txt",
+      "lab_results_P010.csv"
+    ],
+    "total_entities": 16,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "timestamp": "2026-03-08T21:50:06.672087Z",
+    "input_tokens": 3031,
+    "output_tokens": 3784
+  }
+}

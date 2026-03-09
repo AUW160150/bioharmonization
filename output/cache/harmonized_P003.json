@@ -1,0 +1,170 @@
+{
+  "patient_id": "P003",
+  "language_detected": "english",
+  "entities": {
+    "demographics": {
+      "name": null,
+      "age": null,
+      "sex": null
+    },
+    "diagnoses": [
+      {
+        "original_text": "LDL_Chol_mmol: 5.6 [ref: <1.4(very-high-risk)], Total_Chol_mmol: 7.1 [ref: <5.2], TG_mmol: 2.8 [ref: <1.7], HDL_mmol: 0.8 [ref: >1.0(M)]",
+        "language": "english",
+        "standardized_english_term": "Mixed Dyslipidemia",
+        "icd10_code": "E78.5",
+        "omop_concept_id": "432867",
+        "confidence": 0.92,
+        "reasoning": "Patient has markedly elevated LDL (5.6 vs <1.4 for very-high-risk), elevated total cholesterol (7.1 vs <5.2), elevated triglycerides (2.8 vs <1.7), and low HDL (0.8 vs >1.0 for males). This pattern of multiple lipid abnormalities maps to mixed dyslipidemia (E78.5).",
+        "flag": null
+      }
+    ],
+    "medications": [],
+    "vitals": [],
+    "lab_values": [
+      {
+        "original_text": "LDL_Chol_mmol: 5.6",
+        "language": "english",
+        "standardized_english_term": "LDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3028437",
+        "loinc_code": "2089-1",
+        "value": 5.6,
+        "unit": "mmol/L",
+        "reference_range": "<1.4 (very-high-risk)",
+        "interpretation": "critically above reference range",
+        "confidence": 0.97,
+        "reasoning": "LDL_Chol_mmol directly maps to LDL Cholesterol. Value of 5.6 mmol/L is drastically above the very-high-risk threshold of <1.4 mmol/L, indicating severely elevated LDL.",
+        "flag": null
+      },
+      {
+        "original_text": "Total_Chol_mmol: 7.1",
+        "language": "english",
+        "standardized_english_term": "Total Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3019900",
+        "loinc_code": "2093-3",
+        "value": 7.1,
+        "unit": "mmol/L",
+        "reference_range": "<5.2",
+        "interpretation": "above reference range",
+        "confidence": 0.97,
+        "reasoning": "Total_Chol_mmol maps directly to Total Cholesterol. Value of 7.1 mmol/L exceeds the reference limit of <5.2 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "TG_mmol: 2.8",
+        "language": "english",
+        "standardized_english_term": "Triglycerides",
+        "icd10_code": null,
+        "omop_concept_id": "3022192",
+        "loinc_code": "2571-8",
+        "value": 2.8,
+        "unit": "mmol/L",
+        "reference_range": "<1.7",
+        "interpretation": "above reference range",
+        "confidence": 0.97,
+        "reasoning": "TG_mmol is a standard abbreviation for triglycerides. Value of 2.8 mmol/L exceeds the reference limit of <1.7 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "HDL_mmol: 0.8",
+        "language": "english",
+        "standardized_english_term": "HDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3007070",
+        "loinc_code": "2085-9",
+        "value": 0.8,
+        "unit": "mmol/L",
+        "reference_range": ">1.0 (Male)",
+        "interpretation": "below reference range",
+        "confidence": 0.97,
+        "reasoning": "HDL_mmol maps to HDL Cholesterol. Value of 0.8 mmol/L is below the male reference threshold of >1.0 mmol/L, indicating low HDL.",
+        "flag": null
+      },
+      {
+        "original_text": "FBG_mmol: 5.2",
+        "language": "english",
+        "standardized_english_term": "Fasting Blood Glucose",
+        "icd10_code": null,
+        "omop_concept_id": "3004501",
+        "loinc_code": "76629-5",
+        "value": 5.2,
+        "unit": "mmol/L",
+        "reference_range": "3.9-5.5",
+        "interpretation": "within reference range",
+        "confidence": 0.96,
+        "reasoning": "FBG_mmol is a common abbreviation for Fasting Blood Glucose. Value of 5.2 mmol/L is within the normal reference range of 3.9-5.5 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "HbA1c_%: 5.4",
+        "language": "english",
+        "standardized_english_term": "HbA1c",
+        "icd10_code": null,
+        "omop_concept_id": "3004410",
+        "loinc_code": "4548-4",
+        "value": 5.4,
+        "unit": "%",
+        "reference_range": "<5.7",
+        "interpretation": "within reference range",
+        "confidence": 0.98,
+        "reasoning": "HbA1c_% maps directly to HbA1c (glycated hemoglobin). Value of 5.4% is within the normal reference range of <5.7%.",
+        "flag": null
+      },
+      {
+        "original_text": "Lp_a_nmol_L: 210",
+        "language": "english",
+        "standardized_english_term": "Lipoprotein(a)",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "loinc_code": "43583-4",
+        "value": 210,
+        "unit": "nmol/L",
+        "reference_range": "<75",
+        "interpretation": "critically above reference range",
+        "confidence": 0.9,
+        "reasoning": "Lp_a_nmol_L maps to Lipoprotein(a) [Lp(a)], a well-established cardiovascular risk biomarker. Value of 210 nmol/L is nearly 3x the upper reference limit of <75 nmol/L. No exact match in the provided OMOP reference table; LOINC 43583-4 is the standard code for Lp(a) in nmol/L.",
+        "flag": "no_standard_code"
+      },
+      {
+        "original_text": "hs_CRP_mg_L: 4.8",
+        "language": "english",
+        "standardized_english_term": "High-sensitivity C-Reactive Protein",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "loinc_code": "30522-7",
+        "value": 4.8,
+        "unit": "mg/L",
+        "reference_range": "<1.0",
+        "interpretation": "above reference range",
+        "confidence": 0.9,
+        "reasoning": "hs_CRP_mg_L maps to high-sensitivity C-Reactive Protein (hs-CRP), an inflammatory biomarker used in cardiovascular risk stratification. Value of 4.8 mg/L is well above the <1.0 mg/L low-risk threshold. No exact match in the provided OMOP reference table; LOINC 30522-7 is the standard code for hs-CRP.",
+        "flag": "no_standard_code"
+      }
+    ],
+    "variants": []
+  },
+  "flags": [
+    "Severely elevated LDL cholesterol (5.6 mmol/L vs <1.4 very-high-risk target) — urgent lipid-lowering therapy evaluation needed",
+    "Markedly elevated Lipoprotein(a) at 210 nmol/L (>75 nmol/L) — genetic/familial hyperlipidemia workup recommended",
+    "Elevated hs-CRP (4.8 mg/L) indicating high residual inflammatory cardiovascular risk",
+    "Low HDL cholesterol (0.8 mmol/L) compounding overall atherogenic lipid profile",
+    "Elevated triglycerides (2.8 mmol/L) contributing to mixed dyslipidemia",
+    "No demographic information (name, age, sex) available in source record — needs review",
+    "No medication data provided — verify if patient is on lipid-lowering therapy",
+    "No vital signs provided in this record"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "lab_results_P003.csv"
+    ],
+    "total_entities": 9,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "timestamp": "2026-03-09T00:47:38.282798Z",
+    "input_tokens": 2419,
+    "output_tokens": 2504
+  }
+}

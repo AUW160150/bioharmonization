@@ -1,0 +1,3 @@
+Patient_ID,Visit_Date,FPG_mmol_L,HbA1c_%,BP_Sys_mmHg,BP_Dia_mmHg,LDL_mmol_L,HDL_mmol_L,Cr_umol_L,eGFR
+P008,2024-01-25,8.1,7.4,128,78,1.8,1.2,88,62
+[REF_RANGE],,3.9-5.5,<7.0,<130,<80,<1.4(post-ACS),>1.2(F),44-97,>60

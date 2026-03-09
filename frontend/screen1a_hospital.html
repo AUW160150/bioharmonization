@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioHarmonize — Hospital Dashboard</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; -webkit-font-smoothing: antialiased; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #D6D3CE; border-radius: 3px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50%       { opacity: 1;   transform: scale(1.15); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .anim-1 { animation: fadeUp 0.5s ease forwards; }
+    .anim-2 { animation: fadeUp 0.5s ease 0.08s forwards; opacity: 0; }
+    .anim-3 { animation: fadeUp 0.5s ease 0.16s forwards; opacity: 0; }
+    .anim-4 { animation: fadeUp 0.5s ease 0.24s forwards; opacity: 0; }
+    .sidebar-anim { animation: slideIn 0.5s ease 0.1s forwards; opacity: 0; }
+
+    .nav-btn {
+      padding: 5px 11px; border-radius: 6px; border: none;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-size: 13px; transition: background 0.15s ease, color 0.15s ease;
+    }
+    .nav-btn:hover { background: #F5F4F0; }
+
+    .card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E7E5E0;
+      box-shadow: 0 1px 4px rgba(28,25,23,0.04);
+    }
+
+    .file-row { transition: background 0.12s ease; }
+    .file-row:hover { background: #F5F4F0 !important; }
+
+    .listing-card {
+      background: #F5F4F0;
+      border-radius: 12px;
+      border: 1px solid #E7E5E0;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .listing-card:hover {
+      border-color: #0D9488;
+      box-shadow: 0 2px 10px rgba(13,148,136,0.08);
+    }
+
+    .ghost-btn {
+      background: transparent;
+      border: 1px solid #E7E5E0;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #78716C;
+      cursor: pointer;
+      padding: 6px 0;
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .ghost-btn:hover { border-color: #0D9488; color: #0D9488; }
+
+    .submit-btn {
+      padding: 13px 32px;
+      background: #0D9488; color: white;
+      border: none; border-radius: 9px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 2px 12px rgba(13,148,136,0.25);
+      transition: filter 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      white-space: nowrap; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .submit-btn:hover {
+      filter: brightness(1.06);
+      box-shadow: 0 4px 20px rgba(13,148,136,0.35);
+      transform: translateY(-1px);
+    }
+    .submit-btn:active { transform: translateY(0); }
+
+    .retention-opt {
+      flex: 1; padding: 7px 0;
+      border-radius: 6px; border: 1px solid #E7E5E0;
+      background: #F5F4F0; font-size: 12px;
+      cursor: pointer; transition: all 0.15s ease;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .retention-opt.active {
+      border-color: #0D9488;
+      background: rgba(13,148,136,0.06);
+      color: #0D9488; font-weight: 600;
+    }
+    .retention-opt:not(.active) { color: #78716C; }
+
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #059669;
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+
+    .section-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      color: #78716C;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useCallback, useEffect } = React;
+
+/* ─── Constants ─── */
+const C = {
+  bg:      '#FAFAF8',
+  surface: '#FFFFFF',
+  s2:      '#F5F4F0',
+  primary: '#1C1917',
+  accent:  '#0D9488',
+  success: '#059669',
+  warning: '#D97706',
+  error:   '#DC2626',
+  muted:   '#78716C',
+  border:  '#E7E5E0',
+};
+
+const MOCK_FILES = [
+  { id:1, name:'clinical_note_P001_bengali.txt', size:'11.2 KB', fmt:'TXT', lang:'Bengali', flag:'🇧🇩', status:'done'  },
+  { id:2, name:'lab_results_P002.csv',           size:'8.4 KB',  fmt:'CSV', lang:'English', flag:'🇬🇧', status:'done'  },
+  { id:3, name:'clinical_note_P003_hindi.txt',   size:'9.1 KB',  fmt:'TXT', lang:'Hindi',   flag:'🇮🇳', status:'done'  },
+  { id:4, name:'genomic_variants_P001.vcf',      size:'34.6 KB', fmt:'VCF', lang:'—',       flag:null,  status:'done'  },
+  { id:5, name:'lab_results_P004.csv',           size:'7.8 KB',  fmt:'CSV', lang:'English', flag:'🇬🇧', status:'done'  },
+  { id:6, name:'clinical_note_P005_hindi.txt',   size:'10.2 KB', fmt:'TXT', lang:'Hindi',   flag:'🇮🇳', status:'done'  },
+];
+
+const ACTIVE_LISTINGS = [
+  { id:'DS-2024-001', name:'T2DM Cohort — West Bengal',       n:847,  mods:['Clinical Notes','Lab Results','Genomics'], q:0.84, matches:3, earn:12400, trend:'+12%' },
+  { id:'DS-2024-002', name:'CVD Risk Cohort — Mumbai',       n:1203, mods:['Clinical Notes','Lab Results'],            q:0.71, matches:1, earn:8200,  trend:'+4%'  },
+  { id:'DS-2023-018', name:'Renal Function Study — Pune',    n:412,  mods:['Lab Results','Genomics'],                  q:0.79, matches:2, earn:5600,  trend:'+7%'  },
+];
+
+/* ─── Tiny helpers ─── */
+const mono = { fontFamily:"'DM Mono',monospace" };
+const serif = { fontFamily:"'Playfair Display',serif" };
+
+const fmtK = n => n >= 1000 ? `$${(n/1000).toFixed(1)}K` : `$${n}`;
+
+const calcEarnings = (n, proto, q) => {
+  const base = n * 14.8;
+  const qm   = 0.88 + q * 0.42;
+  const pm   = 1.0 + (proto.research ? 0.15 : 0) + (proto.clinical ? 0.25 : 0) + (proto.commercial ? 0.45 : 0);
+  const mid  = base * qm * pm;
+  return { lo: Math.round(mid * 0.85), hi: Math.round(mid * 1.15) };
+};
+
+/* ─── Small components ─── */
+
+const FmtBadge = ({ fmt }) => {
+  const map = {
+    TXT:  { bg:'#F5F4F0', color:'#78716C' },
+    CSV:  { bg:'rgba(13,148,136,0.06)', color:'#0D9488' },
+    VCF:  { bg:'#FFFBEB', color:'#B45309' },
+    JSON: { bg:'#F5F4F0', color:'#1C1917' },
+    PDF:  { bg:'rgba(220,38,38,0.06)', color:'#DC2626' },
+  };
+  const s = map[fmt] || map.TXT;
+  return (
+    <span style={{ ...mono, fontSize:'10px', fontWeight:'600', letterSpacing:'0.5px', textTransform:'uppercase',
+                   padding:'2px 7px', borderRadius:'4px', background:s.bg, color:s.color }}>
+      {fmt}
+    </span>
+  );
+};
+
+const LangBadge = ({ lang, flag }) => {
+  if (lang === '—') return <span style={{ fontSize:'12px', color:C.muted }}>—</span>;
+  const map = {
+    Bengali: { bg:'rgba(13,148,136,0.06)', color:'#0D9488', border:'rgba(13,148,136,0.15)' },
+    Hindi:   { bg:'#FFFBEB', color:'#B45309', border:'#FDE68A' },
+    English: { bg:'#F5F4F0', color:'#78716C', border:'#E7E5E0' },
+  };
+  const s = map[lang] || map.English;
+  return (
+    <span style={{ display:'inline-flex', alignItems:'center', gap:'4px',
+                   fontSize:'11px', fontWeight:'500',
+                   padding:'2px 8px', borderRadius:'20px',
+                   background:s.bg, color:s.color, border:`1px solid ${s.border}` }}>
+      {flag} {lang}
+    </span>
+  );
+};
+
+const Toggle = ({ on, onChange, label }) => (
+  <div style={{ display:'flex', alignItems:'center', gap:'11px', cursor:'pointer' }}
+       onClick={() => onChange(!on)}>
+    <div style={{ width:'36px', height:'20px', borderRadius:'10px', flexShrink:0, position:'relative',
+                  background: on ? C.accent : '#D6D3CE', transition:'background 0.2s ease' }}>
+      <div style={{ position:'absolute', top:'2px', left: on ? '18px' : '2px',
+                    width:'16px', height:'16px', borderRadius:'50%',
+                    background:'white', boxShadow:'0 1px 3px rgba(0,0,0,0.15)',
+                    transition:'left 0.2s ease' }}/>
+    </div>
+    <span style={{ fontSize:'13.5px', color:C.primary }}>{label}</span>
+  </div>
+);
+
+const QualBar = ({ score }) => {
+  const pct   = Math.round(score * 100);
+  const color = score >= 0.85 ? C.success : score >= 0.70 ? C.warning : C.error;
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+      <div style={{ flex:1, height:'3px', background:C.border, borderRadius:'2px', overflow:'hidden' }}>
+        <div style={{ width:`${pct}%`, height:'100%', background:color, borderRadius:'2px', transition:'width 0.6s ease' }}/>
+      </div>
+      <span style={{ ...mono, fontSize:'10.5px', color, fontWeight:'500', minWidth:'28px' }}>{pct}%</span>
+    </div>
+  );
+};
+
+const SectionHead = ({ children, sub }) => (
+  <div style={{ marginBottom:'18px' }}>
+    <h3 style={{ ...serif, fontSize:'15px', fontWeight:'600', color:C.primary, letterSpacing:'-0.15px' }}>
+      {children}
+    </h3>
+    {sub && <p style={{ fontSize:'12px', color:C.muted, marginTop:'3px' }}>{sub}</p>}
+  </div>
+);
+
+const Divider = () => <div style={{ height:'1px', background:C.border, margin:'0 24px' }}/>;
+
+/* ─── Upload drop zone ─── */
+const UploadZone = ({ files, onAdd }) => {
+  const [drag, setDrag]  = useState(false);
+  const inputRef         = useRef();
+
+  const handleDrop = useCallback(e => {
+    e.preventDefault(); setDrag(false);
+    const raw = Array.from(e.dataTransfer.files);
+    if (raw.length) onAdd(raw);
+  }, [onAdd]);
+
+  return (
+    <div className="card anim-2" style={{ overflow:'hidden' }}>
+      <div style={{ padding:'22px 24px 0' }}>
+        <SectionHead sub={`${files.length} files uploaded · language detection complete`}>
+          Upload Clinical Data
+        </SectionHead>
+      </div>
+
+      {/* Drop target */}
+      <div
+        onDragOver={e => { e.preventDefault(); setDrag(true); }}
+        onDragLeave={() => setDrag(false)}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current?.click()}
+        style={{
+          margin:'0 24px 20px',
+          border:`1.5px dashed ${drag ? C.accent : C.border}`,
+          borderRadius:'8px',
+          background: drag ? 'rgba(13,148,136,0.04)' : C.s2,
+          padding:'26px 24px',
+          display:'flex', flexDirection:'column', alignItems:'center', gap:'10px',
+          cursor:'pointer', transition:'all 0.2s ease',
+        }}
+      >
+        <div style={{
+          width:'40px', height:'40px', borderRadius:'10px', flexShrink:0,
+          background: drag ? 'rgba(13,148,136,0.1)' : C.border,
+          display:'flex', alignItems:'center', justifyContent:'center',
+          transition:'background 0.2s ease',
+        }}>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                  stroke={drag ? C.accent : C.muted}
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <div style={{ textAlign:'center' }}>
+          <div style={{ fontSize:'13.5px', fontWeight:'500', color:C.primary, marginBottom:'3px' }}>
+            {drag ? 'Release to upload' : 'Drop clinical files here, or click to browse'}
+          </div>
+          <div style={{ fontSize:'12px', color:C.muted }}>PDF · CSV · VCF · JSON · TXT · FHIR · HL7 · DICOM — up to 500 MB per file</div>
+          <div style={{ fontSize:'11px', color:C.accent, marginTop:'4px', fontWeight:'500' }}>
+            Any format accepted — pipeline auto-detects structure &amp; language
+          </div>
+        </div>
+        <div style={{ display:'flex', gap:'5px', marginTop:'2px', flexWrap:'wrap', justifyContent:'center' }}>
+          {['PDF','CSV','VCF','JSON','TXT','FHIR'].map(f => <FmtBadge key={f} fmt={f}/>)}
+        </div>
+      </div>
+      <input ref={inputRef} type="file" multiple style={{ display:'none' }}/>
+
+      {/* File table */}
+      {files.length > 0 && <>
+        <Divider/>
+        {/* Table header */}
+        <div style={{
+          padding:'8px 24px',
+          display:'grid', gridTemplateColumns:'1fr 56px 100px 64px 24px',
+          gap:'8px', alignItems:'center',
+        }}>
+          {['File','Format','Language','Size',''].map((h, i) => (
+            <span key={i} style={{ fontSize:'10px', fontWeight:'700', letterSpacing:'0.6px', textTransform:'uppercase', color:C.muted }}>{h}</span>
+          ))}
+        </div>
+        <Divider/>
+        {files.map((f, idx) => (
+          <div key={f.id} className="file-row" style={{
+            padding:'9px 24px',
+            display:'grid', gridTemplateColumns:'1fr 56px 100px 64px 24px',
+            gap:'8px', alignItems:'center',
+            borderBottom: idx < files.length-1 ? `1px solid ${C.border}` : 'none',
+            background:'transparent',
+          }}>
+            {/* Name */}
+            <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style={{ flexShrink:0 }}>
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8L14 2z"
+                      stroke={C.muted} strokeWidth="1.6" strokeLinejoin="round"/>
+                <path d="M14 2v6h6" stroke={C.muted} strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+              <span style={{ ...mono, fontSize:'12px', color:C.primary, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                {f.name}
+              </span>
+            </div>
+            <FmtBadge fmt={f.fmt}/>
+            <LangBadge lang={f.lang} flag={f.flag}/>
+            <span style={{ ...mono, fontSize:'11px', color:C.muted }}>{f.size}</span>
+            {/* Remove */}
+            <div style={{ width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', opacity:0.4, flexShrink:0 }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 2l8 8M10 2l-8 8" stroke={C.muted} strokeWidth="1.4" strokeLinecap="round"/>
+              </svg>
+            </div>
+          </div>
+        ))}
+        {/* Footer row */}
+        <div style={{ padding:'9px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <span style={{ fontSize:'12px', color:C.muted }}>
+            {files.length} files detected · {files.filter(f=>f.lang==='Bengali').length} Bengali · {files.filter(f=>f.lang==='Hindi').length} Hindi
+          </span>
+          <div style={{ display:'flex', alignItems:'center', gap:'5px' }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <circle cx="6" cy="6" r="5" stroke={C.success} strokeWidth="1.3"/>
+              <path d="M3.5 6l1.8 1.8L8.5 4" stroke={C.success} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ fontSize:'12px', color:C.success, fontWeight:'500' }}>All languages detected</span>
+          </div>
+        </div>
+      </>}
+    </div>
+  );
+};
+
+/* ─── Protocol panel ─── */
+const ProtocolPanel = ({ protocols, onChange, geo, setGeo, retention, setRetention }) => {
+  const geos = ['South Asia','India Only','Global (unrestricted)','APAC'];
+  const [geoOpen, setGeoOpen] = useState(false);
+
+  return (
+    <div className="card anim-3" style={{ padding:'22px 24px' }}>
+      {/* Header row */}
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'20px' }}>
+        <SectionHead>Data Usage Protocol</SectionHead>
+        <div style={{ display:'flex', gap:'8px', marginTop:'2px' }}>
+          {/* DUO badge */}
+          <div style={{
+            display:'inline-flex', alignItems:'center', gap:'5px',
+            padding:'4px 11px', borderRadius:'20px',
+            background:'#F0FFF8', border:'1px solid #D1FAE5',
+            fontSize:'10.5px', fontWeight:'600', color:C.success, letterSpacing:'0.3px',
+          }}>
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M6 1.5L7.3 4.6l3.2.3-2.3 2.2.7 3.2L6 9.5l-2.9 1.8.7-3.2L1.5 5l3.2-.3L6 1.5z"
+                    fill={C.success}/>
+            </svg>
+            GA4GH DUO
+          </div>
+          {/* HIPAA badge */}
+          <div style={{
+            display:'inline-flex', alignItems:'center', gap:'5px',
+            padding:'4px 11px', borderRadius:'20px',
+            background:'rgba(13,148,136,0.06)', border:'1px solid rgba(13,148,136,0.15)',
+            fontSize:'10.5px', fontWeight:'600', color:'#0D9488', letterSpacing:'0.3px',
+          }}>
+            HIPAA Ready
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'32px' }}>
+        {/* Left: permitted use */}
+        <div>
+          <div className="section-label">Permitted Use</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:'13px' }}>
+            <Toggle on={protocols.research}   onChange={v => onChange({...protocols, research:v})}   label="Academic Research"/>
+            <Toggle on={protocols.clinical}   onChange={v => onChange({...protocols, clinical:v})}   label="Clinical Trials"/>
+            <Toggle on={protocols.commercial} onChange={v => onChange({...protocols, commercial:v})} label="Commercial Use"/>
+          </div>
+          {/* Consent note */}
+          <div style={{
+            marginTop:'18px', padding:'10px 12px', borderRadius:'7px',
+            background:C.s2, border:`1px solid ${C.border}`,
+            fontSize:'11.5px', color:C.muted, lineHeight:'1.6',
+          }}>
+            Patient consent collected under IRB-2024-0044. All records de-identified per HIPAA Safe Harbor.
+          </div>
+        </div>
+
+        {/* Right: geography + retention */}
+        <div style={{ display:'flex', flexDirection:'column', gap:'20px' }}>
+          {/* Geography */}
+          <div>
+            <div className="section-label">Geography Restriction</div>
+            <div style={{ position:'relative' }}>
+              <button
+                onClick={() => setGeoOpen(o => !o)}
+                style={{
+                  width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center',
+                  padding:'9px 12px', borderRadius:'7px',
+                  border:`1px solid ${geoOpen ? C.accent : C.border}`,
+                  background:C.s2, fontSize:'13.5px', color:C.primary,
+                  cursor:'pointer', fontFamily:"'DM Sans',sans-serif",
+                  transition:'border-color 0.15s ease',
+                }}
+              >
+                <span>{geo}</span>
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"
+                     style={{ transform: geoOpen ? 'rotate(180deg)' : 'rotate(0)', transition:'transform 0.2s ease' }}>
+                  <path d="M3 5l4 4 4-4" stroke={C.muted} strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+              </button>
+              {geoOpen && (
+                <div style={{
+                  position:'absolute', top:'calc(100% + 4px)', left:0, right:0, zIndex:50,
+                  background:C.surface, border:`1px solid ${C.border}`,
+                  borderRadius:'8px', boxShadow:'0 4px 16px rgba(28,25,23,0.08)',
+                  overflow:'hidden',
+                }}>
+                  {geos.map(g => (
+                    <div key={g} onClick={() => { setGeo(g); setGeoOpen(false); }}
+                         style={{
+                           padding:'9px 12px', fontSize:'13.5px',
+                           color: g === geo ? C.accent : C.primary,
+                           fontWeight: g === geo ? '500' : '400',
+                           cursor:'pointer', transition:'background 0.1s ease',
+                         }}
+                         onMouseEnter={e => e.currentTarget.style.background=C.s2}
+                         onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                    >{g}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Retention */}
+          <div>
+            <div className="section-label">Data Retention Period</div>
+            <div style={{ display:'flex', gap:'6px' }}>
+              {['2 years','5 years','10 years'].map(r => (
+                <button key={r}
+                        className={`retention-opt ${retention === r ? 'active' : ''}`}
+                        onClick={() => setRetention(r)}>
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* OMOP note */}
+          <div style={{
+            padding:'10px 12px', borderRadius:'7px',
+            background:'rgba(13,148,136,0.05)', border:'1px solid rgba(13,148,136,0.15)',
+            fontSize:'11.5px', color:'#0D9488', lineHeight:'1.6',
+          }}>
+            Output will be OMOP CDM v5.4 compliant. ICD-10 coded. Provenance audit trail included.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Projected earnings ─── */
+const EarningsPanel = ({ earnings, patientCount, protocols, onSubmit }) => {
+  const lines = [
+    protocols.research   && 'Academic Research (+15%)',
+    protocols.clinical   && 'Clinical Trials (+25%)',
+    protocols.commercial && 'Commercial Use (+45%)',
+  ].filter(Boolean);
+
+  return (
+    <div className="card anim-4" style={{ padding:'22px 24px' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'32px' }}>
+        {/* Left: earnings breakdown */}
+        <div style={{ flex:1 }}>
+          <SectionHead>Projected Royalties</SectionHead>
+          <div style={{ display:'flex', alignItems:'baseline', gap:'8px', marginBottom:'8px' }}>
+            <span style={{ ...mono, fontSize:'32px', fontWeight:'500', color:C.primary, letterSpacing:'-1.5px' }}>
+              {fmtK(earnings.lo)}–{fmtK(earnings.hi)}
+            </span>
+            <span style={{ fontSize:'13px', color:C.muted }}>/ year estimated</span>
+          </div>
+          {/* Calculation breakdown */}
+          <div style={{ ...mono, fontSize:'11.5px', color:C.muted, lineHeight:'2', display:'flex', flexDirection:'column', gap:'1px' }}>
+            <span>{patientCount.toLocaleString()} patients × $14.80 base rate × 1.32× quality multiplier</span>
+            {lines.length > 0 && <span>{lines.join(' · ')}</span>}
+          </div>
+          {/* Breakdown chips */}
+          <div style={{ display:'flex', gap:'6px', marginTop:'14px', flexWrap:'wrap' }}>
+            <div style={{ padding:'3px 10px', borderRadius:'20px', background:C.s2, border:`1px solid ${C.border}`, fontSize:'11px', color:C.muted }}>
+              Quarterly payouts via Stripe
+            </div>
+            <div style={{ padding:'3px 10px', borderRadius:'20px', background:C.s2, border:`1px solid ${C.border}`, fontSize:'11px', color:C.muted }}>
+              Platform fee: 12%
+            </div>
+            <div style={{ padding:'3px 10px', borderRadius:'20px', background:'rgba(5,150,105,0.07)', border:'1px solid rgba(5,150,105,0.2)', fontSize:'11px', color:C.success, fontWeight:'500' }}>
+              +15% diversity premium
+            </div>
+          </div>
+        </div>
+
+        {/* Right: submit */}
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'10px' }}>
+          <button className="submit-btn" onClick={onSubmit}>
+            Package &amp; Submit Dataset
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <span style={{ fontSize:'11px', color:C.muted, textAlign:'right' }}>
+            Pipeline runs in ~2 min · results reviewed before listing
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Sidebar ─── */
+const Sidebar = () => (
+  <div className="sidebar-anim" style={{
+    width:'300px', flexShrink:0,
+    borderLeft:`1px solid ${C.border}`,
+    overflowY:'auto', padding:'28px 22px',
+    background:C.surface,
+    display:'flex', flexDirection:'column', gap:'22px',
+  }}>
+    {/* Heading */}
+    <div>
+      <h2 style={{ ...serif, fontSize:'15px', fontWeight:'600', color:C.primary, marginBottom:'3px' }}>
+        Active Listings
+      </h2>
+      <p style={{ fontSize:'12px', color:C.muted }}>3 datasets · 2,462 patients accessible</p>
+    </div>
+
+    {/* Listing cards */}
+    {ACTIVE_LISTINGS.map(ds => (
+      <div key={ds.id} className="listing-card">
+        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px' }}>
+          <div>
+            <div style={{ fontSize:'13px', fontWeight:'600', color:C.primary, marginBottom:'2px', lineHeight:'1.3' }}>
+              {ds.name}
+            </div>
+            <div style={{ ...mono, fontSize:'10.5px', color:C.muted }}>{ds.id}</div>
+          </div>
+          <div style={{ textAlign:'right', flexShrink:0, marginLeft:'8px' }}>
+            <div style={{ ...mono, fontSize:'14px', fontWeight:'500', color:C.primary }}>
+              {fmtK(ds.earn)}
+            </div>
+            <div style={{ fontSize:'10.5px', color:C.success }}>{ds.trend}</div>
+          </div>
+        </div>
+
+        {/* Quality bar */}
+        <QualBar score={ds.q}/>
+
+        {/* Modality pills + match count */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:'10px' }}>
+          <div style={{ display:'flex', gap:'4px', flexWrap:'wrap' }}>
+            {ds.mods.map((m,i) => (
+              <span key={i} style={{
+                fontSize:'9.5px', padding:'2px 6px', borderRadius:'4px',
+                background:C.surface, border:`1px solid ${C.border}`, color:C.muted,
+              }}>{m}</span>
+            ))}
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:'4px', flexShrink:0 }}>
+            <div className="pulse-dot"/>
+            <span style={{ fontSize:'11px', color:C.muted }}>{ds.matches} match{ds.matches!==1?'es':''}</span>
+          </div>
+        </div>
+
+        <button className="ghost-btn" style={{ marginTop:'10px' }}>View Provenance Report</button>
+      </div>
+    ))}
+
+    {/* Separator */}
+    <div style={{ height:'1px', background:C.border }}/>
+
+    {/* Portfolio total */}
+    <div style={{
+      padding:'16px', borderRadius:'10px',
+      background:'rgba(13,148,136,0.05)', border:'1px solid rgba(13,148,136,0.15)',
+    }}>
+      <div className="section-label" style={{ marginBottom:'10px' }}>Portfolio Total</div>
+      <div style={{ ...mono, fontSize:'24px', fontWeight:'500', color:C.primary, letterSpacing:'-1px', marginBottom:'3px' }}>
+        $26,200
+      </div>
+      <div style={{ fontSize:'11px', color:C.muted, marginBottom:'14px' }}>Lifetime earnings · 3 datasets</div>
+      <div style={{ height:'1px', background:C.border, marginBottom:'12px' }}/>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+        <span style={{ fontSize:'12px', color:C.muted }}>Next payout</span>
+        <span style={{ ...mono, fontSize:'12px', color:C.success, fontWeight:'500' }}>Mar 15 · $2,100</span>
+      </div>
+    </div>
+
+    {/* Recent pharma interest */}
+    <div>
+      <div className="section-label">Recent Interest</div>
+      <div style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {[
+          { company:'Novo Nordisk', action:'Viewed T2DM cohort', time:'2h ago', color:'#059669' },
+          { company:'AstraZeneca',  action:'Requested access',   time:'1d ago', color:'#0D9488' },
+          { company:'IQVIA',        action:'Downloaded profile', time:'3d ago', color:'#78716C' },
+        ].map((item, i) => (
+          <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'10px' }}>
+            <div style={{
+              width:'28px', height:'28px', borderRadius:'7px', flexShrink:0,
+              background:C.s2, border:`1px solid ${C.border}`,
+              display:'flex', alignItems:'center', justifyContent:'center',
+              fontSize:'10px', fontWeight:'700', color:item.color,
+            }}>
+              {item.company[0]}
+            </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:'12px', fontWeight:'500', color:C.primary }}>{item.company}</div>
+              <div style={{ fontSize:'11px', color:C.muted, marginTop:'1px' }}>{item.action}</div>
+            </div>
+            <span style={{ ...mono, fontSize:'10.5px', color:C.muted, flexShrink:0 }}>{item.time}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+/* ─── Main Screen ─── */
+const Screen1A = ({ onNavigate }) => {
+  const [files, setFiles]         = useState(MOCK_FILES);
+  const [protocols, setProtocols] = useState({ research:true, clinical:true, commercial:false });
+  const [geo, setGeo]             = useState('South Asia');
+  const [retention, setRetention] = useState('5 years');
+
+  const PATIENT_COUNT = 847;
+  const earnings = calcEarnings(PATIENT_COUNT, protocols, 0.84);
+
+  const handleAdd = useCallback(raw => {
+    const added = raw.map((f, i) => ({
+      id: Date.now() + i, name: f.name, size: `${(f.size/1024).toFixed(1)} KB`,
+      fmt: f.name.split('.').pop().toUpperCase(),
+      lang: 'Detecting…', flag: null, status: 'detecting',
+    }));
+    setFiles(prev => [...prev, ...added]);
+    // simulate detection after 1.5s
+    setTimeout(() => {
+      setFiles(prev => prev.map(f =>
+        f.status === 'detecting' ? { ...f, lang:'English', flag:'🇬🇧', status:'done' } : f
+      ));
+    }, 1500);
+  }, []);
+
+  return (
+    <div style={{ height:'100vh', background:C.bg, fontFamily:"'DM Sans',sans-serif", display:'flex', flexDirection:'column', overflow:'hidden' }}>
+
+      {/* ── Nav ── */}
+      <nav style={{
+        height:'56px', background:C.surface, borderBottom:`1px solid ${C.border}`,
+        display:'flex', alignItems:'center', padding:'0 28px',
+        boxShadow:'0 1px 0 rgba(28,25,23,0.04)', flexShrink:0, gap:'0',
+      }}>
+        {/* Logo */}
+        <button onClick={() => onNavigate('landing')} style={{
+          display:'flex', alignItems:'center', gap:'8px', marginRight:'28px',
+          background:'none', border:'none', cursor:'pointer', padding:'0',
+        }}>
+          <div style={{
+            width:'27px', height:'27px',
+            background:'linear-gradient(135deg,#0D9488,#059669)',
+            borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center',
+          }}>
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
+              <path d="M4 4 Q10 2 16 4 Q10 7 4 9 Q10 11 16 13 Q10 15 4 17"
+                    stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <span style={{ fontSize:'13.5px', fontWeight:'700', color:C.primary, letterSpacing:'-0.3px' }}>BioHarmonize</span>
+        </button>
+
+        {/* Nav items */}
+        <div style={{ display:'flex', gap:'2px', flex:1 }}>
+          {[
+            { label:'Dashboard',   active:true,  dest:null },
+            { label:'My Datasets', active:false, dest:null },
+            { label:'Earnings',    active:false, dest:'earnings' },
+            { label:'Settings',    active:false, dest:null },
+          ].map(item => (
+            <button key={item.label} className="nav-btn"
+              onClick={() => item.dest && onNavigate(item.dest)}
+              style={{
+                background: item.active ? C.s2 : 'transparent',
+                color: item.active ? C.primary : C.muted,
+                fontWeight: item.active ? '600' : '400',
+              }}>{item.label}</button>
+          ))}
+        </div>
+
+        {/* Right */}
+        <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+          {/* Notification */}
+          <div style={{
+            width:'32px', height:'32px', borderRadius:'7px',
+            border:`1px solid ${C.border}`, background:C.s2,
+            display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
+            position:'relative',
+          }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
+                    stroke={C.muted} strokeWidth="1.7" strokeLinecap="round"/>
+            </svg>
+            <div style={{
+              position:'absolute', top:'5px', right:'5px',
+              width:'6px', height:'6px', borderRadius:'50%',
+              background:C.accent, border:`1.5px solid ${C.surface}`,
+            }}/>
+          </div>
+          {/* Profile chip */}
+          <div style={{
+            display:'flex', alignItems:'center', gap:'7px',
+            padding:'5px 10px', borderRadius:'7px',
+            border:`1px solid ${C.border}`, background:C.s2,
+          }}>
+            <div style={{
+              width:'21px', height:'21px', borderRadius:'50%', background:C.accent,
+              display:'flex', alignItems:'center', justifyContent:'center',
+            }}>
+              <span style={{ fontSize:'10px', color:'white', fontWeight:'700' }}>A</span>
+            </div>
+            <span style={{ fontSize:'12.5px', fontWeight:'500', color:C.primary }}>SSKM Kolkata</span>
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke={C.muted} strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Body ── */}
+      <div style={{ flex:1, display:'flex', overflow:'hidden' }}>
+
+        {/* Main content */}
+        <div style={{ flex:1, overflowY:'auto', padding:'32px 32px 40px 36px', display:'flex', flexDirection:'column', gap:'18px' }}>
+
+          {/* Page header */}
+          <div className="anim-1" style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+            <div>
+              <h1 style={{ ...serif, fontSize:'22px', fontWeight:'600', color:C.primary, letterSpacing:'-0.4px', marginBottom:'6px' }}>
+                New Dataset Submission
+              </h1>
+              <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                <span style={{ fontSize:'13px', color:C.muted }}>SSKM Kolkata, West Bengal 🇮🇳</span>
+                <span style={{ color:C.border, fontSize:'16px', lineHeight:1 }}>·</span>
+                <div style={{
+                  display:'inline-flex', alignItems:'center', gap:'5px',
+                  padding:'2px 10px', borderRadius:'20px',
+                  background:'#F0FFF8', border:'1px solid #D1FAE5',
+                  fontSize:'10.5px', fontWeight:'600', color:C.success, letterSpacing:'0.3px',
+                }}>
+                  <div className="pulse-dot" style={{ width:'5px', height:'5px', background:C.success }}/>
+                  Verified Institution
+                </div>
+              </div>
+            </div>
+
+            {/* YTD earnings card */}
+            <div style={{
+              background:C.surface, borderRadius:'10px',
+              border:`1px solid ${C.border}`,
+              padding:'12px 18px', textAlign:'right',
+              boxShadow:'0 1px 4px rgba(28,25,23,0.05)',
+            }}>
+              <div style={{ fontSize:'10.5px', color:C.muted, letterSpacing:'0.4px', textTransform:'uppercase', marginBottom:'4px' }}>
+                Earnings YTD
+              </div>
+              <div style={{ ...mono, fontSize:'21px', fontWeight:'500', color:C.primary, letterSpacing:'-0.8px' }}>$48,240</div>
+              <div style={{ fontSize:'11px', color:C.success, marginTop:'2px' }}>↑ 18% vs last year</div>
+            </div>
+          </div>
+
+          {/* Upload */}
+          <UploadZone files={files} onAdd={handleAdd}/>
+
+          {/* Protocol */}
+          <ProtocolPanel
+            protocols={protocols} onChange={setProtocols}
+            geo={geo} setGeo={setGeo}
+            retention={retention} setRetention={setRetention}
+          />
+
+          {/* Earnings + Submit */}
+          <EarningsPanel
+            earnings={earnings}
+            patientCount={PATIENT_COUNT}
+            protocols={protocols}
+            onSubmit={() => {
+              // Bridge: store submission context for Screen 2
+              sessionStorage.setItem('bh_hospital', 'SSKM Kolkata');
+              sessionStorage.setItem('bh_location', 'Kolkata, West Bengal 🇮🇳');
+              sessionStorage.setItem('bh_files', JSON.stringify(
+                files.map(f => ({ name: f.name, fmt: f.fmt, lang: f.lang, flag: f.flag, size: f.size }))
+              ));
+              onNavigate('pipeline');
+            }}
+          />
+        </div>
+
+        {/* Sidebar */}
+        <Sidebar/>
+      </div>
+    </div>
+  );
+};
+
+/* ─── App ─── */
+const App = () => {
+  const navigate = (dest) => {
+    if (dest === 'landing')  window.location.href = 'screen0_landing.html';
+    if (dest === 'pipeline') window.location.href = 'screen2_pipeline.html';
+    if (dest === 'earnings') window.location.href = 'screen4_earnings.html';
+  };
+  return <Screen1A onNavigate={navigate}/>;
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

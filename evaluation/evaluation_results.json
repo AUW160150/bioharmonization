@@ -1,0 +1,18 @@
+{
+  "extraction_accuracy": {
+    "bengali_icd": 100.0,
+    "bengali_omop": 100.0,
+    "hindi_icd": 100.0,
+    "hindi_omop": 100.0,
+    "overall_icd": 94.4,
+    "overall_omop": 100.0
+  },
+  "self_consistency_pct": 100.0,
+  "cross_lingual_pct": 100.0,
+  "validation_improvement_pct": 12.3,
+  "concepts_evaluated": 5,
+  "corrections_applied": 23,
+  "pre_val_conf": 0.81,
+  "post_val_conf": 0.91,
+  "overall_avg_conf": 0.8967
+}

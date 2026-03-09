@@ -1,0 +1,344 @@
+{
+  "patient_id": "P002",
+  "language_detected": "bengali",
+  "entities": {
+    "demographics": {
+      "name": {
+        "original_text": "ফাতিমা বেগম",
+        "language": "bengali",
+        "standardized_english_term": "Fatima Begum",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.97,
+        "reasoning": "Bengali female name transliterated directly. Common South Asian name, unambiguous.",
+        "flag": null
+      },
+      "age": {
+        "original_text": "৫২ বছর",
+        "language": "bengali",
+        "standardized_english_term": "52 years",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.99,
+        "reasoning": "Bengali numeral ৫২ = 52, বছর = years. Direct numeric conversion.",
+        "flag": null
+      },
+      "sex": {
+        "original_text": "মহিলা",
+        "language": "bengali",
+        "standardized_english_term": "Female",
+        "icd10_code": null,
+        "omop_concept_id": null,
+        "confidence": 0.99,
+        "reasoning": "মহিলা is the standard Bengali word for female/woman.",
+        "flag": null
+      }
+    },
+    "diagnoses": [
+      {
+        "original_text": "টাইপ ২ ডায়াবেটিস মেলিটাস (৬ বছর ধরে)",
+        "language": "bengali",
+        "standardized_english_term": "Type 2 Diabetes Mellitus",
+        "icd10_code": "E11.9",
+        "omop_concept_id": "201826",
+        "confidence": 0.98,
+        "reasoning": "টাইপ ২ ডায়াবেটিস মেলিটাস is a direct Bengali transliteration of 'Type 2 Diabetes Mellitus'. Duration noted as 6 years. Maps unambiguously to ICD-10 E11.9 and OMOP 201826.",
+        "flag": null
+      },
+      {
+        "original_text": "উচ্চ রক্তচাপ (নিয়ন্ত্রণে নেই)",
+        "language": "bengali",
+        "standardized_english_term": "Hypertension (uncontrolled)",
+        "icd10_code": "I10",
+        "omop_concept_id": "320128",
+        "confidence": 0.98,
+        "reasoning": "উচ্চ রক্তচাপ literally means 'high blood pressure' in Bengali. নিয়ন্ত্রণে নেই = 'not controlled'. BP reading of 158/96 confirms uncontrolled hypertension. Maps to ICD-10 I10 and OMOP 320128.",
+        "flag": null
+      },
+      {
+        "original_text": "মোট কোলেস্টেরল: ৬.২ mmol/L, ট্রাইগ্লিসারাইড: 2.9 mmol/L, HDL: 0.8 mmol/L, LDL: 4.1 mmol/L",
+        "language": "mixed",
+        "standardized_english_term": "Mixed Dyslipidemia",
+        "icd10_code": "E78.5",
+        "omop_concept_id": "432867",
+        "confidence": 0.85,
+        "reasoning": "Lab values show elevated total cholesterol (6.2 mmol/L, ref <5.2), elevated triglycerides (2.9, ref <1.7), low HDL (0.8, ref >1.2 for females), and elevated LDL (4.1, ref <2.6). This pattern of multiple lipid abnormalities across different fractions constitutes mixed dyslipidemia (E78.5).",
+        "flag": null
+      },
+      {
+        "original_text": "ক্রিয়েটিনিন: 102 umol/L, eGFR: 54 ml/min",
+        "language": "mixed",
+        "standardized_english_term": "Chronic Kidney Disease Stage 3b",
+        "icd10_code": "N18.32",
+        "omop_concept_id": "443601",
+        "confidence": 0.88,
+        "reasoning": "eGFR of 54 ml/min falls in the CKD Stage 3a range (45-59), and creatinine is elevated at 102 umol/L (ref 44-97). Given comorbid diabetes and hypertension, CKD is implied. eGFR 54 is technically Stage 3a (45-59), but the reference table provides Stage 3b. Mapping to CKD Stage 3b as the closest available code; borderline between 3a and 3b warrants clinical review.",
+        "flag": "needs_review"
+      },
+      {
+        "original_text": "BMI: ২৯.৯",
+        "language": "mixed",
+        "standardized_english_term": "Obesity",
+        "icd10_code": "E66.9",
+        "omop_concept_id": "433736",
+        "confidence": 0.82,
+        "reasoning": "BMI of 29.9 is technically in the overweight range (25-29.9) by standard WHO criteria, but for South Asian populations the WHO recommends lower BMI thresholds where obesity is defined as ≥27.5. At 29.9, this patient qualifies as obese by South Asian criteria. Flagged for review as standard WHO cutoff would classify this as overweight.",
+        "flag": "needs_review"
+      }
+    ],
+    "medications": [
+      {
+        "original_text": "মেটফর্মিন ৫০০ মিগ্রা — দিনে দুইবার (সকাল ও রাতে খাবারের সাথে)",
+        "language": "bengali",
+        "standardized_english_term": "Metformin 500 mg twice daily (with morning and evening meals)",
+        "icd10_code": null,
+        "omop_concept_id": "1503297",
+        "confidence": 0.98,
+        "reasoning": "মেটফর্মিন is a direct Bengali transliteration of Metformin. ৫০০ মিগ্রা = 500 mg, দিনে দুইবার = twice daily, সকাল ও রাতে খাবারের সাথে = with morning and night meals. Standard first-line diabetes medication.",
+        "flag": null
+      },
+      {
+        "original_text": "অ্যামলোডিপিন ৫ মিগ্রা — প্রতিদিন একবার",
+        "language": "bengali",
+        "standardized_english_term": "Amlodipine 5 mg once daily",
+        "icd10_code": null,
+        "omop_concept_id": "1332418",
+        "confidence": 0.98,
+        "reasoning": "অ্যামলোডিপিন is the Bengali transliteration of Amlodipine. ৫ মিগ্রা = 5 mg, প্রতিদিন একবার = once daily. Calcium channel blocker used for hypertension.",
+        "flag": null
+      },
+      {
+        "original_text": "গ্লাইক্লাজাইড ৮০ মিগ্রা — সকালে খাবারের আগে",
+        "language": "bengali",
+        "standardized_english_term": "Gliclazide 80 mg once daily (before breakfast)",
+        "icd10_code": null,
+        "omop_concept_id": "1516766",
+        "confidence": 0.97,
+        "reasoning": "গ্লাইক্লাজাইড is the Bengali transliteration of Gliclazide. ৮০ মিগ্রা = 80 mg, সকালে খাবারের আগে = before morning meal. Sulfonylurea class antidiabetic drug.",
+        "flag": null
+      }
+    ],
+    "vitals": [
+      {
+        "original_text": "রক্তচাপ: ১৫৮/৯৬ মিমিএইচজি",
+        "language": "bengali",
+        "standardized_english_term": "Systolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3004249",
+        "loinc_code": "8480-6",
+        "value": 158,
+        "unit": "mmHg",
+        "reference_range": null,
+        "interpretation": "Elevated — Stage 2 hypertension (≥140 mmHg systolic). Consistent with documented uncontrolled hypertension.",
+        "confidence": 0.99,
+        "reasoning": "রক্তচাপ = blood pressure, ১৫৮ = 158, মিমিএইচজি = mmHg. Systolic component extracted separately.",
+        "flag": null
+      },
+      {
+        "original_text": "রক্তচাপ: ১৫৮/৯৬ মিমিএইচজি",
+        "language": "bengali",
+        "standardized_english_term": "Diastolic Blood Pressure",
+        "icd10_code": null,
+        "omop_concept_id": "3012888",
+        "loinc_code": "8462-4",
+        "value": 96,
+        "unit": "mmHg",
+        "reference_range": null,
+        "interpretation": "Elevated — Stage 2 hypertension (≥90 mmHg diastolic). Consistent with documented uncontrolled hypertension.",
+        "confidence": 0.99,
+        "reasoning": "Diastolic component of the blood pressure reading ১৫৮/৯৬. ৯৬ = 96 mmHg.",
+        "flag": null
+      },
+      {
+        "original_text": "নাড়ির গতি: ৮৮ বার/মিনিট",
+        "language": "bengali",
+        "standardized_english_term": "Heart Rate",
+        "icd10_code": null,
+        "omop_concept_id": "3027018",
+        "loinc_code": "8867-4",
+        "value": 88,
+        "unit": "beats/min",
+        "reference_range": "60-100",
+        "interpretation": "Within normal range.",
+        "confidence": 0.97,
+        "reasoning": "নাড়ির গতি = pulse rate/heart rate, ৮৮ বার/মিনিট = 88 beats per minute. Standard vital sign.",
+        "flag": null
+      },
+      {
+        "original_text": "ওজন: ৭২ কেজি",
+        "language": "bengali",
+        "standardized_english_term": "Body Weight",
+        "icd10_code": null,
+        "omop_concept_id": "3025315",
+        "loinc_code": "29463-7",
+        "value": 72,
+        "unit": "kg",
+        "reference_range": null,
+        "interpretation": "Recorded body weight.",
+        "confidence": 0.99,
+        "reasoning": "ওজন = weight, ৭২ কেজি = 72 kg. Direct translation.",
+        "flag": null
+      },
+      {
+        "original_text": "BMI: ২৯.৯",
+        "language": "mixed",
+        "standardized_english_term": "BMI",
+        "icd10_code": null,
+        "omop_concept_id": "3038553",
+        "loinc_code": "39156-5",
+        "value": 29.9,
+        "unit": "kg/m2",
+        "reference_range": "18.5-24.9 (WHO); 18.5-22.9 (South Asian)",
+        "interpretation": "Above normal — overweight by WHO standards (25.0-29.9), obese by South Asian criteria (≥27.5). Calculated from weight 72 kg and height 155 cm.",
+        "confidence": 0.99,
+        "reasoning": "BMI is written in English abbreviation with Bengali numeral ২৯.৯ = 29.9. Verified: 72/(1.55^2) = 29.97 ≈ 29.9.",
+        "flag": null
+      }
+    ],
+    "lab_values": [
+      {
+        "original_text": "খালি পেটে রক্ত শর্করা: ১১.২ mmol/L (স্বাভাবিক: ৩.৯–৫.৫)",
+        "language": "bengali",
+        "standardized_english_term": "Fasting Blood Glucose",
+        "icd10_code": null,
+        "omop_concept_id": "3004501",
+        "loinc_code": "76629-5",
+        "value": 11.2,
+        "unit": "mmol/L",
+        "reference_range": "3.9-5.5 mmol/L",
+        "interpretation": "Critically elevated — more than double the upper limit of normal. Indicates very poor glycaemic control consistent with HbA1c of 9.8%.",
+        "confidence": 0.99,
+        "reasoning": "খালি পেটে রক্ত শর্করা = fasting blood sugar/glucose. ১১.২ = 11.2 mmol/L. Confirmed by CSV column রক্ত_শর্করা_খালিপেটে_mmol = 11.2.",
+        "flag": null
+      },
+      {
+        "original_text": "HbA1c: ৯.৮%",
+        "language": "mixed",
+        "standardized_english_term": "HbA1c",
+        "icd10_code": null,
+        "omop_concept_id": "3004410",
+        "loinc_code": "4548-4",
+        "value": 9.8,
+        "unit": "%",
+        "reference_range": "<7.0%",
+        "interpretation": "Significantly elevated — well above target of <7.0%. Indicates poor glycaemic control over the past 2-3 months. Insulin therapy consideration is clinically appropriate.",
+        "confidence": 0.99,
+        "reasoning": "HbA1c written in English with Bengali numeral ৯.৮ = 9.8%. Confirmed by CSV column HbA1c_% = 9.8.",
+        "flag": null
+      },
+      {
+        "original_text": "মোট কোলেস্টেরল: ৬.২ mmol/L",
+        "language": "bengali",
+        "standardized_english_term": "Total Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3019900",
+        "loinc_code": "2093-3",
+        "value": 6.2,
+        "unit": "mmol/L",
+        "reference_range": "<5.2 mmol/L",
+        "interpretation": "Elevated — above the desirable range of <5.2 mmol/L. Contributes to cardiovascular risk in a patient with diabetes and hypertension.",
+        "confidence": 0.99,
+        "reasoning": "মোট কোলেস্টেরল = total cholesterol. ৬.২ = 6.2 mmol/L. Confirmed by CSV column মোট_কোলেস্টেরল_mmol = 6.2.",
+        "flag": null
+      },
+      {
+        "original_text": "ট্রাইগ্লিসারাইড_mmol: 2.9",
+        "language": "mixed",
+        "standardized_english_term": "Triglycerides",
+        "icd10_code": null,
+        "omop_concept_id": "3022192",
+        "loinc_code": "2571-8",
+        "value": 2.9,
+        "unit": "mmol/L",
+        "reference_range": "<1.7 mmol/L",
+        "interpretation": "Significantly elevated — nearly double the upper reference limit. Indicates hypertriglyceridemia, common in poorly controlled Type 2 diabetes.",
+        "confidence": 0.97,
+        "reasoning": "ট্রাইগ্লিসারাইড is the Bengali transliteration of Triglyceride. Value 2.9 mmol/L from CSV only (not in clinical note). Well above reference <1.7.",
+        "flag": null
+      },
+      {
+        "original_text": "HDL_mmol: 0.8",
+        "language": "english",
+        "standardized_english_term": "HDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3007070",
+        "loinc_code": "2085-9",
+        "value": 0.8,
+        "unit": "mmol/L",
+        "reference_range": ">1.2 mmol/L (Female)",
+        "interpretation": "Low — below the female-specific reference of >1.2 mmol/L. Low HDL increases cardiovascular risk, especially in combination with elevated LDL and triglycerides.",
+        "confidence": 0.97,
+        "reasoning": "HDL_mmol from CSV. Value 0.8 mmol/L is below the female reference range of >1.2 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "LDL_mmol: 4.1",
+        "language": "english",
+        "standardized_english_term": "LDL Cholesterol",
+        "icd10_code": null,
+        "omop_concept_id": "3028437",
+        "loinc_code": "2089-1",
+        "value": 4.1,
+        "unit": "mmol/L",
+        "reference_range": "<2.6 mmol/L",
+        "interpretation": "Significantly elevated — well above the desirable <2.6 mmol/L. For a diabetic patient with hypertension, LDL target should be even lower (<1.8 mmol/L). Statin therapy strongly indicated.",
+        "confidence": 0.97,
+        "reasoning": "LDL_mmol from CSV. Value 4.1 mmol/L, significantly above reference <2.6 mmol/L.",
+        "flag": null
+      },
+      {
+        "original_text": "ক্রিয়েটিনিন_umol: 102",
+        "language": "mixed",
+        "standardized_english_term": "Serum Creatinine",
+        "icd10_code": null,
+        "omop_concept_id": "3016723",
+        "loinc_code": "2160-0",
+        "value": 102,
+        "unit": "umol/L",
+        "reference_range": "44-97 umol/L",
+        "interpretation": "Mildly elevated — above the upper reference limit of 97 umol/L. Consistent with reduced eGFR and early kidney impairment.",
+        "confidence": 0.97,
+        "reasoning": "ক্রিয়েটিনিন is the Bengali transliteration of Creatinine. Value 102 umol/L from CSV, above reference range 44-97.",
+        "flag": null
+      },
+      {
+        "original_text": "eGFR_ml_min: 54",
+        "language": "english",
+        "standardized_english_term": "eGFR",
+        "icd10_code": null,
+        "omop_concept_id": "3049187",
+        "loinc_code": "62238-1",
+        "value": 54,
+        "unit": "mL/min/1.73m2",
+        "reference_range": ">60 mL/min/1.73m2",
+        "interpretation": "Below normal — eGFR 54 indicates CKD Stage 3a (45-59 mL/min). In a diabetic patient with hypertension, this suggests diabetic nephropathy or hypertensive nephrosclerosis. Nephroprotective strategies warranted.",
+        "confidence": 0.97,
+        "reasoning": "eGFR from CSV. Value 54 mL/min is below the reference threshold of >60, indicating moderate kidney impairment.",
+        "flag": null
+      }
+    ],
+    "variants": []
+  },
+  "flags": [
+    "Uncontrolled Type 2 Diabetes: HbA1c 9.8% and FBG 11.2 mmol/L — clinician notes insulin therapy under consideration",
+    "Uncontrolled Hypertension: BP 158/96 mmHg despite amlodipine 5 mg — dose escalation or additional antihypertensive needed",
+    "Mixed Dyslipidemia untreated: No statin or lipid-lowering agent in current medication list despite significantly elevated LDL (4.1), TG (2.9), low HDL (0.8), and elevated total cholesterol (6.2)",
+    "Early kidney impairment: eGFR 54 mL/min with elevated creatinine — consider ACEi/ARB for nephroprotection, monitor for DKD progression",
+    "High cardiovascular risk: Coexisting diabetes, hypertension, dyslipidemia, CKD, and obesity (by South Asian criteria) — comprehensive risk factor management urgently needed",
+    "CKD staging may be 3a (eGFR 45-59) rather than 3b (eGFR 30-44) — mapped to closest available reference code, needs clinical verification",
+    "BMI 29.9: Classified as obese by South Asian WHO thresholds (≥27.5) but overweight by standard WHO criteria — needs review based on local guidelines"
+  ],
+  "harmonization_metadata": {
+    "model": "claude-opus-4-6",
+    "source_files": [
+      "clinical_note_P002_bengali.txt",
+      "lab_results_P002.csv"
+    ],
+    "total_entities": 19,
+    "low_confidence_count": 0,
+    "uncertain_count": 0,
+    "timestamp": "2026-03-09T00:47:11.978856Z",
+    "input_tokens": 3173,
+    "output_tokens": 5886
+  }
+}
