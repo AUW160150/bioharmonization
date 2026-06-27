@@ -1,149 +1,121 @@
-# BioGrid — SuperPlane canvas (REAL importable definition)
+# BioGrid — SuperPlane canvas (DEMO: self-contained mini automation)
 # ----------------------------------------------------------------------------
-# Format verified against superplanehq/superplane source:
-#   apiVersion/kind/metadata/spec, Node.type enum, component names, edge channels.
+# Paste this into the YAML editor of your `galactic-nova` canvas and save.
+# It needs NO integrations — every step is an HTTP call to your live Render
+# app plus `if` gates, so it runs on its own and visibly lights up.
 #
-# Apply flow (canvas.yaml is git-first; `update` needs the canvas UUID):
-#   1. Create an empty canvas in SuperPlane Cloud (UI or API) → copy its id
-#   2. Paste that id into metadata.id below
-#   3. Create org integrations named exactly: biogrid-github, biogrid-render, biogrid-claude
-#   4. superplane apps canvas update -f superplane/canvas.yaml
+# Flow:  every 5 min ─▶ health check ─▶ [healthy?] ─▶ run pipeline
+#                   ─▶ wait ─▶ check status ─▶ [complete?] ─▶ done
 #
-# Story: a push to main drives the deployed BioGrid app (on Render) through
-# gated stages, Claude writes a dataset summary, and a PR opens. A separate
-# path turns any PR into a live Render preview. Each stage gates the next.
+# After Render is live, if your URL isn't exactly biogrid.onrender.com,
+# tell me and I'll rewrite the URLs. (The integration-rich version with
+# Claude + open-PR + render.deploy lives in workflow.yaml as the roadmap.)
 # ----------------------------------------------------------------------------
 apiVersion: v1
 kind: Canvas
 metadata:
-  name: "BioGrid"
-  description: "Governed BioHarmonize pipeline: ingest → harmonize → validate → publish, with PR + Render preview."
-  # id: "REPLACE-WITH-CANVAS-UUID"   # required by `canvas update` — fill after creating the canvas
-
+  id: 55f4f453-984a-4f03-b3f0-60d5c78f7617
+  name: galactic-nova
+  description: "BioGrid mini automation — drives the live BioHarmonize app on Render with gated stages."
 spec:
   nodes:
-    # ── Trigger: push to main starts a run ───────────────────────────────────
-    - id: "on-push"
-      name: "On push to main"
-      type: "TYPE_TRIGGER"
-      component: "github.onPush"
-      integration: { name: "biogrid-github" }
+    - id: tick
+      name: "Every 5 minutes"
+      type: TYPE_TRIGGER
+      component: schedule
       configuration:
-        repository: "AUW160150/bioharmonization"
-        branch: "main"
-      position: { x: 80, "y": 200 }
+        type: minutes
+        minutesInterval: 5
+      metadata: {}
+      position: { x: 80, 'y': 300 }
+      isCollapsed: false
 
-    # ── Stage 1: kick the pipeline on the live Render app ────────────────────
-    - id: "run-pipeline"
-      name: "Run pipeline"
-      type: "TYPE_ACTION"
-      component: "http"
+    - id: health
+      name: "Health check"
+      type: TYPE_ACTION
+      component: http
       configuration:
-        method: "POST"
+        method: GET
+        url: "https://biogrid.onrender.com/api/health"
+        successCodes: "2xx"
+        timeoutSeconds: 20
+      metadata: {}
+      position: { x: 360, 'y': 300 }
+      isCollapsed: false
+
+    - id: gate-healthy
+      name: "Healthy?"
+      type: TYPE_ACTION
+      component: if
+      configuration:
+        expression: '$["Health check"].data.body.status == "ok"'
+      metadata: {}
+      position: { x: 640, 'y': 300 }
+      isCollapsed: false
+
+    - id: run
+      name: "Run pipeline"
+      type: TYPE_ACTION
+      component: http
+      configuration:
+        method: POST
         url: "https://biogrid.onrender.com/api/pipeline/run"
         body: '{"hospital":"SSKM Kolkata","location":"Kolkata, West Bengal"}'
         successCodes: "2xx"
         timeoutSeconds: 30
-      position: { x: 380, "y": 200 }
+      metadata: {}
+      position: { x: 920, 'y': 240 }
+      isCollapsed: false
 
-    # ── Let the async pipeline make progress ─────────────────────────────────
-    - id: "settle"
+    - id: settle
       name: "Wait for pipeline"
-      type: "TYPE_ACTION"
-      component: "wait"
+      type: TYPE_ACTION
+      component: wait
       configuration:
-        seconds: 30
-      position: { x: 680, "y": 200 }
+        seconds: 25
+      metadata: {}
+      position: { x: 1200, 'y': 240 }
+      isCollapsed: false
 
-    # ── Poll status (job_id comes from the run-pipeline response) ────────────
-    - id: "check-status"
+    - id: status
       name: "Check status"
-      type: "TYPE_ACTION"
-      component: "http"
+      type: TYPE_ACTION
+      component: http
       configuration:
-        method: "GET"
-        # expression syntax reads the upstream node's output:
+        method: GET
         url: 'https://biogrid.onrender.com/api/pipeline/status/$["Run pipeline"].data.body.job_id'
         successCodes: "2xx"
         timeoutSeconds: 20
-      position: { x: 980, "y": 200 }
+      metadata: {}
+      position: { x: 1480, 'y': 240 }
+      isCollapsed: false
 
-    # ── Gate: only advance when the pipeline actually completed ──────────────
-    - id: "gate-complete"
-      name: "Completed?"
-      type: "TYPE_ACTION"
-      component: "if"
+    - id: gate-complete
+      name: "Pipeline complete?"
+      type: TYPE_ACTION
+      component: if
       configuration:
         expression: '$["Check status"].data.body.status == "complete"'
-      position: { x: 1280, "y": 200 }
-
-    # ── Stage: Claude writes a human-readable dataset summary (LLM step) ──────
-    - id: "summarize"
-      name: "Summarize dataset (Claude)"
-      type: "TYPE_ACTION"
-      component: "claude.textPrompt"
-      integration: { name: "biogrid-claude" }
-      configuration:
-        model: "claude-sonnet-4-6"
-        maxTokens: 800
-        systemMessage: "You write concise OMOP dataset summary cards for a clinical data marketplace."
-        prompt: 'Write a short dataset summary card from this run status: $["Check status"].data.body'
-      position: { x: 1580, "y": 120 }
-
-    # ── Publish: open a PR carrying the summary ──────────────────────────────
-    - id: "open-pr"
-      name: "Open PR"
-      type: "TYPE_ACTION"
-      component: "github.createPullRequest"
-      integration: { name: "biogrid-github" }
-      configuration:
-        repository: "AUW160150/bioharmonization"
-        base: "main"
-        head: "biogrid-run"
-        title: "BioGrid run — OMOP dataset + provenance"
-        body: '$["Summarize dataset (Claude)"].data.text'
-      position: { x: 1880, "y": 120 }
-
-    # ── Parallel path: any PR → live Render preview ──────────────────────────
-    - id: "on-pr"
-      name: "On pull request"
-      type: "TYPE_TRIGGER"
-      component: "github.onPullRequest"
-      integration: { name: "biogrid-github" }
-      configuration:
-        repository: "AUW160150/bioharmonization"
-      position: { x: 80, "y": 460 }
-
-    - id: "deploy-preview"
-      name: "Deploy preview"
-      type: "TYPE_ACTION"
-      component: "render.deploy"
-      integration: { name: "biogrid-render" }
-      configuration:
-        service: "biogrid"
-        clearCache: false
-      position: { x: 380, "y": 460 }
+      metadata: {}
+      position: { x: 1760, 'y': 240 }
+      isCollapsed: false
 
   edges:
-    - sourceId: "on-push"
-      targetId: "run-pipeline"
-      channel: "default"
-    - sourceId: "run-pipeline"
-      targetId: "settle"
-      channel: "success"
-    - sourceId: "settle"
-      targetId: "check-status"
-      channel: "default"
-    - sourceId: "check-status"
-      targetId: "gate-complete"
-      channel: "success"
-    - sourceId: "gate-complete"
-      targetId: "summarize"
-      channel: "true"          # only when status == complete
-    - sourceId: "summarize"
-      targetId: "open-pr"
-      channel: "success"
-    # parallel preview path
-    - sourceId: "on-pr"
-      targetId: "deploy-preview"
-      channel: "default"
+    - sourceId: tick
+      targetId: health
+      channel: default
+    - sourceId: health
+      targetId: gate-healthy
+      channel: success
+    - sourceId: gate-healthy
+      targetId: run
+      channel: "true"
+    - sourceId: run
+      targetId: settle
+      channel: success
+    - sourceId: settle
+      targetId: status
+      channel: default
+    - sourceId: status
+      targetId: gate-complete
+      channel: success
