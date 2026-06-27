@@ -1,0 +1,21 @@
+# Render Blueprint — BioGrid
+# One web service hosts BOTH the FastAPI backend (/api/*) and the static
+# BioHarmonize frontend (served from the same origin). Connect this repo to
+# Render → New + Blueprint, and Render reads this file automatically.
+services:
+  - type: web
+    name: biogrid
+    runtime: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      # Optional — only needed to run the REAL Claude pipeline instead of the
+      # built-in simulated walkthrough. Leave unset for the safe demo path.
+      - key: ANTHROPIC_API_KEY
+        sync: false

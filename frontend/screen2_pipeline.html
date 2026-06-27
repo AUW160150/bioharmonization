@@ -660,7 +660,7 @@ const Screen2 = ({ onNavigate }) => {
   const timers = useRef([]);
   const startTime = useRef(null);
   const activeTimeline = useRef(buildTimeline(submissionCtx.files));
-  const API_BASE = 'http://localhost:8000';
+  const API_BASE = '';
 
   // Try to start a real API job on mount; fall back to demo mode
   useEffect(() => {
