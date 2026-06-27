@@ -18,3 +18,10 @@ build/
 
 # Claude settings
 .claude/
+
+# Local auth / tooling artifacts — never commit
+auth_info.txt
+.shipablesignore
+shipables.json
+SKILL.md
+skills.md

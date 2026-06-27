@@ -1,4 +1,57 @@
-# BioHarmonize
+# BioGrid — a SuperPlane Software Factory
+
+**BioGrid runs the BioHarmonize clinical-data pipeline as a governed [SuperPlane](https://superplane.com) workflow — a visual canvas that drives the live app on Render, with a gate after every stage, from a single click.**
+
+🔗 **Live app:** https://biogrid-bioharmonize.onrender.com
+🧩 **SuperPlane canvas + setup:** [`superplane/`](./superplane/)
+
+---
+
+## The three legs
+
+| Leg | Role | Where |
+|---|---|---|
+| **GitHub** | Source of truth (code + PRs) | `AUW160150/bioharmonization` |
+| **Render** | Hosts the app — one web service serves both the frontend and the API | `biogrid-bioharmonize.onrender.com` |
+| **SuperPlane** | The orchestration layer — a visual canvas that *drives* the app | canvas `galactic-nova` |
+
+SuperPlane doesn't host anything — **Render hosts the app; SuperPlane conducts it.** A non-technical operator clicks **Run** on the canvas and watches a governed pipeline execute, stage by stage, ending in a verified result.
+
+## How SuperPlane is used
+
+The canvas (`superplane/canvas.yaml`) is a real, importable SuperPlane workflow that orchestrates the live BioHarmonize app. Each node is a real SuperPlane component, and **every stage is gated** — it validates the previous step before advancing:
+
+```
+Run on demand (manual trigger)
+   │
+   ▼
+Health check        → HTTP GET  /api/health
+   │  [Healthy?]  ── if-gate: status == "ok"
+   ▼
+Run pipeline        → HTTP POST /api/pipeline/run   (kicks off the 6-agent harmonization)
+   │
+   ▼
+Wait 30s            → wait component (let the pipeline finish)
+   │
+   ▼
+Check status        → HTTP GET  /api/pipeline/status/latest
+   │  [Pipeline complete?]  ── if-gate: status == "complete"
+   ▼
+done ✓
+```
+
+What this demonstrates, mapped to SuperPlane primitives:
+- **Triggers** — a published *manual start trigger* (`Run on demand`) fires the workflow on click.
+- **HTTP components** — SuperPlane calls the live Render app's REST API to start the pipeline and poll its status. SuperPlane drives Render; the operator never touches the backend.
+- **`if` gates** — after the health call and after the status poll, a gate validates the prior step (`== "ok"`, `== "complete"`) before the run continues. This is the "each stage validates the previous" requirement, expressed natively.
+- **`wait` component** — holds 30s so the asynchronous pipeline finishes before the result is checked.
+- **Live canvas console** — the operator watches each node go green in real time.
+
+The result: a click on a visual canvas runs a real clinical-data harmonization job on live infrastructure, with validation between every stage. See [`superplane/DEPLOY.md`](./superplane/DEPLOY.md) for the full wire-up and [`superplane/workflow.yaml`](./superplane/workflow.yaml) for the roadmap (native Claude, GitHub PR, and Render-preview components).
+
+---
+
+# BioHarmonize (the underlying app)
 
 **Agentic infrastructure that transforms fragmented South Asian clinical data into standardized, research-grade datasets.**
 
@@ -147,7 +200,8 @@ Sample provenance entry:
 | Validation Sources | KDIGO 2022, WHO ICD-10 2023, OMOP Athena, LOINC, RxNorm |
 | Frontend | HTML / Tailwind CSS / DM Sans + Playfair Display |
 | Backend | FastAPI (Python) |
-| Hosting | Vercel (frontend) + Railway (backend) |
+| Hosting | Render — one web service serves frontend + API |
+| Orchestration | SuperPlane canvas (visual workflow, gated stages) |
 
 ---
 
@@ -186,20 +240,19 @@ cd evaluation && python report.py
 
 ## Deployment
 
-**Frontend → Vercel**
+**One Render web service (frontend + API)** via the [`render.yaml`](./render.yaml) Blueprint:
 ```bash
-# In Vercel dashboard:
-# Root: frontend/
-# Environment variable: VITE_API_BASE_URL = https://your-backend.railway.app
+# Render Dashboard → New + → Blueprint → pick this repo (reads render.yaml from main)
+# Service: biogrid-bioharmonize  (uvicorn api:app serves /api/* AND the frontend)
+# Health check: /api/health
+# No API key needed for the demo — the pipeline falls back to a simulated walkthrough.
 ```
 
-**Backend → Railway**
-```bash
-# In Railway dashboard:
-# Root: backend/
-# Environment variables: ANTHROPIC_API_KEY, MODAL_TOKEN_ID, MODAL_TOKEN_SECRET
-# Health check path: /health
-```
+**SuperPlane orchestration** — see [`superplane/DEPLOY.md`](./superplane/DEPLOY.md) for connecting
+the canvas (GitHub + Render integrations) and applying `superplane/canvas.yaml`.
+
+> Note: Render auto-deploy is currently off — push to `main`, then trigger a deploy
+> (`render deploys create <service-id>`) or use **Manual Deploy** in the dashboard.
 
 ---
 

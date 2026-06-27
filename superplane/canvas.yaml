@@ -4,8 +4,14 @@
 # It needs NO integrations — every step is an HTTP call to your live Render
 # app plus `if` gates, so it runs on its own and visibly lights up.
 #
-# Flow:  every 5 min ─▶ health check ─▶ [healthy?] ─▶ run pipeline
-#                   ─▶ wait ─▶ check status ─▶ [complete?] ─▶ done
+# Flow:  Run on demand ─▶ health check ─▶ [healthy?] ─▶ run pipeline
+#                   ─▶ wait(30s) ─▶ check status ─▶ [complete?] ─▶ done
+#
+# NOTE: this file documents the working design. The live canvas in SuperPlane
+# Cloud is the source of truth. A MANUAL "Run on demand" trigger is used (not a
+# schedule) — the 5-min schedule created overlapping runs that polluted the
+# shared /api/pipeline/status/latest, so one manual run at a time keeps the
+# chain deterministic.
 #
 # After Render is live, if your URL isn't exactly biogrid-bioharmonize.onrender.com,
 # tell me and I'll rewrite the URLs. (The integration-rich version with
@@ -19,13 +25,11 @@ metadata:
   description: "BioGrid mini automation — drives the live BioHarmonize app on Render with gated stages."
 spec:
   nodes:
-    - id: tick
-      name: "Every 5 minutes"
+    - id: run-on-demand
+      name: "Run on demand"
       type: TYPE_TRIGGER
-      component: schedule
-      configuration:
-        type: minutes
-        minutesInterval: 5
+      component: manual          # published manual start trigger (fires on click)
+      configuration: {}
       metadata: {}
       position: { x: 80, 'y': 300 }
       isCollapsed: false
@@ -104,7 +108,7 @@ spec:
       isCollapsed: false
 
   edges:
-    - sourceId: tick
+    - sourceId: run-on-demand
       targetId: health
       channel: default
     - sourceId: health
