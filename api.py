@@ -20,7 +20,7 @@ import threading
 from pathlib import Path
 from typing import Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -59,13 +59,24 @@ def health():
 
 # ── Pipeline run ──────────────────────────────────────────────────────────────
 @app.post("/api/pipeline/run")
-def run_pipeline(req: PipelineRunRequest):
+async def run_pipeline(request: Request):
+    # Lenient body parsing: accept JSON, empty body, or wrong content-type
+    # (e.g. from orchestration tools that don't set Content-Type) without 422.
+    try:
+        body = await request.json()
+        if not isinstance(body, dict):
+            body = {}
+    except Exception:
+        body = {}
+    hospital = body.get("hospital", "SSKM Kolkata")
+    location = body.get("location", "Kolkata, West Bengal")
+
     job_id = f"job_{uuid.uuid4().hex[:8]}"
     jobs[job_id] = {
         "id": job_id,
         "status": "queued",
-        "hospital": req.hospital,
-        "location": req.location,
+        "hospital": hospital,
+        "location": location,
         "progress": 0,
         "stage": "Queued",
         "patients": 0,

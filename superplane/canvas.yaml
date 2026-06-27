@@ -38,7 +38,7 @@ spec:
         method: GET
         url: "https://biogrid-bioharmonize.onrender.com/api/health"
         successCodes: "2xx"
-        timeoutSeconds: 20
+        timeoutSeconds: 90   # Render free-tier cold start can take 30-60s
       metadata: {}
       position: { x: 360, 'y': 300 }
       isCollapsed: false
@@ -62,7 +62,7 @@ spec:
         url: "https://biogrid-bioharmonize.onrender.com/api/pipeline/run"
         body: '{"hospital":"SSKM Kolkata","location":"Kolkata, West Bengal"}'
         successCodes: "2xx"
-        timeoutSeconds: 30
+        timeoutSeconds: 90   # Render free-tier cold start can take 30-60s
       metadata: {}
       position: { x: 920, 'y': 240 }
       isCollapsed: false
@@ -72,7 +72,9 @@ spec:
       type: TYPE_ACTION
       component: wait
       configuration:
-        seconds: 25
+        # SuperPlane wait component: integer Interval + time unit (set in UI)
+        interval: 30
+        unit: seconds
       metadata: {}
       position: { x: 1200, 'y': 240 }
       isCollapsed: false
@@ -85,7 +87,7 @@ spec:
         method: GET
         url: 'https://biogrid-bioharmonize.onrender.com/api/pipeline/status/$["Run pipeline"].data.body.job_id'
         successCodes: "2xx"
-        timeoutSeconds: 20
+        timeoutSeconds: 90   # Render free-tier cold start can take 30-60s
       metadata: {}
       position: { x: 1480, 'y': 240 }
       isCollapsed: false
