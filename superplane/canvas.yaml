@@ -7,7 +7,7 @@
 # Flow:  every 5 min ─▶ health check ─▶ [healthy?] ─▶ run pipeline
 #                   ─▶ wait ─▶ check status ─▶ [complete?] ─▶ done
 #
-# After Render is live, if your URL isn't exactly biogrid.onrender.com,
+# After Render is live, if your URL isn't exactly biogrid-bioharmonize.onrender.com,
 # tell me and I'll rewrite the URLs. (The integration-rich version with
 # Claude + open-PR + render.deploy lives in workflow.yaml as the roadmap.)
 # ----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ spec:
       component: http
       configuration:
         method: GET
-        url: "https://biogrid.onrender.com/api/health"
+        url: "https://biogrid-bioharmonize.onrender.com/api/health"
         successCodes: "2xx"
         timeoutSeconds: 20
       metadata: {}
@@ -59,7 +59,7 @@ spec:
       component: http
       configuration:
         method: POST
-        url: "https://biogrid.onrender.com/api/pipeline/run"
+        url: "https://biogrid-bioharmonize.onrender.com/api/pipeline/run"
         body: '{"hospital":"SSKM Kolkata","location":"Kolkata, West Bengal"}'
         successCodes: "2xx"
         timeoutSeconds: 30
@@ -83,7 +83,7 @@ spec:
       component: http
       configuration:
         method: GET
-        url: 'https://biogrid.onrender.com/api/pipeline/status/$["Run pipeline"].data.body.job_id'
+        url: 'https://biogrid-bioharmonize.onrender.com/api/pipeline/status/$["Run pipeline"].data.body.job_id'
         successCodes: "2xx"
         timeoutSeconds: 20
       metadata: {}

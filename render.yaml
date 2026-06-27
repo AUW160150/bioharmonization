@@ -3,8 +3,10 @@
 # BioHarmonize frontend (served from the same origin). Connect this repo to
 # Render → New + Blueprint, and Render reads this file automatically.
 services:
+  # NOTE: the public *.onrender.com subdomain is global & first-come.
+  # "biogrid" was already taken, so we use a distinctive name to get a clean URL.
   - type: web
-    name: biogrid
+    name: biogrid-bioharmonize
     runtime: python
     plan: free
     branch: main
