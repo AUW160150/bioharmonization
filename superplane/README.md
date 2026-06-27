@@ -36,8 +36,9 @@ not just automated.
 - Safe demo path: if no `ANTHROPIC_API_KEY` is set, the pipeline runs a simulated
   progress walkthrough (clean for a live demo, no keys required)
 
-See [`DEPLOY.md`](./DEPLOY.md) for the step-by-step setup and [`workflow.yaml`](./workflow.yaml)
-for the canvas blueprint.
+See [`DEPLOY.md`](./DEPLOY.md) for the step-by-step setup. [`canvas.yaml`](./canvas.yaml) is the
+**real importable SuperPlane canvas** (apply with `superplane apps canvas update -f`);
+[`workflow.yaml`](./workflow.yaml) is the human-readable design notes behind it.
 
 ## Demo script (90 seconds)
 1. Open the deployed Render URL → landing screen.

@@ -25,14 +25,31 @@ demoable PR with a preview link. Do the steps in order; each is independently te
    SuperPlane auto-creates the webhook.
 3. Add the **Render integration** with your Render API key (Bearer).
 
-## 3. Build the canvas (from `workflow.yaml`)
-Recreate the graph visually using [`workflow.yaml`](./workflow.yaml) as the blueprint:
-- Triggers: `manual`, `github_push`, `github_pr`
-- Stages: ingest → harmonize → validate → publish (each with its `gate:`)
-- Deploy chain: `open_pull_request` → Render `on_deploy` → `create_comment` (preview URL)
+## 3. Import the canvas (real file: `canvas.yaml`)
+[`canvas.yaml`](./canvas.yaml) is a real SuperPlane canvas (`apiVersion: v1`, `kind: Canvas`)
+using actual component names (`github.onPush`, `http`, `if`, `claude.textPrompt`,
+`github.createPullRequest`, `render.deploy`). [`workflow.yaml`](./workflow.yaml) is the
+human-readable design notes; `canvas.yaml` is the thing you apply.
 
-Tip for the pitch: keep the stage labels human-readable ("Confidence-gated validation")
-so a non-technical operator can follow the run on the canvas console.
+Apply flow (a canvas `update` needs the canvas UUID, so create it first):
+```bash
+# a) create an empty canvas in SuperPlane Cloud (UI or API) → copy its id
+# b) paste that id into canvas.yaml  →  metadata.id: "<uuid>"
+# c) create three org-level integrations named EXACTLY:
+#      biogrid-github   (GitHub, authorize AUW160150/bioharmonization)
+#      biogrid-render   (Render API key)
+#      biogrid-claude   (Anthropic API key)
+# d) apply:
+superplane apps canvas update -f superplane/canvas.yaml
+```
+Notes:
+- Component strings must match SuperPlane's registry exactly (already correct in the file).
+- `position.y` is intentionally quoted (`"y"`) — required by the YAML parser.
+- A couple of `configuration` keys (http `body`, claude model id) may need a small tweak in
+  the canvas UI to match your integrations; the node graph + wiring is the hard part and it's done.
+
+Pitch tip: the node labels are human-readable ("Wait for pipeline", "Completed?", "Summarize
+dataset (Claude)") so a non-technical operator can follow the run live on the canvas console.
 
 ## 4. Produce the demo PR
 - Trigger a run (manual button or a push). The `publish` stage opens a PR;
