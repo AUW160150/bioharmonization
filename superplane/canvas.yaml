@@ -85,7 +85,8 @@ spec:
       component: http
       configuration:
         method: GET
-        url: 'https://biogrid-bioharmonize.onrender.com/api/pipeline/status/$["Run pipeline"].data.body.job_id'
+        # static URL: backend returns the latest job, so no expression to interpolate
+        url: "https://biogrid-bioharmonize.onrender.com/api/pipeline/status/latest"
         successCodes: "2xx"
         timeoutSeconds: 90   # Render free-tier cold start can take 30-60s
       metadata: {}

@@ -146,6 +146,12 @@ async def run_pipeline(request: Request):
 # ── Poll status ───────────────────────────────────────────────────────────────
 @app.get("/api/pipeline/status/{job_id}")
 def pipeline_status(job_id: str):
+    # "latest" → most recent job, so orchestrators can poll a STATIC url
+    # (no need to interpolate a job_id into the path).
+    if job_id == "latest":
+        if not jobs:
+            return {"status": "none", "stage": "No jobs yet", "progress": 0}
+        return max(jobs.values(), key=lambda j: j.get("started_at", 0))
     job = jobs.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
