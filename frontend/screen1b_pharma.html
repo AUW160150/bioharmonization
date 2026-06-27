@@ -804,7 +804,7 @@ function App() {
     setNoMatch(false);
 
     // Try real API first, fall back to local logic
-    fetch('http://localhost:8000/api/search', {
+    fetch('/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: q, population: popFilter }),

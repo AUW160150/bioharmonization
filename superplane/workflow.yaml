@@ -1,0 +1,85 @@
+# BioGrid — SuperPlane workflow specification
+# ----------------------------------------------------------------------------
+# This is the LOGICAL design of the canvas you build in SuperPlane Cloud
+# (app.superplane.com). SuperPlane's canvas is a visual graph — you'll drag
+# these nodes in the UI. This file is the source-of-truth blueprint for what
+# to wire, the demo narrative, and how it satisfies the hackathon requirements.
+#
+# Pitch angle: a non-technical operator (hospital data steward) triggers a
+# governed data-harmonization run and ships a reviewable artifact (PR) — all
+# from a visual canvas, with every stage gated before the next.
+# ----------------------------------------------------------------------------
+
+canvas:
+  name: biogrid
+  description: >
+    Recycles the BioHarmonize pipeline as a governed SuperPlane workflow:
+    a clinical dataset is ingested, harmonized to OMOP, validated, and the
+    result is published as a GitHub PR that auto-deploys a live preview on Render.
+
+  # --- Triggers (how a run starts) ------------------------------------------
+  triggers:
+    - id: github_push
+      type: github            # native SuperPlane GitHub integration (webhook)
+      on: [push]              # push to main → redeploy + run
+      branch: main
+    - id: github_pr
+      type: github
+      on: [pull_request]      # PR opened → provision preview env, post URL back
+    - id: manual
+      type: manual            # operator clicks "Run" in the canvas console
+
+  # --- Stages (each gates the next) -----------------------------------------
+  stages:
+    - id: ingest
+      label: Ingest & detect modalities
+      runs: pipeline.ingestion           # existing ingestion_agent
+      gate: at_least_one_patient_record  # do not advance on empty input
+
+    - id: harmonize
+      label: Harmonize to OMOP (Claude)
+      component: llm                      # native SuperPlane LLM component (Claude)
+      runs: harmonization.harmonization_agent
+      gate: all_patients_processed
+
+    - id: validate
+      label: Confidence-gated validation
+      # ★ The differentiator, ported from orchestrator.py:
+      #   only entities below the confidence threshold get a second Claude review.
+      component: llm
+      runs: pipeline.modal_app.validate
+      gate: validation_summary.status != "error"
+
+    - id: publish
+      label: Write OMOP output + provenance
+      runs: pipeline.output_agent
+      gate: omop_completeness >= 0.85     # quality bar before anything ships
+
+    # --- Deploy chain: native SuperPlane components, not custom code ---------
+    - id: open_pr
+      label: Open GitHub PR
+      action: github.open_pull_request    # native GitHub action
+      with:
+        title: "BioGrid run {{ run_id }} — OMOP dataset + provenance"
+        body: "Harmonized {{ patients }} patients · {{ entities }} entities · {{ corrections }} corrections"
+
+    - id: preview
+      label: Deploy preview on Render
+      action: render.on_deploy            # native Render integration
+      gate: render.deploy.status == "live"
+
+    - id: comment
+      label: Post preview URL to PR
+      action: github.create_comment
+      with:
+        body: "Live preview: {{ render.preview_url }}"
+
+  # --- Notifications --------------------------------------------------------
+  notify:
+    - type: slack                         # optional, native integration
+      on: [publish, preview]
+
+# Edge map (canvas wiring):
+#   manual / github_push ──▶ ingest ──▶ harmonize ──▶ validate ──▶ publish
+#   github_pr ──▶ preview ──▶ comment
+#   publish ──▶ open_pr ──▶ preview ──▶ comment

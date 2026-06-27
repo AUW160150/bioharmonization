@@ -22,6 +22,7 @@ from typing import Dict, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 app = FastAPI(title="BioHarmonize API", version="1.0.0")
@@ -231,3 +232,11 @@ def search_datasets(req: SearchRequest):
 
     results.sort(key=lambda x: x["match_score"], reverse=True)
     return {"results": results, "no_match": False}
+
+# ── Static frontend ───────────────────────────────────────────────────────────
+# Serve the BioHarmonize screens from the same origin as the API, so the
+# deployed Render service hosts both the UI and the /api endpoints.
+# Mounted LAST so the /api/* routes above always take precedence.
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
+if FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

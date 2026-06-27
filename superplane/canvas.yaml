@@ -1,0 +1,121 @@
+# BioGrid — SuperPlane canvas (DEMO: self-contained mini automation)
+# ----------------------------------------------------------------------------
+# Paste this into the YAML editor of your `galactic-nova` canvas and save.
+# It needs NO integrations — every step is an HTTP call to your live Render
+# app plus `if` gates, so it runs on its own and visibly lights up.
+#
+# Flow:  every 5 min ─▶ health check ─▶ [healthy?] ─▶ run pipeline
+#                   ─▶ wait ─▶ check status ─▶ [complete?] ─▶ done
+#
+# After Render is live, if your URL isn't exactly biogrid.onrender.com,
+# tell me and I'll rewrite the URLs. (The integration-rich version with
+# Claude + open-PR + render.deploy lives in workflow.yaml as the roadmap.)
+# ----------------------------------------------------------------------------
+apiVersion: v1
+kind: Canvas
+metadata:
+  id: 55f4f453-984a-4f03-b3f0-60d5c78f7617
+  name: galactic-nova
+  description: "BioGrid mini automation — drives the live BioHarmonize app on Render with gated stages."
+spec:
+  nodes:
+    - id: tick
+      name: "Every 5 minutes"
+      type: TYPE_TRIGGER
+      component: schedule
+      configuration:
+        type: minutes
+        minutesInterval: 5
+      metadata: {}
+      position: { x: 80, 'y': 300 }
+      isCollapsed: false
+
+    - id: health
+      name: "Health check"
+      type: TYPE_ACTION
+      component: http
+      configuration:
+        method: GET
+        url: "https://biogrid.onrender.com/api/health"
+        successCodes: "2xx"
+        timeoutSeconds: 20
+      metadata: {}
+      position: { x: 360, 'y': 300 }
+      isCollapsed: false
+
+    - id: gate-healthy
+      name: "Healthy?"
+      type: TYPE_ACTION
+      component: if
+      configuration:
+        expression: '$["Health check"].data.body.status == "ok"'
+      metadata: {}
+      position: { x: 640, 'y': 300 }
+      isCollapsed: false
+
+    - id: run
+      name: "Run pipeline"
+      type: TYPE_ACTION
+      component: http
+      configuration:
+        method: POST
+        url: "https://biogrid.onrender.com/api/pipeline/run"
+        body: '{"hospital":"SSKM Kolkata","location":"Kolkata, West Bengal"}'
+        successCodes: "2xx"
+        timeoutSeconds: 30
+      metadata: {}
+      position: { x: 920, 'y': 240 }
+      isCollapsed: false
+
+    - id: settle
+      name: "Wait for pipeline"
+      type: TYPE_ACTION
+      component: wait
+      configuration:
+        seconds: 25
+      metadata: {}
+      position: { x: 1200, 'y': 240 }
+      isCollapsed: false
+
+    - id: status
+      name: "Check status"
+      type: TYPE_ACTION
+      component: http
+      configuration:
+        method: GET
+        url: 'https://biogrid.onrender.com/api/pipeline/status/$["Run pipeline"].data.body.job_id'
+        successCodes: "2xx"
+        timeoutSeconds: 20
+      metadata: {}
+      position: { x: 1480, 'y': 240 }
+      isCollapsed: false
+
+    - id: gate-complete
+      name: "Pipeline complete?"
+      type: TYPE_ACTION
+      component: if
+      configuration:
+        expression: '$["Check status"].data.body.status == "complete"'
+      metadata: {}
+      position: { x: 1760, 'y': 240 }
+      isCollapsed: false
+
+  edges:
+    - sourceId: tick
+      targetId: health
+      channel: default
+    - sourceId: health
+      targetId: gate-healthy
+      channel: success
+    - sourceId: gate-healthy
+      targetId: run
+      channel: "true"
+    - sourceId: run
+      targetId: settle
+      channel: success
+    - sourceId: settle
+      targetId: status
+      channel: default
+    - sourceId: status
+      targetId: gate-complete
+      channel: success
